@@ -31,7 +31,7 @@ let operands = [new Operand(), new Operand()]
 let operation = Operation.Add
 Operand.current = operands[0]
 
-export default function() {
+export default function App() {
 	const [display, setDisplay] = useState('0')
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 
