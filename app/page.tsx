@@ -10,10 +10,10 @@ let operands = (function() {
 		return { value: 0 }
 	}
 
-	return [createOperand(), createOperand()]
+	return [createOperand(), createOperand(), createOperand()]
 })()
 
-let operation = Operation.Add
+let operations = [Operation.Add, Operation.Multiply]
 let current = 0
 
 function setCurrent(operand) {
@@ -60,7 +60,18 @@ export default function() {
 	function OperationGridButton({ operation: newOperation, symbol }) {
 		return (
 			<GridButton onClick={() => {
-				operation = newOperation
+				if (!operands[1].canOverwrite) {
+					resetDisplay((() => {
+						switch (operations[0]) {
+						case Operation.Add: return operands[0].value + operands[1].value
+						case Operation.Subtract: return operands[0].value - operands[1].value
+						case Operation.Multiply: return operands[0].value * operands[1].value
+						case Operation.Divide: return operands[0].value / operands[1].value
+						} }
+					)())
+				}
+
+				operations[0] = newOperation
 				setCurrent(1)
 			}} symbol={symbol} />
 		)
@@ -80,7 +91,7 @@ export default function() {
 				<GridButton onClick={() => {
 					if (shouldClearAll) {
 						operands[1].value = 0
-						operation = Operation.Add
+						operations[0] = Operation.Add
 						resetDisplay(0)
 					} else {
 						setCurrentValue(0)
@@ -107,7 +118,7 @@ export default function() {
 				<GridButton symbol='.' />
 
 				<GridButton onClick={() => resetDisplay((() => {
-					switch (operation) {
+					switch (operations[0]) {
 					case Operation.Add: return operands[0].value + operands[1].value
 					case Operation.Subtract: return operands[0].value - operands[1].value
 					case Operation.Multiply: return operands[0].value * operands[1].value
