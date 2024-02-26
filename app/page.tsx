@@ -4,17 +4,6 @@ import { Button, ChakraProvider, Grid, GridItem, Text } from '@chakra-ui/react'
 import { useState } from 'react'
 
 class Operand {
-	static #currentOperand;
-
-	static get current() {
-		return this.currentOperand
-	}
-
-	static set current(operand) {
-		this.currentOperand = operand
-		operand.canOverwrite = true
-	}
-
 	constructor() {
 		this.reset()
 	}
@@ -29,19 +18,24 @@ enum Operation { Add, Subtract, Multiply, Divide }
 
 let operands = [new Operand(), new Operand()]
 let operation = Operation.Add
-Operand.current = operands[0]
+let current = operands[0]
+
+function setCurrent(operand) {
+	current = operands[operand]
+	current.canOverwrite = true
+}
 
 export default function() {
 	const [display, setDisplay] = useState('0')
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 
 	function setCurrentValue(value) {
-		Operand.current.value = value
-		setDisplay(Operand.current.value)
+		current.value = value
+		setDisplay(current.value)
 	}
 
 	function resetDisplay(value) {
-		Operand.current = operands[0]
+		setCurrent(0)
 		setCurrentValue(value)
 	}
 
@@ -56,11 +50,11 @@ export default function() {
 	function NumberGridButton({ colSpan, number }) {
 		return (
 			<GridButton onClick={() => {
-				if (Operand.current.canOverwrite) {
-					Operand.current.reset()
+				if (current.canOverwrite) {
+					current.reset()
 				}
 
-				setCurrentValue(Operand.current.value * 10 + number)
+				setCurrentValue(current.value * 10 + number)
 				setShouldClearAll(false)
 			}} symbol={number} colSpan={colSpan} />
 		)
@@ -70,7 +64,7 @@ export default function() {
 		return (
 			<GridButton onClick={() => {
 				operation = newOperation
-				Operand.current = operands[1]
+				setCurrent(1)
 			}} symbol={symbol} />
 		)
 	}
@@ -97,8 +91,8 @@ export default function() {
 					}
 				}} symbol={shouldClearAll ? 'AC' : 'C'} />
 
-				<ValueGridButton value={-Operand.current.value} symbol='±' />
-				<ValueGridButton value={Operand.current.value / 100} symbol='%' />
+				<ValueGridButton value={-current.value} symbol='±' />
+				<ValueGridButton value={current.value / 100} symbol='%' />
 				<OperationGridButton operation={Operation.Divide} symbol='÷' />
 				<NumberGridButton number={7} />
 				<NumberGridButton number={8} />
