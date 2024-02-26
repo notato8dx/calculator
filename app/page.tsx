@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Button, ChakraProvider, Grid, GridItem, Text } from '@chakra-ui/react'
+import { Button, ChakraProvider, Grid, GridItem, Text } from '@chakra-ui/react'
 import { useState } from 'react'
 
 enum Operation { Add, Subtract, Multiply, Divide }
@@ -74,49 +74,47 @@ export default function() {
 
 	return (
 		<ChakraProvider>
-			<Box style={{ width: '219.76px' }}>
-				<Text style={{ fontSize: '200%', textAlign: 'right' }}>{display}</Text>
+			<Text style={{ fontSize: '200%', textAlign: 'right' }}>{display}</Text>
 
-				<Grid templateColumns='repeat(4, 1fr)' style={{ width: '100%' }}>
-					<GridButton onClick={() => {
-						if (shouldClearAll) {
-							operands[1].value = 0
-							operation = Operation.Add
-							resetDisplay(0)
-						} else {
-							setCurrentValue(0)
-							setShouldClearAll(true)
-						}
-					}} symbol={shouldClearAll ? 'AC' : 'C'} />
+			<Grid templateColumns='repeat(4, 1fr)'>
+				<GridButton onClick={() => {
+					if (shouldClearAll) {
+						operands[1].value = 0
+						operation = Operation.Add
+						resetDisplay(0)
+					} else {
+						setCurrentValue(0)
+						setShouldClearAll(true)
+					}
+				}} symbol={shouldClearAll ? 'AC' : 'C'} />
 
-					<ValueGridButton value={-operands[current].value} symbol='±' />
-					<ValueGridButton value={operands[current].value / 100} symbol='%' />
-					<OperationGridButton operation={Operation.Divide} symbol='÷' />
-					<NumberGridButton number={7} />
-					<NumberGridButton number={8} />
-					<NumberGridButton number={9} />
-					<OperationGridButton operation={Operation.Multiply} symbol='×' />
-					<NumberGridButton number={4} />
-					<NumberGridButton number={5} />
-					<NumberGridButton number={6} />
-					<OperationGridButton operation={Operation.Add} symbol='+' />
-					<NumberGridButton number={1} />
-					<NumberGridButton number={2} />
-					<NumberGridButton number={3} />
-					<OperationGridButton operation={Operation.Subtract} symbol='−' />
-					<NumberGridButton number={0} colSpan={2} />
-					<GridButton symbol='.' />
+				<ValueGridButton value={-operands[current].value} symbol='±' />
+				<ValueGridButton value={operands[current].value / 100} symbol='%' />
+				<OperationGridButton operation={Operation.Divide} symbol='÷' />
+				<NumberGridButton number={7} />
+				<NumberGridButton number={8} />
+				<NumberGridButton number={9} />
+				<OperationGridButton operation={Operation.Multiply} symbol='×' />
+				<NumberGridButton number={4} />
+				<NumberGridButton number={5} />
+				<NumberGridButton number={6} />
+				<OperationGridButton operation={Operation.Add} symbol='+' />
+				<NumberGridButton number={1} />
+				<NumberGridButton number={2} />
+				<NumberGridButton number={3} />
+				<OperationGridButton operation={Operation.Subtract} symbol='−' />
+				<NumberGridButton number={0} colSpan={2} />
+				<GridButton symbol='.' />
 
-					<GridButton onClick={() => resetDisplay((() => {
-						switch (operation) {
-						case Operation.Add: return operands[0].value + operands[1].value
-						case Operation.Subtract: return operands[0].value - operands[1].value
-						case Operation.Multiply: return operands[0].value * operands[1].value
-						case Operation.Divide: return operands[0].value / operands[1].value
-						} }
-					)())} symbol='=' />
-				</Grid>
-			</Box>
+				<GridButton onClick={() => resetDisplay((() => {
+					switch (operation) {
+					case Operation.Add: return operands[0].value + operands[1].value
+					case Operation.Subtract: return operands[0].value - operands[1].value
+					case Operation.Multiply: return operands[0].value * operands[1].value
+					case Operation.Divide: return operands[0].value / operands[1].value
+					} }
+				)())} symbol='=' />
+			</Grid>
 		</ChakraProvider>
 	)
 }
