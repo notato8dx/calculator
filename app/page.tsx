@@ -1,11 +1,15 @@
 'use client'
 
+<<<<<<< Updated upstream
 import { Button, ChakraProvider, Grid, GridItem, Text } from '@chakra-ui/react'
+=======
+import { Box, Button, ChakraProvider, Checkbox, Divider, Grid, GridItem, Menu, MenuButton, MenuDivider, MenuItemOption, MenuList, MenuOptionGroup, Popover, PopoverBody, PopoverContent, PopoverTrigger, Radio, RadioGroup, Stack, Text, Tooltip } from '@chakra-ui/react'
+>>>>>>> Stashed changes
 import { useState } from 'react'
 
 enum Operation { Add, Subtract, Multiply, Divide }
 
-let operands = (function() {
+let operands = (() => {
 	function createOperand() {
 		return { value: 0 }
 	}
@@ -24,6 +28,11 @@ function setCurrent(operand) {
 export default function() {
 	const [display, setDisplay] = useState(0)
 	const [shouldClearAll, setShouldClearAll] = useState(true)
+	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
+	const [isRPNMode, setIsRPNMode] = useState(false)
+	const [isShowingPaperTape, setIsShowingPaperTape] = useState(false)
+	const [decimalPlaces, setDecimalPlaces] = useState('15')
+	const [view, setView] = useState('basic')
 
 	function setCurrentValue(value) {
 		operands[current].value = value
@@ -35,10 +44,12 @@ export default function() {
 		setCurrentValue(value)
 	}
 
-	function GridButton({ children, colSpan, onClick, symbol }) {
+	function GridButton({ children, colSpan, tooltip, onClick, symbol }) {
 		return (
 			<GridItem colSpan={colSpan}>
-				<Button style={{ width: '100%' }} onClick={onClick}>{symbol}</Button>
+				<Tooltip label={tooltip} openDelay={1000}>
+					<Button style={{ width: '100%' }} onClick={onClick}>{symbol}</Button>
+				</Tooltip>
 			</GridItem>
 		)
 	}
@@ -66,14 +77,15 @@ export default function() {
 		)
 	}
 
-	function ValueGridButton({ value, symbol }) {
+	function ValueGridButton({ value, symbol, tooltip }) {
 		return (
-			<GridButton onClick={() => setCurrentValue(value)} symbol={symbol} />
+			<GridButton onClick={() => setCurrentValue(value)} symbol={symbol} tooltip={tooltip} />
 		)
 	}
 
 	return (
 		<ChakraProvider>
+<<<<<<< Updated upstream
 			<Text style={{ fontSize: '200%', textAlign: 'right' }}>{display}</Text>
 
 			<Grid templateColumns='repeat(4, 1fr)'>
@@ -115,6 +127,139 @@ export default function() {
 					} }
 				)())} symbol='=' />
 			</Grid>
+=======
+			<Popover>
+				<PopoverTrigger>
+					<Button>View</Button>
+				</PopoverTrigger>
+				<PopoverContent>
+					<PopoverBody>
+						<Stack>
+							<RadioGroup onChange={setView} value={view}>
+								<Stack>
+									<Radio value={'basic'}>Basic</Radio>
+									<Radio value={'scientific'}>Scientific</Radio>
+									<Radio value={'programmer'}>Programmer</Radio>
+								</Stack>
+							</RadioGroup>
+							<Divider />
+							<Checkbox isChecked={isShowingSeparators} onChange={({ target: { checked } }) => setIsShowingSeparators(checked)}>Show Thousands Separators</Checkbox>
+							<Divider />
+							<Checkbox isChecked={isRPNMode} onChange={({ target: { checked } }) => setIsRPNMode(checked)}>RPN Mode</Checkbox>
+							<Divider />
+							<Checkbox isChecked={isShowingPaperTape} onChange={({ target: { checked } }) => setIsShowingPaperTape(checked)}>Paper Tape</Checkbox>
+						</Stack>
+					</PopoverBody>
+				</PopoverContent>
+			</Popover>
+
+			<Box style={{ width: 'max-content', margin: 'auto' }}>
+				<Text style={{ fontSize: '200%', textAlign: 'right', width: 'auto' }}>{isShowingSeparators ? display.toLocaleString() : display}</Text>
+
+				<Grid templateColumns={`repeat(${(() => {
+					switch (view) {
+					case 'basic': return 4
+					case 'scientific': return 10
+					case 'programmer': return 7
+					}
+				})()}, 1fr)`} style={{ width: '100%' }}>
+					{view === 'scientific' ? (
+						<>
+							<GridButton symbol='(' />
+							<GridButton symbol=')' />
+							<GridButton symbol='mc' />
+							<GridButton symbol='m+' />
+							<GridButton symbol='m−' />
+							<GridButton symbol='mr' />
+						</>
+					) : null}
+
+					<GridButton onClick={() => {
+						if (shouldClearAll) {
+							operands[1].value = 0
+							operation = Operation.Add
+							resetDisplay(0)
+						} else {
+							setCurrentValue(0)
+							setShouldClearAll(true)
+						}
+					}} symbol={shouldClearAll ? 'AC' : 'C'} tooltip={`Clear${shouldClearAll ? ' All' : ''}`} />
+					<ValueGridButton value={-operands[current].value} symbol='±' tooltip='Negate the displayed value' />
+					<ValueGridButton value={operands[current].value / 100} symbol='%' />
+					<OperationGridButton operation={Operation.Divide} symbol='÷' />
+
+					{view === 'scientific' ? (
+						<>
+						<GridButton symbol={<>2<sup>nd</sup></>} />
+						<GridButton symbol={<>x<sup>2</sup></>} />
+						<GridButton symbol={<>x<sup>3</sup></>} />
+						<GridButton symbol={<>x<sup>y</sup></>} />
+						<GridButton symbol={<>e<sup>x</sup></>} />
+						<GridButton symbol={<>10<sup>x</sup></>} />
+						</>
+					) : null}
+
+					<NumberGridButton number={7} />
+					<NumberGridButton number={8} />
+					<NumberGridButton number={9} />
+					<OperationGridButton operation={Operation.Multiply} symbol='×' />
+
+					{view === 'scientific' ? (
+						<>
+						<GridButton symbol={<><sup>1</sup>⁄<sub>x</sub></>} />
+						<GridButton symbol={<><sup>2</sup>√x</>} />
+						<GridButton symbol={<><sup>3</sup>√x</>} />
+						<GridButton symbol={<><sup>y</sup>√x</>} />
+						<GridButton symbol='ln' />
+						<GridButton symbol={<>log<sub>10</sub></>} />
+						</>
+					) : null}
+
+					<NumberGridButton number={4} />
+					<NumberGridButton number={5} />
+					<NumberGridButton number={6} />
+					<OperationGridButton operation={Operation.Add} symbol='+' />
+
+					{view === 'scientific' ? (
+						<>
+						<GridButton symbol='x!' />
+						<GridButton symbol='sin' />
+						<GridButton symbol='cos' />
+						<GridButton symbol='tan' />
+						<GridButton symbol='e' />
+						<GridButton symbol='EE' />
+						</>
+					) : null}
+
+					<NumberGridButton number={1} />
+					<NumberGridButton number={2} />
+					<NumberGridButton number={3} />
+					<OperationGridButton operation={Operation.Subtract} symbol='−' />
+
+					{view === 'scientific' ? (
+						<>
+						<GridButton symbol='Rad' />
+						<GridButton symbol='sinh' />
+						<GridButton symbol='cosh' />
+						<GridButton symbol='tanh' />
+						<GridButton symbol='π' />
+						<GridButton symbol='Rand' />
+						</>
+					) : null}
+
+					<NumberGridButton number={0} colSpan={2} />
+					<GridButton symbol='.' />
+					<GridButton onClick={() => resetDisplay((() => {
+						switch (operation) {
+						case Operation.Add: return operands[0].value + operands[1].value
+						case Operation.Subtract: return operands[0].value - operands[1].value
+						case Operation.Multiply: return operands[0].value * operands[1].value
+						case Operation.Divide: return operands[0].value / operands[1].value
+						}
+					})())} symbol='=' />
+				</Grid>
+			</Box>
+>>>>>>> Stashed changes
 		</ChakraProvider>
 	)
 }
