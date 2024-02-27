@@ -3,8 +3,6 @@
 import { Box, Button, ChakraProvider, Checkbox, Divider, Grid, GridItem, Menu, MenuButton, MenuDivider, MenuItemOption, MenuList, MenuOptionGroup, Popover, PopoverBody, PopoverContent, PopoverTrigger, Radio, RadioGroup, Stack, Text, Tooltip } from '@chakra-ui/react'
 import { useState } from 'react'
 
-enum Operation { Add, Subtract, Multiply, Divide }
-
 const operands = (() => {
 	function createOperand() {
 		return { value: 0 }
@@ -13,11 +11,18 @@ const operands = (() => {
 	return [createOperand(), createOperand()]
 })()
 
-let operation = Operation.Add
-let current = 0
+const operations = [
+	() => operands[0].value + operands[1].value,
+	() => operands[0].value - operands[1].value,
+	() => operands[0].value * operands[1].value,
+	() => operands[0].value / operands[1].value
+]
 
-function setCurrent(operand) {
-	current = operand
+let operation = 0
+let operand = 0
+
+function setOperand(newOperand) {
+	operand = newOperand
 	operands[operand].canOverwrite = true
 }
 
@@ -40,46 +45,39 @@ export default function() {
 				<GridButton onClick={() => {
 					if (shouldClearAll) {
 						operands[1].value = 0
-						operation = Operation.Add
+						operation = 0
 						resetDisplay(0)
 					} else {
-						setCurrentValue(0)
+						setOperandValue(0)
 						setShouldClearAll(true)
 					}
 				}} symbol={shouldClearAll ? 'AC' : 'C'} tooltip={`Clear${shouldClearAll ? ' All' : ''}`} />
-				<ValueGridButton value={-operands[current].value} symbol='±' tooltip='Negate the displayed value' />
-				<ValueGridButton value={operands[current].value / 100} symbol='%' />
-				<OperationGridButton operation={Operation.Divide} symbol='÷' />
+				<ValueGridButton value={-operands[operand].value} symbol='±' tooltip='Negate the displayed value' />
+				<ValueGridButton value={operands[operand].value / 100} symbol='%' />
+				<OperationGridButton operation={3} symbol='÷' />
 			</>,
 			<>
 				<NumberGridButton number={7} />
 				<NumberGridButton number={8} />
 				<NumberGridButton number={9} />
-				<OperationGridButton operation={Operation.Multiply} symbol='×' />
+				<OperationGridButton operation={2} symbol='×' />
 			</>,
 			<>
 				<NumberGridButton number={4} />
 				<NumberGridButton number={5} />
 				<NumberGridButton number={6} />
-				<OperationGridButton operation={Operation.Add} symbol='+' />
+				<OperationGridButton operation={1} symbol='−' />
 			</>,
 			<>
 				<NumberGridButton number={1} />
 				<NumberGridButton number={2} />
 				<NumberGridButton number={3} />
-				<OperationGridButton operation={Operation.Subtract} symbol='−' />
+				<OperationGridButton operation={0} symbol='+' />
 			</>,
 			<>
 				<NumberGridButton number={0} colSpan={2} />
 				<GridButton symbol='.' />
-				<GridButton onClick={() => resetDisplay((() => {
-					switch (operation) {
-					case Operation.Add: return operands[0].value + operands[1].value
-					case Operation.Subtract: return operands[0].value - operands[1].value
-					case Operation.Multiply: return operands[0].value * operands[1].value
-					case Operation.Divide: return operands[0].value / operands[1].value
-					}
-				})())} symbol='=' />
+				<GridButton onClick={() => resetDisplay(operations[operation]())} symbol='=' />
 			</>
 		]
 	
@@ -132,14 +130,14 @@ export default function() {
 		]
 	})()
 
-	function setCurrentValue(value) {
-		operands[current].value = value
+	function setOperandValue(value) {
+		operands[operand].value = value
 		setDisplay(value)
 	}
 
 	function resetDisplay(value) {
-		setCurrent(0)
-		setCurrentValue(value)
+		setOperand(0)
+		setOperandValue(value)
 	}
 
 	function GridButton({ children, colSpan, tooltip, onClick, symbol }) {
@@ -155,12 +153,12 @@ export default function() {
 	function NumberGridButton({ colSpan, number }) {
 		return (
 			<GridButton onClick={() => {
-				if (operands[current].canOverwrite) {
-					operands[current].value = 0
-					operands[current].canOverwrite = false
+				if (operands[operand].canOverwrite) {
+					operands[operand].value = 0
+					operands[operand].canOverwrite = false
 				}
 
-				setCurrentValue(operands[current].value * 10 + number)
+				setOperandValue(operands[operand].value * 10 + number)
 				setShouldClearAll(false)
 			}} symbol={number} colSpan={colSpan} />
 		)
@@ -170,14 +168,14 @@ export default function() {
 		return (
 			<GridButton onClick={() => {
 				operation = newOperation
-				setCurrent(1)
+				setOperand(1)
 			}} symbol={symbol} />
 		)
 	}
 
 	function ValueGridButton({ value, symbol, tooltip }) {
 		return (
-			<GridButton onClick={() => setCurrentValue(value)} symbol={symbol} tooltip={tooltip} />
+			<GridButton onClick={() => setOperandValue(value)} symbol={symbol} tooltip={tooltip} />
 		)
 	}
 
