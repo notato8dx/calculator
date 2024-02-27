@@ -34,9 +34,9 @@ export default function() {
 		function createView(columnCount, component) {
 			return { columnCount, component }
 		}
-	
-		return [
-			createView(4, <>
+
+		const basicRows = [
+			<>
 				<GridButton onClick={() => {
 					if (shouldClearAll) {
 						operands[1].value = 0
@@ -50,18 +50,26 @@ export default function() {
 				<ValueGridButton value={-operands[current].value} symbol='±' tooltip='Negate the displayed value' />
 				<ValueGridButton value={operands[current].value / 100} symbol='%' />
 				<OperationGridButton operation={Operation.Divide} symbol='÷' />
+			</>,
+			<>
 				<NumberGridButton number={7} />
 				<NumberGridButton number={8} />
 				<NumberGridButton number={9} />
 				<OperationGridButton operation={Operation.Multiply} symbol='×' />
+			</>,
+			<>
 				<NumberGridButton number={4} />
 				<NumberGridButton number={5} />
 				<NumberGridButton number={6} />
 				<OperationGridButton operation={Operation.Add} symbol='+' />
+			</>,
+			<>
 				<NumberGridButton number={1} />
 				<NumberGridButton number={2} />
 				<NumberGridButton number={3} />
 				<OperationGridButton operation={Operation.Subtract} symbol='−' />
+			</>,
+			<>
 				<NumberGridButton number={0} colSpan={2} />
 				<GridButton symbol='.' />
 				<GridButton onClick={() => resetDisplay((() => {
@@ -72,6 +80,16 @@ export default function() {
 					case Operation.Divide: return operands[0].value / operands[1].value
 					}
 				})())} symbol='=' />
+			</>
+		]
+	
+		return [
+			createView(4, <>
+				{basicRows[0]}
+				{basicRows[1]}
+				{basicRows[2]}
+				{basicRows[3]}
+				{basicRows[4]}
 			</>),
 			createView(10, <>
 				<GridButton symbol='(' />
@@ -80,74 +98,35 @@ export default function() {
 				<GridButton symbol='m+' />
 				<GridButton symbol='m−' />
 				<GridButton symbol='mr' />
-
-				<GridButton onClick={() => {
-					if (shouldClearAll) {
-						operands[1].value = 0
-						operation = Operation.Add
-						resetDisplay(0)
-					} else {
-						setCurrentValue(0)
-						setShouldClearAll(true)
-					}
-				}} symbol={shouldClearAll ? 'AC' : 'C'} tooltip={`Clear${shouldClearAll ? ' All' : ''}`} />
-				<ValueGridButton value={-operands[current].value} symbol='±' tooltip='Negate the displayed value' />
-				<ValueGridButton value={operands[current].value / 100} symbol='%' />
-				<OperationGridButton operation={Operation.Divide} symbol='÷' />
-
+				{basicRows[0]}
 				<GridButton symbol={<>2<sup>nd</sup></>} />
 				<GridButton symbol={<>x<sup>2</sup></>} />
 				<GridButton symbol={<>x<sup>3</sup></>} />
 				<GridButton symbol={<>x<sup>y</sup></>} />
 				<GridButton symbol={<>e<sup>x</sup></>} />
 				<GridButton symbol={<>10<sup>x</sup></>} />
-
-				<NumberGridButton number={7} />
-				<NumberGridButton number={8} />
-				<NumberGridButton number={9} />
-				<OperationGridButton operation={Operation.Multiply} symbol='×' />
-
+				{basicRows[1]}
 				<GridButton symbol={<><sup>1</sup>⁄<sub>x</sub></>} />
 				<GridButton symbol={<><sup>2</sup>√x</>} />
 				<GridButton symbol={<><sup>3</sup>√x</>} />
 				<GridButton symbol={<><sup>y</sup>√x</>} />
 				<GridButton symbol='ln' />
 				<GridButton symbol={<>log<sub>10</sub></>} />
-
-				<NumberGridButton number={4} />
-				<NumberGridButton number={5} />
-				<NumberGridButton number={6} />
-				<OperationGridButton operation={Operation.Add} symbol='+' />
-
+				{basicRows[2]}
 				<GridButton symbol='x!' />
 				<GridButton symbol='sin' />
 				<GridButton symbol='cos' />
 				<GridButton symbol='tan' />
 				<GridButton symbol='e' />
 				<GridButton symbol='EE' />
-
-				<NumberGridButton number={1} />
-				<NumberGridButton number={2} />
-				<NumberGridButton number={3} />
-				<OperationGridButton operation={Operation.Subtract} symbol='−' />
-
+				{basicRows[3]}
 				<GridButton symbol='Rad' />
 				<GridButton symbol='sinh' />
 				<GridButton symbol='cosh' />
 				<GridButton symbol='tanh' />
 				<GridButton symbol='π' />
 				<GridButton symbol='Rand' />
-
-				<NumberGridButton number={0} colSpan={2} />
-				<GridButton symbol='.' />
-				<GridButton onClick={() => resetDisplay((() => {
-					switch (operation) {
-					case Operation.Add: return operands[0].value + operands[1].value
-					case Operation.Subtract: return operands[0].value - operands[1].value
-					case Operation.Multiply: return operands[0].value * operands[1].value
-					case Operation.Divide: return operands[0].value / operands[1].value
-					}
-				})())} symbol='=' />
+				{basicRows[4]}
 			</>),
 			createView(7, null)
 		]
