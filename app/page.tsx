@@ -17,12 +17,28 @@ const operands = (() => {
 	return [createOperand(), createOperand()]
 })()
 
-const operations = [() => operands[0].value + operands[1].value, () => operands[0].value - operands[1].value, () => operands[0].value * operands[1].value, () => operands[0].value / operands[1].value]
+const operations = [
+	{
+		function: () => operands[0].value + operands[1].value,
+		symbol: '+'
+	},
+	{
+		function: () => operands[0].value - operands[1].value,
+		symbol: '-'
+	},
+	{
+		function: () => operands[0].value * operands[1].value,
+		symbol: '*'
+	},
+	{
+		function: () => operands[0].value / operands[1].value,
+		symbol: '/'
+	}
+]
 
 let operand = 0
 let operation = 0
 let paperTapeKey = 0
-
 
 function setOperand(newOperand) {
 	operand = newOperand
@@ -78,7 +94,6 @@ export default function() {
 	const [view, setView] = useState('0')
 	const [paperTapeHistory, setPaperTapeHistory] = useState([])
 
-
 	const views = (() => {
 		function createView(columnCount, component) {
 			return { columnCount, component }
@@ -122,13 +137,16 @@ export default function() {
 				<NumberGridButton number={0} colSpan={2} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
 				<GridButton symbol='.' />
 				<GridButton onClick={() => {
-					const value = operations[operation]()
+					const value = operations[operation].function()
 
 					setPaperTapeHistory([...paperTapeHistory, {
-						expression: `${operands[0].value} + ${operands[1].value}`,
+						operands: [...operands.map(operand => operand.value)],
+						operation,
 						value,
-						key: paperTapeKey++
+						key: paperTapeKey
 					}])
+
+					paperTapeKey += 1
 
 					resetDisplay(value)
 				}} symbol='=' />
@@ -249,11 +267,11 @@ export default function() {
 				<Box style={{ overflowY: 'scroll', maxHeight: '200px' }}>
 					{paperTapeHistory.map(entry => <Fragment key={entry.key}>
 						<Text>
-							{entry.expression}
+							{`${entry.operands[0]} ${operations[entry.operation].symbol} ${entry.operands[1]}`}
 						</Text>
 
 						<Text>
-							= {entry.value}
+							{`= ${entry.value}`}
 						</Text>
 
 						<br />
