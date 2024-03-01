@@ -1,7 +1,13 @@
 'use client'
 
-import { Box, Button, ChakraProvider, Checkbox, Divider, Grid, GridItem, Menu, MenuButton, MenuDivider, MenuItemOption, MenuList, MenuOptionGroup, Popover, PopoverBody, PopoverContent, PopoverTrigger, Radio, RadioGroup, Stack, Text, Tooltip } from '@chakra-ui/react'
+import { Box, Button, ChakraProvider, Checkbox, Divider, Grid, GridItem, Heading, Menu, MenuButton, MenuDivider, MenuItemOption, MenuList, MenuOptionGroup, Popover, PopoverBody, PopoverContent, PopoverTrigger, Radio, RadioGroup, Stack, Text, Tooltip } from '@chakra-ui/react'
 import { useState } from 'react'
+
+// the only raw 'number' that should be stored in memory is the initial number
+// when an operation is selected, a new calculation is added to the stack
+// this calculation has a value, and a function that returns a value based on a parameter and its value
+// additionally, when an operation is selected, there should be a precendence (order of operations)
+// depending on precedence, the stack should be executed and cleared
 
 const operands = (() => {
 	function createOperand() {
@@ -11,19 +17,53 @@ const operands = (() => {
 	return [createOperand(), createOperand()]
 })()
 
-const operations = [
-	() => operands[0].value + operands[1].value,
-	() => operands[0].value - operands[1].value,
-	() => operands[0].value * operands[1].value,
-	() => operands[0].value / operands[1].value
-]
+const operations = [() => operands[0].value + operands[1].value, () => operands[0].value - operands[1].value, () => operands[0].value * operands[1].value, () => operands[0].value / operands[1].value]
 
-let operation = 0
 let operand = 0
+let operation = 0
 
 function setOperand(newOperand) {
 	operand = newOperand
 	operands[operand].canOverwrite = true
+}
+
+function setOperandValue(value, setDisplay) {
+	operands[operand].value = value
+	setDisplay(value)
+}
+
+function GridButton({ children, colSpan, tooltip, onClick, symbol }) {
+	return <GridItem colSpan={colSpan}>
+		<Tooltip label={tooltip} openDelay={1000}>
+			<Button style={{ width: '100%' }} onClick={onClick}>
+				{symbol}
+			</Button>
+		</Tooltip>
+	</GridItem>
+}
+
+function NumberGridButton({ colSpan, number, setDisplay, setShouldClearAll }) {
+	return <GridButton symbol={number} colSpan={colSpan} onClick={() => {
+		if (operands[operand].canOverwrite) {
+			operands[operand].value = 0
+			operands[operand].canOverwrite = false
+		}
+
+		setOperandValue(operands[operand].value * 10 + number, setDisplay)
+		setShouldClearAll(false)
+	}} />
+}
+
+function OperationGridButton({ operation: newOperation, symbol, setDisplay }) {
+	return <GridButton symbol={symbol} onClick={() => {
+		operation = newOperation
+		setOperand(1)
+		setOperandValue(operands[0].value, setDisplay)
+	}} />
+}
+
+function ValueGridButton({ value, symbol, tooltip, setDisplay }) {
+	return <GridButton symbol={symbol} tooltip={tooltip} onClick={() => setOperandValue(value, setDisplay)} />
 }
 
 export default function() {
@@ -34,6 +74,7 @@ export default function() {
 	const [isShowingPaperTape, setIsShowingPaperTape] = useState(false)
 	const [decimalPlaces, setDecimalPlaces] = useState('15')
 	const [view, setView] = useState('0')
+	const [paperTapeHistory, setPaperTapeHistory] = useState([])
 
 	const views = (() => {
 		function createView(columnCount, component) {
@@ -48,36 +89,45 @@ export default function() {
 						operation = 0
 						resetDisplay(0)
 					} else {
-						setOperandValue(0)
+						setOperandValue(0, setDisplay)
 						setShouldClearAll(true)
 					}
 				}} symbol={shouldClearAll ? 'AC' : 'C'} tooltip={`Clear${shouldClearAll ? ' All' : ''}`} />
-				<ValueGridButton value={-operands[operand].value} symbol='±' tooltip='Negate the displayed value' />
-				<ValueGridButton value={operands[operand].value / 100} symbol='%' />
-				<OperationGridButton operation={3} symbol='÷' />
+				<ValueGridButton value={-operands[operand].value} symbol='±' tooltip='Negate the displayed value' setDisplay={setDisplay} />
+				<ValueGridButton value={operands[operand].value / 100} symbol='%' setDisplay={setDisplay} />
+				<OperationGridButton operation={3} symbol='÷' setDisplay={setDisplay} />
 			</>,
 			<>
-				<NumberGridButton number={7} />
-				<NumberGridButton number={8} />
-				<NumberGridButton number={9} />
-				<OperationGridButton operation={2} symbol='×' />
+				<NumberGridButton number={7} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+				<NumberGridButton number={8} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+				<NumberGridButton number={9} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+				<OperationGridButton operation={2} symbol='×' setDisplay={setDisplay} />
 			</>,
 			<>
-				<NumberGridButton number={4} />
-				<NumberGridButton number={5} />
-				<NumberGridButton number={6} />
-				<OperationGridButton operation={1} symbol='−' />
+				<NumberGridButton number={4} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+				<NumberGridButton number={5} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+				<NumberGridButton number={6} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+				<OperationGridButton operation={1} symbol='−' setDisplay={setDisplay} />
 			</>,
 			<>
-				<NumberGridButton number={1} />
-				<NumberGridButton number={2} />
-				<NumberGridButton number={3} />
-				<OperationGridButton operation={0} symbol='+' />
+				<NumberGridButton number={1} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+				<NumberGridButton number={2} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+				<NumberGridButton number={3} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+				<OperationGridButton operation={0} symbol='+' setDisplay={setDisplay} />
 			</>,
 			<>
-				<NumberGridButton number={0} colSpan={2} />
+				<NumberGridButton number={0} colSpan={2} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
 				<GridButton symbol='.' />
-				<GridButton onClick={() => resetDisplay(operations[operation]())} symbol='=' />
+				<GridButton onClick={() => {
+					const value = operations[operation]()
+
+					setPaperTapeHistory([...paperTapeHistory, {
+						expression: `${operands[0].value} + ${operands[1].value}`,
+						value
+					}])
+
+					resetDisplay(value)
+				}} symbol='=' />
 			</>
 		]
 	
@@ -130,61 +180,20 @@ export default function() {
 		]
 	})()
 
-	function setOperandValue(value) {
-		operands[operand].value = value
-		setDisplay(value)
-	}
-
 	function resetDisplay(value) {
 		setOperand(0)
-		setOperandValue(value)
-	}
-
-	function GridButton({ children, colSpan, tooltip, onClick, symbol }) {
-		return (
-			<GridItem colSpan={colSpan}>
-				<Tooltip label={tooltip} openDelay={1000}>
-					<Button style={{ width: '100%' }} onClick={onClick}>{symbol}</Button>
-				</Tooltip>
-			</GridItem>
-		)
-	}
-
-	function NumberGridButton({ colSpan, number }) {
-		return (
-			<GridButton onClick={() => {
-				if (operands[operand].canOverwrite) {
-					operands[operand].value = 0
-					operands[operand].canOverwrite = false
-				}
-
-				setOperandValue(operands[operand].value * 10 + number)
-				setShouldClearAll(false)
-			}} symbol={number} colSpan={colSpan} />
-		)
-	}
-
-	function OperationGridButton({ operation: newOperation, symbol }) {
-		return (
-			<GridButton onClick={() => {
-				operation = newOperation
-				setOperand(1)
-			}} symbol={symbol} />
-		)
-	}
-
-	function ValueGridButton({ value, symbol, tooltip }) {
-		return (
-			<GridButton onClick={() => setOperandValue(value)} symbol={symbol} tooltip={tooltip} />
-		)
+		setOperandValue(value, setDisplay)
 	}
 
 	return (
 		<ChakraProvider>
 			<Popover>
 				<PopoverTrigger>
-					<Button>View</Button>
+					<Button>
+						View
+					</Button>
 				</PopoverTrigger>
+
 				<PopoverContent>
 					<PopoverBody>
 						<Stack>
@@ -195,24 +204,57 @@ export default function() {
 									<Radio value='2'>Programmer</Radio>
 								</Stack>
 							</RadioGroup>
+
 							<Divider />
-							<Checkbox isChecked={isShowingSeparators} onChange={({ target: { checked } }) => setIsShowingSeparators(checked)}>Show Thousands Separators</Checkbox>
+
+							<Checkbox isChecked={isShowingSeparators} onChange={({ target: { checked } }) => setIsShowingSeparators(checked)}>
+								Show Thousands Separators
+							</Checkbox>
+
 							<Divider />
-							<Checkbox isChecked={isRPNMode} onChange={({ target: { checked } }) => setIsRPNMode(checked)}>RPN Mode</Checkbox>
+
+							<Checkbox isChecked={isRPNMode} onChange={({ target: { checked } }) => setIsRPNMode(checked)}>
+								RPN Mode
+							</Checkbox>
+
 							<Divider />
-							<Checkbox isChecked={isShowingPaperTape} onChange={({ target: { checked } }) => setIsShowingPaperTape(checked)}>Paper Tape</Checkbox>
+
+							<Checkbox isChecked={isShowingPaperTape} onChange={({ target: { checked } }) => setIsShowingPaperTape(checked)}>
+								Paper Tape
+							</Checkbox>
 						</Stack>
 					</PopoverBody>
 				</PopoverContent>
 			</Popover>
 
 			<Box style={{ width: 'max-content', margin: 'auto' }}>
-				<Text style={{ fontSize: '200%', textAlign: 'right' }}>{isShowingSeparators ? display.toLocaleString() : display}</Text>
+				<Text style={{ fontSize: '200%', textAlign: 'right' }}>
+					{isShowingSeparators ? display.toLocaleString() : display}
+				</Text>
 
 				<Grid templateColumns={`repeat(${views[view].columnCount}, 1fr)`} style={{ width: '100%' }}>
 					{views[view].component}
 				</Grid>
 			</Box>
+
+			{isShowingPaperTape ? <>
+				<Heading>
+					Paper Tape
+				</Heading>
+
+				<Button onClick={() => setPaperTapeHistory([])}>
+					Clear
+				</Button>
+
+				<Box style={{ overflowY: 'scroll', maxHeight: '200px' }}>
+					{paperTapeHistory.map(entry => {
+						return <Box>
+							<Text>{entry.expression}</Text>
+							<Text>= {entry.value}</Text>
+						</Box>
+					})}
+				</Box>
+			</> : null}
 		</ChakraProvider>
 	)
 }
