@@ -17,24 +17,18 @@ const operands = (() => {
 	return [createOperand(), createOperand()]
 })()
 
-const operations = [
-	{
-		function: () => operands[0].value + operands[1].value,
-		symbol: '+'
-	},
-	{
-		function: () => operands[0].value - operands[1].value,
-		symbol: '-'
-	},
-	{
-		function: () => operands[0].value * operands[1].value,
-		symbol: '*'
-	},
-	{
-		function: () => operands[0].value / operands[1].value,
-		symbol: '/'
+const operations = (() => {
+	function createOperation(symbol, func) {
+		return { function: func, symbol }
 	}
-]
+
+	return [
+		createOperation('+', () => operands[0].value + operands[1].value),
+		createOperation('-', () => operands[0].value - operands[1].value),
+		createOperation('*', () => operands[0].value * operands[1].value),
+		createOperation('/', () => operands[0].value / operands[1].value),
+	]
+})()
 
 let operand = 0
 let operation = 0
@@ -249,12 +243,12 @@ export default function() {
 				</PopoverContent>
 			</Popover>
 
-			<Box style={{ width: 'max-content', margin: 'auto' }}>
-				<Text style={{ fontSize: '200%', textAlign: 'right' }}>
+			<Box style={{ margin: 'auto', maxWidth: 'min-content' }}>
+				<Text style={{ textAlign: 'right' }}>
 					{isShowingSeparators ? display.toLocaleString() : display}
 				</Text>
 
-				<Grid templateColumns={`repeat(${views[view].columnCount}, 1fr)`} style={{ width: '100%' }}>
+				<Grid templateColumns={`repeat(${views[view].columnCount}, 72px)`}>
 					{views[view].component}
 				</Grid>
 			</Box>
