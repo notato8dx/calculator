@@ -1,7 +1,7 @@
 'use client'
 
 import { Box, Button, ChakraProvider, Checkbox, Divider, Grid, GridItem, Heading, Menu, MenuButton, MenuDivider, MenuItemOption, MenuList, MenuOptionGroup, Popover, PopoverBody, PopoverContent, PopoverTrigger, Radio, RadioGroup, Stack, Text, Tooltip } from '@chakra-ui/react'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 
 // the only raw 'number' that should be stored in memory is the initial number
 // when an operation is selected, a new calculation is added to the stack
@@ -21,6 +21,8 @@ const operations = [() => operands[0].value + operands[1].value, () => operands[
 
 let operand = 0
 let operation = 0
+let paperTapeKey = 0
+
 
 function setOperand(newOperand) {
 	operand = newOperand
@@ -76,6 +78,7 @@ export default function() {
 	const [view, setView] = useState('0')
 	const [paperTapeHistory, setPaperTapeHistory] = useState([])
 
+
 	const views = (() => {
 		function createView(columnCount, component) {
 			return { columnCount, component }
@@ -123,7 +126,8 @@ export default function() {
 
 					setPaperTapeHistory([...paperTapeHistory, {
 						expression: `${operands[0].value} + ${operands[1].value}`,
-						value
+						value,
+						key: paperTapeKey++
 					}])
 
 					resetDisplay(value)
@@ -242,18 +246,23 @@ export default function() {
 					Paper Tape
 				</Heading>
 
+				<Box style={{ overflowY: 'scroll', maxHeight: '200px' }}>
+					{paperTapeHistory.map(entry => <Fragment key={entry.key}>
+						<Text>
+							{entry.expression}
+						</Text>
+
+						<Text>
+							= {entry.value}
+						</Text>
+
+						<br />
+					</Fragment>)}
+				</Box>
+
 				<Button onClick={() => setPaperTapeHistory([])}>
 					Clear
 				</Button>
-
-				<Box style={{ overflowY: 'scroll', maxHeight: '200px' }}>
-					{paperTapeHistory.map(entry => {
-						return <Box>
-							<Text>{entry.expression}</Text>
-							<Text>= {entry.value}</Text>
-						</Box>
-					})}
-				</Box>
 			</> : null}
 		</ChakraProvider>
 	)
