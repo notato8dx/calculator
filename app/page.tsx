@@ -20,119 +20,117 @@ export default function Calculator() {
 	const [view, setView] = useState('0')
 	const [paperTapeHistory, setPaperTapeHistory] = useState([])
 
-	const views = (() => {
-		function createView(columnCount, component) {
-			return { columnCount, component }
-		}
+	function createView(columnCount, component) {
+		return { columnCount, component }
+	}
 
-		const basicRows = [
-			<>
-				<GridButton onClick={() => {
-					if (shouldClearAll) {
-						operands[1].value = 0
-						setOperation(0)
-						resetDisplay(0)
-					} else {
-						operands[operand].value = 0
+	const basicRows = [
+		<>
+			<GridButton onClick={() => {
+				if (shouldClearAll) {
+					operands[1].value = 0
+					setOperation(0)
+					resetDisplay(0)
+				} else {
+					operands[operand].value = 0
 
-						if (operands[operand].canOverwrite) {
-							setOperand(0)
-						}
-						
-						setDisplay(operands[operand].value)
-						setShouldClearAll(true)
+					if (operands[operand].canOverwrite) {
+						setOperand(0)
 					}
-				}} symbol={`${shouldClearAll ? 'A' : ''}C`} tooltip={`Clear${shouldClearAll ? ' All' : ''}`} />
-				<ValueGridButton value={-operands[operand].value} symbol='±' tooltip='Negate the displayed value' setDisplay={setDisplay} />
-				<ValueGridButton value={operands[operand].value / 100} symbol='%' setDisplay={setDisplay} />
-				<OperationGridButton operation={3} symbol='÷' setDisplay={setDisplay} />
-			</>,
-			<>
-				<NumberGridButton number={7} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-				<NumberGridButton number={8} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-				<NumberGridButton number={9} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-				<OperationGridButton operation={2} symbol='×' setDisplay={setDisplay} />
-			</>,
-			<>
-				<NumberGridButton number={4} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-				<NumberGridButton number={5} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-				<NumberGridButton number={6} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-				<OperationGridButton operation={1} symbol='−' setDisplay={setDisplay} />
-			</>,
-			<>
-				<NumberGridButton number={1} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-				<NumberGridButton number={2} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-				<NumberGridButton number={3} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-				<OperationGridButton operation={0} symbol='+' setDisplay={setDisplay} />
-			</>,
-			<>
-				<NumberGridButton number={0} colSpan={2} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-				<GridButton symbol='.' />
-				<GridButton onClick={() => {
-					const value = operations[operation].function()
+					
+					setDisplay(operands[operand].value)
+					setShouldClearAll(true)
+				}
+			}} symbol={`${shouldClearAll ? 'A' : ''}C`} tooltip={`Clear${shouldClearAll ? ' All' : ''}`} />
+			<ValueGridButton value={-operands[operand].value} symbol='±' tooltip='Negate the displayed value' setDisplay={setDisplay} />
+			<ValueGridButton value={operands[operand].value / 100} symbol='%' setDisplay={setDisplay} />
+			<OperationGridButton operation={3} symbol='÷' setDisplay={setDisplay} />
+		</>,
+		<>
+			<NumberGridButton number={7} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+			<NumberGridButton number={8} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+			<NumberGridButton number={9} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+			<OperationGridButton operation={2} symbol='×' setDisplay={setDisplay} />
+		</>,
+		<>
+			<NumberGridButton number={4} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+			<NumberGridButton number={5} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+			<NumberGridButton number={6} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+			<OperationGridButton operation={1} symbol='−' setDisplay={setDisplay} />
+		</>,
+		<>
+			<NumberGridButton number={1} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+			<NumberGridButton number={2} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+			<NumberGridButton number={3} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+			<OperationGridButton operation={0} symbol='+' setDisplay={setDisplay} />
+		</>,
+		<>
+			<NumberGridButton number={0} colSpan={2} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+			<GridButton symbol='.' />
+			<GridButton onClick={() => {
+				const value = operations[operation].function()
 
-					setPaperTapeHistory([...paperTapeHistory, {
-						operands: [...operands.map(operand => operand.value)],
-						operation,
-						value,
-						key: paperTapeKey
-					}])
+				setPaperTapeHistory([...paperTapeHistory, {
+					operands: [...operands.map(operand => operand.value)],
+					operation,
+					value,
+					key: paperTapeKey
+				}])
 
-					paperTapeKey += 1
+				paperTapeKey += 1
 
-					resetDisplay(value)
-				}} symbol='=' />
-			</>
-		]
-	
-		return [
-			createView(4, <>
-				{basicRows[0]}
-				{basicRows[1]}
-				{basicRows[2]}
-				{basicRows[3]}
-				{basicRows[4]}
-			</>),
-			createView(10, <>
-				<GridButton symbol='(' />
-				<GridButton symbol=')' />
-				<GridButton symbol='mc' />
-				<GridButton symbol='m+' />
-				<GridButton symbol='m−' />
-				<GridButton symbol='mr' />
-				{basicRows[0]}
-				<GridButton symbol={<>2<sup>nd</sup></>} />
-				<GridButton symbol={<>x<sup>2</sup></>} />
-				<GridButton symbol={<>x<sup>3</sup></>} />
-				<GridButton symbol={<>x<sup>y</sup></>} />
-				<GridButton symbol={<>e<sup>x</sup></>} />
-				<GridButton symbol={<>10<sup>x</sup></>} />
-				{basicRows[1]}
-				<GridButton symbol={<><sup>1</sup>⁄<sub>x</sub></>} />
-				<GridButton symbol={<><sup>2</sup>√x</>} />
-				<GridButton symbol={<><sup>3</sup>√x</>} />
-				<GridButton symbol={<><sup>y</sup>√x</>} />
-				<GridButton symbol='ln' />
-				<GridButton symbol={<>log<sub>10</sub></>} />
-				{basicRows[2]}
-				<GridButton symbol='x!' />
-				<GridButton symbol='sin' />
-				<GridButton symbol='cos' />
-				<GridButton symbol='tan' />
-				<GridButton symbol='e' />
-				<GridButton symbol='EE' />
-				{basicRows[3]}
-				<GridButton symbol='Rad' />
-				<GridButton symbol='sinh' />
-				<GridButton symbol='cosh' />
-				<GridButton symbol='tanh' />
-				<GridButton symbol='π' />
-				<GridButton symbol='Rand' />
-				{basicRows[4]}
-			</>),
-			createView(7, null)
-		]
-	})()
+				resetDisplay(value)
+			}} symbol='=' />
+		</>
+	]
+
+	const views = [
+		createView(4, <>
+			{basicRows[0]}
+			{basicRows[1]}
+			{basicRows[2]}
+			{basicRows[3]}
+			{basicRows[4]}
+		</>),
+		createView(10, <>
+			<GridButton symbol='(' />
+			<GridButton symbol=')' />
+			<GridButton symbol='mc' />
+			<GridButton symbol='m+' />
+			<GridButton symbol='m−' />
+			<GridButton symbol='mr' />
+			{basicRows[0]}
+			<GridButton symbol={<>2<sup>nd</sup></>} />
+			<GridButton symbol={<>x<sup>2</sup></>} />
+			<GridButton symbol={<>x<sup>3</sup></>} />
+			<GridButton symbol={<>x<sup>y</sup></>} />
+			<GridButton symbol={<>e<sup>x</sup></>} />
+			<GridButton symbol={<>10<sup>x</sup></>} />
+			{basicRows[1]}
+			<GridButton symbol={<><sup>1</sup>⁄<sub>x</sub></>} />
+			<GridButton symbol={<><sup>2</sup>√x</>} />
+			<GridButton symbol={<><sup>3</sup>√x</>} />
+			<GridButton symbol={<><sup>y</sup>√x</>} />
+			<GridButton symbol='ln' />
+			<GridButton symbol={<>log<sub>10</sub></>} />
+			{basicRows[2]}
+			<GridButton symbol='x!' />
+			<GridButton symbol='sin' />
+			<GridButton symbol='cos' />
+			<GridButton symbol='tan' />
+			<GridButton symbol='e' />
+			<GridButton symbol='EE' />
+			{basicRows[3]}
+			<GridButton symbol='Rad' />
+			<GridButton symbol='sinh' />
+			<GridButton symbol='cosh' />
+			<GridButton symbol='tanh' />
+			<GridButton symbol='π' />
+			<GridButton symbol='Rand' />
+			{basicRows[4]}
+		</>),
+		createView(7, null)
+	]
 
 	function resetDisplay(value) {
 		setOperand(0)

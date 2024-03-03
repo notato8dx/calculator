@@ -1,23 +1,19 @@
-export const operands = (() => {
-	function createOperand() {
-		return { value: 0 }
-	}
+function createOperand() {
+	return { value: 0 }
+}
 
-	return [createOperand(), createOperand()]
-})()
+function createOperation(symbol, func) {
+	return { function: func, symbol }
+}
 
-export const operations = (() => {
-	function createOperation(symbol, func) {
-		return { function: func, symbol }
-	}
+export const operands = [createOperand(), createOperand()]
 
-	return [
-		createOperation('+', () => operands[0].value + operands[1].value),
-		createOperation('-', () => operands[0].value - operands[1].value),
-		createOperation('*', () => operands[0].value * operands[1].value),
-		createOperation('/', () => operands[0].value / operands[1].value)
-	]
-})()
+export const operations = [
+	createOperation('+', () => operands[0].value + operands[1].value),
+	createOperation('-', () => operands[0].value - operands[1].value),
+	createOperation('*', () => operands[0].value * operands[1].value),
+	createOperation('/', () => operands[0].value / operands[1].value)
+]
 
 export let operand = 0
 
