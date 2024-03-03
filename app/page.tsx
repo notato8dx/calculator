@@ -20,6 +20,19 @@ export default function Calculator() {
 	const [view, setView] = useState('0')
 	const [paperTapeHistory, setPaperTapeHistory] = useState([])
 
+	function createNumberRow(numbers) {
+		return numbers.map((number, i) => {
+			return <NumberGridButton number={number} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} key={i} />
+		})
+	}
+
+	function createBasicRow(numbers, operation, operationSymbol) {
+		return <>
+			{createNumberRow(numbers)}
+			<OperationGridButton operation={operation} symbol={operationSymbol} setDisplay={setDisplay} />
+		</>
+	}
+
 	function createView(columnCount, component) {
 		return { columnCount, component }
 	}
@@ -46,24 +59,9 @@ export default function Calculator() {
 			<ValueGridButton value={operands[operand].value / 100} symbol='%' setDisplay={setDisplay} />
 			<OperationGridButton operation={3} symbol='÷' setDisplay={setDisplay} />
 		</>,
-		<>
-			<NumberGridButton number={7} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-			<NumberGridButton number={8} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-			<NumberGridButton number={9} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-			<OperationGridButton operation={2} symbol='×' setDisplay={setDisplay} />
-		</>,
-		<>
-			<NumberGridButton number={4} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-			<NumberGridButton number={5} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-			<NumberGridButton number={6} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-			<OperationGridButton operation={1} symbol='−' setDisplay={setDisplay} />
-		</>,
-		<>
-			<NumberGridButton number={1} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-			<NumberGridButton number={2} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-			<NumberGridButton number={3} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
-			<OperationGridButton operation={0} symbol='+' setDisplay={setDisplay} />
-		</>,
+		createBasicRow([7, 8, 9], 2, '×'),
+		createBasicRow([4, 5, 6], 1, '−'),
+		createBasicRow([1, 2, 3], 0, '+'),
 		<>
 			<NumberGridButton number={0} colSpan={2} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
 			<GridButton symbol='.' />
@@ -151,9 +149,9 @@ export default function Calculator() {
 						<Stack>
 							<RadioGroup onChange={setView} value={view}>
 								<Stack>
-									<Radio value='0'>Basic</Radio>
-									<Radio value='1'>Scientific</Radio>
-									<Radio value='2'>Programmer</Radio>
+									{['Basic', 'Scientific', 'Programmer'].map((view, i) => {
+										return <Radio value={i.toString()} key={i}>{view}</Radio>
+									})}
 								</Stack>
 							</RadioGroup>
 
