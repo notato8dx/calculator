@@ -1,5 +1,5 @@
 function createOperand() {
-	return { value: 0 }
+	return { value: 0, canOverwrite: true }
 }
 
 function createOperation(symbol, func) {

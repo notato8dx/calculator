@@ -36,12 +36,14 @@ export default function App() {
 			<button onClick={() => {
 				if (shouldClearAll) {
 					operands[1].value = 0
+					operands[1].canOverwrite = true
 					setOperation(0)
 					resetDisplay(0)
 				} else {
 					operands[operand].value = 0
 
 					if (operands[operand].canOverwrite) {
+						operands[0].canOverwrite = true
 						setOperand(0)
 					}
 					
@@ -70,7 +72,7 @@ export default function App() {
 				const value = operations[operation].function()
 
 				setPaperTapeHistory([...paperTapeHistory, {
-					operands: [...operands.map(operand => operand.value)],
+					operands: [...operands.map((operand) => { return { ...operand } })],
 					operation,
 					value,
 					key: paperTapeKey
@@ -142,7 +144,9 @@ export default function App() {
 		<div>
 			{['Basic', 'Scientific', 'Programmer'].map((view, i) => {
 				return <div key={i}>
-					<input type='radio' id={view} value={i.toString()} name='view' onChange={(event) => setView(event.target.value)}/>
+					<input type='radio' id={view} value={i.toString()} name='view' onChange={({ target: { value } }) => {
+						setView(value)
+					}}/>
 					<label htmlFor={view}>
 						{view}
 					</label>
@@ -155,7 +159,9 @@ export default function App() {
 				{ label: 'Paper Tape', setValue: setIsShowingPaperTape }
 			].map(({ label, setValue }, i) => {
 				return <div key={i}>
-					<input type='checkbox' value={label} id={label} name={label} onChange={({ target: { checked } }) => setValue(checked)} />
+					<input type='checkbox' value={label} id={label} name={label} onChange={({ target: { checked } }) => {
+						setValue(checked)
+					}} />
 					<label htmlFor={label}>
 						{label}
 					</label>
@@ -173,24 +179,28 @@ export default function App() {
 			</div>
 		</div>
 
-		{isShowingPaperTape ? <>
+		{isShowingPaperTape ? <div>
 			<h1>
 				Paper Tape
 			</h1>
 
 			<div style={{ overflowY: 'scroll', height: '200px' }}>
-				{paperTapeHistory.map(entry => <Fragment key={entry.key}>
-					{`${entry.operands[0]} ${operations[entry.operation].symbol} ${entry.operands[1]}`}
-					<br />
-					{`= ${entry.value}`}
-					<br />
-					<br />
-				</Fragment>)}
+				{paperTapeHistory.map((entry) => {
+					return <Fragment key={entry.key}>
+						{`${entry.operands[0].value}${entry.operands[1].canOverwrite && entry.operands[1].value == 0 ? '' : ` ${operations[entry.operation].symbol} ${entry.operands[1].value}`}`}
+						<br />
+						{`= ${entry.value}`}
+						<br />
+						<br />
+					</Fragment>
+				})}
 			</div>
 
-			<button style={{ float: 'right' }} onClick={() => setPaperTapeHistory([])}>
+			<button style={{ float: 'right' }} onClick={() => {
+				setPaperTapeHistory([])
+			}}>
 				Clear
 			</button>
-		</> : null}
+		</div> : null}
 	</>
 }
