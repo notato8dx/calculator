@@ -1,8 +1,5 @@
 import { Fragment, useState } from 'react'
-import GridButton from './GridButton'
-import NumberGridButton from './GridButton/NumberGridButton'
-import OperationGridButton from './GridButton/OperationGridButton'
-import ValueGridButton from './GridButton/ValueGridButton'
+import { NumberButton, OperationButton, ValueButton } from './buttons'
 import { operand, operands, operation, operations, setOperand, setOperandValue, setOperation } from './state'
 
 let paperTapeKey = 0
@@ -19,14 +16,14 @@ export default function App() {
 
 	function createNumberRow(numbers) {
 		return numbers.map((number, i) => {
-			return <NumberGridButton number={number} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} key={i} />
+			return <NumberButton number={number} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} key={i} />
 		})
 	}
 
 	function createBasicRow(numbers, operation, operationSymbol) {
 		return <>
 			{createNumberRow(numbers)}
-			<OperationGridButton operation={operation} symbol={operationSymbol} setDisplay={setDisplay} />
+			<OperationButton operation={operation} symbol={operationSymbol} setDisplay={setDisplay} />
 		</>
 	}
 
@@ -36,7 +33,7 @@ export default function App() {
 
 	const basicRows = [
 		<>
-			<GridButton onClick={() => {
+			<button onClick={() => {
 				if (shouldClearAll) {
 					operands[1].value = 0
 					setOperation(0)
@@ -51,18 +48,25 @@ export default function App() {
 					setDisplay(operands[operand].value)
 					setShouldClearAll(true)
 				}
-			}} symbol={`${shouldClearAll ? 'A' : ''}C`} tooltip={`Clear${shouldClearAll ? ' All' : ''}`} />
-			<ValueGridButton value={-operands[operand].value} symbol='±' tooltip='Negate the displayed value' setDisplay={setDisplay} />
-			<ValueGridButton value={operands[operand].value / 100} symbol='%' setDisplay={setDisplay} />
-			<OperationGridButton operation={3} symbol='÷' setDisplay={setDisplay} />
+			}} tooltip={`Clear${shouldClearAll ? ' All' : ''}`}>
+				{`${shouldClearAll ? 'A' : ''}C`}
+			</button>
+
+			<ValueButton value={-operands[operand].value} symbol='±' tooltip='Negate the displayed value' setDisplay={setDisplay} />
+			<ValueButton value={operands[operand].value / 100} symbol='%' setDisplay={setDisplay} />
+			<OperationButton operation={3} symbol='÷' setDisplay={setDisplay} />
 		</>,
 		createBasicRow([7, 8, 9], 2, '×'),
 		createBasicRow([4, 5, 6], 1, '−'),
 		createBasicRow([1, 2, 3], 0, '+'),
 		<>
-			<NumberGridButton number={0} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} style={{ gridColumn: 'span 2' }} />
-			<GridButton symbol='.' />
-			<GridButton onClick={() => {
+			<NumberButton number={0} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} style={{ gridColumn: 'span 2' }} />
+
+			<button>
+				.
+			</button>
+
+			<button onClick={() => {
 				const value = operations[operation].function()
 
 				setPaperTapeHistory([...paperTapeHistory, {
@@ -75,7 +79,9 @@ export default function App() {
 				paperTapeKey += 1
 
 				resetDisplay(value)
-			}} symbol='=' />
+			}}>
+				=
+			</button>
 		</>
 	]
 
@@ -88,40 +94,40 @@ export default function App() {
 			{basicRows[4]}
 		</>),
 		createView(10, <>
-			<GridButton symbol='(' />
-			<GridButton symbol=')' />
-			<GridButton symbol='mc' />
-			<GridButton symbol='m+' />
-			<GridButton symbol='m−' />
-			<GridButton symbol='mr' />
+			<button symbol='(' />
+			<button symbol=')' />
+			<button symbol='mc' />
+			<button symbol='m+' />
+			<button symbol='m−' />
+			<button symbol='mr' />
 			{basicRows[0]}
-			<GridButton symbol={<>2<sup>nd</sup></>} />
-			<GridButton symbol={<>x<sup>2</sup></>} />
-			<GridButton symbol={<>x<sup>3</sup></>} />
-			<GridButton symbol={<>x<sup>y</sup></>} />
-			<GridButton symbol={<>e<sup>x</sup></>} />
-			<GridButton symbol={<>10<sup>x</sup></>} />
+			<button symbol={<>2<sup>nd</sup></>} />
+			<button symbol={<>x<sup>2</sup></>} />
+			<button symbol={<>x<sup>3</sup></>} />
+			<button symbol={<>x<sup>y</sup></>} />
+			<button symbol={<>e<sup>x</sup></>} />
+			<button symbol={<>10<sup>x</sup></>} />
 			{basicRows[1]}
-			<GridButton symbol={<><sup>1</sup>⁄<sub>x</sub></>} />
-			<GridButton symbol={<><sup>2</sup>√x</>} />
-			<GridButton symbol={<><sup>3</sup>√x</>} />
-			<GridButton symbol={<><sup>y</sup>√x</>} />
-			<GridButton symbol='ln' />
-			<GridButton symbol={<>log<sub>10</sub></>} />
+			<button symbol={<><sup>1</sup>⁄<sub>x</sub></>} />
+			<button symbol={<><sup>2</sup>√x</>} />
+			<button symbol={<><sup>3</sup>√x</>} />
+			<button symbol={<><sup>y</sup>√x</>} />
+			<button symbol='ln' />
+			<button symbol={<>log<sub>10</sub></>} />
 			{basicRows[2]}
-			<GridButton symbol='x!' />
-			<GridButton symbol='sin' />
-			<GridButton symbol='cos' />
-			<GridButton symbol='tan' />
-			<GridButton symbol='e' />
-			<GridButton symbol='EE' />
+			<button symbol='x!' />
+			<button symbol='sin' />
+			<button symbol='cos' />
+			<button symbol='tan' />
+			<button symbol='e' />
+			<button symbol='EE' />
 			{basicRows[3]}
-			<GridButton symbol='Rad' />
-			<GridButton symbol='sinh' />
-			<GridButton symbol='cosh' />
-			<GridButton symbol='tanh' />
-			<GridButton symbol='π' />
-			<GridButton symbol='Rand' />
+			<button symbol='Rad' />
+			<button symbol='sinh' />
+			<button symbol='cosh' />
+			<button symbol='tanh' />
+			<button symbol='π' />
+			<button symbol='Rand' />
 			{basicRows[4]}
 		</>),
 		createView(7, null)
