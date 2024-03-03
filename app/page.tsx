@@ -2,81 +2,13 @@
 
 import { Box, Button, ChakraProvider, Checkbox, Divider, Grid, GridItem, Heading, Menu, MenuButton, MenuDivider, MenuItemOption, MenuList, MenuOptionGroup, Popover, PopoverBody, PopoverContent, PopoverTrigger, Radio, RadioGroup, Stack, Text, Tooltip } from '@chakra-ui/react'
 import { Fragment, useState } from 'react'
+import GridButton from './GridButton'
+import NumberGridButton from './GridButton/NumberGridButton'
+import OperationGridButton from './GridButton/OperationGridButton'
+import ValueGridButton from './GridButton/ValueGridButton'
+import { operand, operands, operation, operations, setOperand, setOperandValue, setOperation } from './state'
 
-// the only raw 'number' that should be stored in memory is the initial number
-// when an operation is selected, a new calculation is added to the stack
-// this calculation has a value, and a function that returns a value based on a parameter and its value
-// additionally, when an operation is selected, there should be a precendence (order of operations)
-// depending on precedence, the stack should be executed and cleared
-
-const operands = (() => {
-	function createOperand() {
-		return { value: 0 }
-	}
-
-	return [createOperand(), createOperand()]
-})()
-
-const operations = (() => {
-	function createOperation(symbol, func) {
-		return { function: func, symbol }
-	}
-
-	return [
-		createOperation('+', () => operands[0].value + operands[1].value),
-		createOperation('-', () => operands[0].value - operands[1].value),
-		createOperation('*', () => operands[0].value * operands[1].value),
-		createOperation('/', () => operands[0].value / operands[1].value)
-	]
-})()
-
-let operand = 0
-let operation = 0
 let paperTapeKey = 0
-
-function setOperand(newOperand) {
-	operand = newOperand
-	operands[operand].canOverwrite = true
-}
-
-function setOperandValue(value, setDisplay) {
-	operands[operand].value = value
-	setDisplay(value)
-}
-
-function GridButton({ children, colSpan, tooltip, onClick, symbol }) {
-	return <GridItem colSpan={colSpan}>
-		<Tooltip label={tooltip} openDelay={1000}>
-			<Button style={{ width: '100%' }} onClick={onClick}>
-				{symbol}
-			</Button>
-		</Tooltip> 
-	</GridItem>
-}
-
-function NumberGridButton({ colSpan, number, setDisplay, setShouldClearAll }) {
-	return <GridButton symbol={number} colSpan={colSpan} onClick={() => {
-		if (operands[operand].canOverwrite) {
-			operands[operand].value = 0
-			operands[operand].canOverwrite = false
-		}
-
-		setOperandValue(operands[operand].value * 10 + number, setDisplay)
-		setShouldClearAll(false)
-	}} />
-}
-
-function OperationGridButton({ operation: newOperation, symbol, setDisplay }) {
-	return <GridButton symbol={symbol} onClick={() => {
-		operation = newOperation
-		setOperand(1)
-		setOperandValue(operands[0].value, setDisplay)
-	}} />
-}
-
-function ValueGridButton({ value, symbol, tooltip, setDisplay }) {
-	return <GridButton symbol={symbol} tooltip={tooltip} onClick={() => setOperandValue(value, setDisplay)} />
-}
 
 export default function Calculator() {
 	const [display, setDisplay] = useState(0)
@@ -98,7 +30,7 @@ export default function Calculator() {
 				<GridButton onClick={() => {
 					if (shouldClearAll) {
 						operands[1].value = 0
-						operation = 0
+						setOperation(0)
 						resetDisplay(0)
 					} else {
 						operands[operand].value = 0
