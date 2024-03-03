@@ -26,7 +26,7 @@ const operations = (() => {
 		createOperation('+', () => operands[0].value + operands[1].value),
 		createOperation('-', () => operands[0].value - operands[1].value),
 		createOperation('*', () => operands[0].value * operands[1].value),
-		createOperation('/', () => operands[0].value / operands[1].value),
+		createOperation('/', () => operands[0].value / operands[1].value)
 	]
 })()
 
@@ -50,7 +50,7 @@ function GridButton({ children, colSpan, tooltip, onClick, symbol }) {
 			<Button style={{ width: '100%' }} onClick={onClick}>
 				{symbol}
 			</Button>
-		</Tooltip>
+		</Tooltip> 
 	</GridItem>
 }
 
@@ -78,7 +78,7 @@ function ValueGridButton({ value, symbol, tooltip, setDisplay }) {
 	return <GridButton symbol={symbol} tooltip={tooltip} onClick={() => setOperandValue(value, setDisplay)} />
 }
 
-export default function() {
+export default function Calculator() {
 	const [display, setDisplay] = useState(0)
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
@@ -101,10 +101,16 @@ export default function() {
 						operation = 0
 						resetDisplay(0)
 					} else {
-						setOperandValue(0, setDisplay)
+						operands[operand].value = 0
+
+						if (operands[operand].canOverwrite) {
+							setOperand(0)
+						}
+						
+						setDisplay(operands[operand].value)
 						setShouldClearAll(true)
 					}
-				}} symbol={shouldClearAll ? 'AC' : 'C'} tooltip={`Clear${shouldClearAll ? ' All' : ''}`} />
+				}} symbol={`${shouldClearAll ? 'A' : ''}C`} tooltip={`Clear${shouldClearAll ? ' All' : ''}`} />
 				<ValueGridButton value={-operands[operand].value} symbol='±' tooltip='Negate the displayed value' setDisplay={setDisplay} />
 				<ValueGridButton value={operands[operand].value / 100} symbol='%' setDisplay={setDisplay} />
 				<OperationGridButton operation={3} symbol='÷' setDisplay={setDisplay} />
@@ -248,7 +254,7 @@ export default function() {
 					{isShowingSeparators ? display.toLocaleString() : display}
 				</Text>
 
-				<Grid templateColumns={`repeat(${views[view].columnCount}, 72px)`}>
+				<Grid templateColumns={`repeat(${views[view].columnCount}, 72px)`} style={{ gap: '2px' }}>
 					{views[view].component}
 				</Grid>
 			</Box>
@@ -258,7 +264,7 @@ export default function() {
 					Paper Tape
 				</Heading>
 
-				<Box style={{ overflowY: 'scroll', maxHeight: '200px' }}>
+				<Box style={{ overflowY: 'scroll', height: '200px' }}>
 					{paperTapeHistory.map(entry => <Fragment key={entry.key}>
 						<Text>
 							{`${entry.operands[0]} ${operations[entry.operation].symbol} ${entry.operands[1]}`}
@@ -272,7 +278,7 @@ export default function() {
 					</Fragment>)}
 				</Box>
 
-				<Button onClick={() => setPaperTapeHistory([])}>
+				<Button style={{ float: 'right' }} onClick={() => setPaperTapeHistory([])}>
 					Clear
 				</Button>
 			</> : null}
