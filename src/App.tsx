@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { NumberButton, OperationButton, ValueButton } from './buttons'
 import { operand, operands, operation, operations, setOperand, setOperandValue, setOperation } from './state'
 
@@ -13,6 +13,11 @@ export default function App() {
 	//const [decimalPlaces, setDecimalPlaces] = useState('15')
 	const [view, setView] = useState('0')
 	const [paperTapeHistory, setPaperTapeHistory] = useState([])
+	const paperTapeRef = useRef(null)
+
+	useEffect(() => {
+		paperTapeRef.current?.scrollIntoView()
+	}, [paperTapeHistory])
 
 	function createNumberRow(numbers) {
 		return numbers.map((number, i) => {
@@ -144,7 +149,7 @@ export default function App() {
 		<div>
 			{['Basic', 'Scientific', 'Programmer'].map((view, i) => {
 				return <div key={i}>
-					<input type='radio' id={view} value={i.toString()} name='view' onChange={({ target: { value } }) => {
+					<input type='radio' id={view} value={i.toString()} name='view' defaultChecked={i == 0} onChange={({ target: { value } }) => {
 						setView(value)
 					}}/>
 					<label htmlFor={view}>
@@ -174,7 +179,7 @@ export default function App() {
 				{isShowingSeparators ? display.toLocaleString() : display}
 			</p>
 
-			<div style={{ display: 'grid', gridTemplateColumns: `repeat(${views[view].columnCount}, 72px)` }}>
+			<div style={{ display: 'grid', gridTemplateColumns: `repeat(${views[view].columnCount}, auto)` }}>
 				{views[view].component}
 			</div>
 		</div>
@@ -194,6 +199,8 @@ export default function App() {
 						<br />
 					</Fragment>
 				})}
+
+				<div ref={paperTapeRef} />
 			</div>
 
 			<button style={{ float: 'right' }} onClick={() => {
