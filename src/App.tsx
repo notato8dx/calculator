@@ -10,7 +10,7 @@ export default function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [isRPNMode, setIsRPNMode] = useState(false)
 	const [isShowingPaperTape, setIsShowingPaperTape] = useState(false)
-	//const [decimalPlaces, setDecimalPlaces] = useState('15')
+	const [decimalPlaces, setDecimalPlaces] = useState('15')
 	const [view, setView] = useState('0')
 	const [paperTapeHistory, setPaperTapeHistory] = useState([])
 	const paperTapeRef = useRef(null)
@@ -146,40 +146,53 @@ export default function App() {
 	}
 
 	return <>
-		<div>
-			{['Basic', 'Scientific', 'Programmer'].map((view, i) => {
-				return <div key={i}>
-					<input type='radio' id={view} value={i.toString()} name='view' defaultChecked={i == 0} onChange={({ target: { value } }) => {
-						setView(value)
-					}}/>
-					<label htmlFor={view}>
-						{view}
-					</label>
-				</div>
-			})}
+		{['Basic', 'Scientific', 'Programmer'].map((view, i) => {
+			return <div key={i}>
+				<input type='radio' id={view} value={i.toString()} name='view' defaultChecked={i == 0} onChange={({ target: { value } }) => {
+					setView(value)
+				}}/>
 
-			{[
-				{ label: 'Show Thousands Separators', setValue: setIsShowingSeparators },
-				{ label: 'RPN Mode', setValue: setIsRPNMode },
-				{ label: 'Paper Tape', setValue: setIsShowingPaperTape }
-			].map(({ label, setValue }, i) => {
-				return <div key={i}>
-					<input type='checkbox' value={label} id={label} name={label} onChange={({ target: { checked } }) => {
-						setValue(checked)
-					}} />
-					<label htmlFor={label}>
-						{label}
-					</label>
-				</div>
-			})}
+				<label htmlFor={view}>
+					{view}
+				</label>
+			</div>
+		})}
+
+		{[
+			{ label: 'Show Thousands Separators', setValue: setIsShowingSeparators },
+			{ label: 'RPN Mode', setValue: setIsRPNMode },
+			{ label: 'Paper Tape', setValue: setIsShowingPaperTape }
+		].map(({ label, setValue }, i) => {
+			return <div key={i}>
+				<input type='checkbox' value={label} id={label} name={label} onChange={({ target: { checked } }) => {
+					setValue(checked)
+				}} />
+
+				<label htmlFor={label}>
+					{label}
+				</label>
+			</div>
+		})}
+
+		<div>
+			<label for='decimalPlaces'>
+				Decimal Places
+			</label>
+
+			<input type='number' min='0' max='15' defaultValue='15' id='decimalPlaces' onChange={({ target: { value } }) => {
+				setDecimalPlaces(value)
+			}} />
 		</div>
 
 		<div style={{ margin: 'auto', maxWidth: 'min-content' }}>
-			<p style={{ textAlign: 'right' }}>
-				{isShowingSeparators ? display.toLocaleString() : display}
-			</p>
+			<div style={{ textAlign: 'right' }}>
+				{display.toLocaleString(undefined, {
+					maximumFractionDigits: decimalPlaces,
+					useGrouping: isShowingSeparators
+				})}
+			</div>
 
-			<div style={{ display: 'grid', gridTemplateColumns: `repeat(${views[view].columnCount}, auto)` }}>
+			<div style={{ display: 'grid', gridTemplateColumns: `repeat(${views[view].columnCount}, 32px)` }}>
 				{views[view].component}
 			</div>
 		</div>
