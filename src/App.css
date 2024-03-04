@@ -1,0 +1,83 @@
+#root {
+	font-family: sans-serif
+}
+
+#calculator {
+	border: 1px solid rgb(56, 56, 56);
+	color: white;
+	border-radius: 12px;
+	background-color: rgb(56, 56, 56);
+	flex-grow: 1
+}
+
+#display {
+	padding: 0 12px;
+	overflow-x: scroll;
+	text-align: right;
+	font-size: 300%
+}
+
+#buttons {
+	gap: 1px;
+	margin-left: auto;
+	max-width: min-content;
+	display: grid;
+	grid-auto-rows: 48px
+}
+
+#buttons > button {
+	border: none;
+	font-size: 150%;
+	color: inherit
+}
+
+.value-button {
+	background-color: rgb(76, 76, 76)
+}
+
+.value-button:active {
+	background-color: rgb(105, 105, 105)
+}
+
+.number-button {
+	background-color: rgb(105, 105, 105)
+}
+
+.number-button:active {
+	background-color: rgb(165, 165, 165)
+}
+
+.operation-button {
+	background-color: rgb(242, 163, 60)
+}
+
+.operation-button:active {
+	background-color: rgb(192, 129, 46)
+}
+
+.selected {
+	margin: 2px
+}
+
+#zero-button {
+	grid-column: span 2;
+	border-bottom-left-radius: 12px
+}
+
+#equal-button {
+	border-bottom-right-radius: 12px
+}
+
+.panel {
+	padding: 12px;
+	border-radius: 12px;
+	border: 1px solid rgb(56, 56, 56);
+	max-width: max-content
+}
+
+h1 {
+	margin: auto;
+	width: max-content;
+	font-weight: bold;
+	font-size: 100%
+}

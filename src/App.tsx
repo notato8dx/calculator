@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { NumberButton, OperationButton, ValueButton } from './buttons'
 import { operand, operands, operation, operations, setOperand, setOperandValue, setOperation } from './state'
+import './App.css'
 
 let paperTapeKey = 0
 
@@ -38,7 +39,7 @@ export default function App() {
 
 	const basicRows = [
 		<>
-			<button onClick={() => {
+			<button class='value-button' onClick={() => {
 				if (shouldClearAll) {
 					operands[1].value = 0
 					operands[1].canOverwrite = true
@@ -67,13 +68,13 @@ export default function App() {
 		createBasicRow([4, 5, 6], 1, '−'),
 		createBasicRow([1, 2, 3], 0, '+'),
 		<>
-			<NumberButton number={0} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} style={{ gridColumn: 'span 2' }} />
+			<NumberButton id='zero-button' number={0} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
 
-			<button>
+			<button class='number-button'>
 				.
 			</button>
 
-			<button onClick={() => {
+			<button id='equal-button' class='operation-button' onClick={() => {
 				const value = operations[operation].function()
 
 				setPaperTapeHistory([...paperTapeHistory, {
@@ -146,58 +147,69 @@ export default function App() {
 	}
 
 	return <>
-		{['Basic', 'Scientific', 'Programmer'].map((view, i) => {
-			return <div key={i}>
-				<input type='radio' id={view} value={i.toString()} name='view' defaultChecked={i == 0} onChange={({ target: { value } }) => {
-					setView(value)
-				}}/>
-
-				<label htmlFor={view}>
-					{view}
-				</label>
-			</div>
-		})}
-
-		{[
-			{ label: 'Show Thousands Separators', setValue: setIsShowingSeparators },
-			{ label: 'RPN Mode', setValue: setIsRPNMode },
-			{ label: 'Paper Tape', setValue: setIsShowingPaperTape }
-		].map(({ label, setValue }, i) => {
-			return <div key={i}>
-				<input type='checkbox' value={label} id={label} name={label} onChange={({ target: { checked } }) => {
-					setValue(checked)
-				}} />
-
-				<label htmlFor={label}>
-					{label}
-				</label>
-			</div>
-		})}
-
-		<div>
-			<label for='decimalPlaces'>
-				Decimal Places
-			</label>
-
-			<input type='number' min='0' max='15' defaultValue='15' id='decimalPlaces' onChange={({ target: { value } }) => {
-				setDecimalPlaces(value)
-			}} />
-		</div>
-
-		<div style={{ margin: 'auto', maxWidth: 'min-content' }}>
-			<div style={{ textAlign: 'right' }}>
+		<div id='calculator'>
+			<div id='display'>
 				{display.toLocaleString(undefined, {
 					maximumFractionDigits: decimalPlaces,
-					useGrouping: isShowingSeparators
+					useGrouping: isShowingSeparators,
+					signDisplay: 'negative'
 				})}
 			</div>
 
-			<div style={{ display: 'grid', gridTemplateColumns: `repeat(${views[view].columnCount}, 32px)` }}>
+			<div id='buttons' style={{ gridTemplateColumns: `repeat(${views[view].columnCount}, 58px)` }}>
 				{views[view].component}
 			</div>
 		</div>
 
-		{isShowingPaperTape ? <div>
+		<div class='panel'>
+			<h1>
+				Settings
+			</h1>
+
+			{['Basic', 'Scientific', 'Programmer'].map((view, i) => {
+				return <div key={i}>
+					<input type='radio' id={view} value={i.toString()} name='view' defaultChecked={i == 0} onChange={({ target: { value } }) => {
+						setView(value)
+					}}/>
+
+					<label htmlFor={view}>
+						{view}
+					</label>
+				</div>
+			})}
+
+			<hr />
+
+			{[
+				{ label: 'Show Thousands Separators', setValue: setIsShowingSeparators },
+				{ label: 'RPN Mode', setValue: setIsRPNMode },
+				{ label: 'Paper Tape', setValue: setIsShowingPaperTape }
+			].map(({ label, setValue }, i) => {
+				return <Fragment key={i}>
+					<input type='checkbox' value={label} id={label} name={label} onChange={({ target: { checked } }) => {
+						setValue(checked)
+					}} />
+
+					<label htmlFor={label}>
+						{label}
+					</label>
+
+					<hr />
+				</Fragment>
+			})}
+
+			<div>
+				<label for='decimalPlaces'>
+					Decimal Places
+				</label>
+
+				<input type='number' min='0' max='15' defaultValue='15' id='decimalPlaces' onChange={({ target: { value } }) => {
+					setDecimalPlaces(value)
+				}} />
+			</div>
+		</div>
+
+		{isShowingPaperTape ? <div class='panel'>
 			<h1>
 				Paper Tape
 			</h1>
@@ -216,7 +228,7 @@ export default function App() {
 				<div ref={paperTapeRef} />
 			</div>
 
-			<button style={{ float: 'right' }} onClick={() => {
+			<button style={{ display: 'block', marginLeft: 'auto' }} onClick={() => {
 				setPaperTapeHistory([])
 			}}>
 				Clear
