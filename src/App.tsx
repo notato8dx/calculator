@@ -1,11 +1,12 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { NumberButton, OperationButton, ValueButton } from './buttons'
-import { operand, operands, operation, operations, setOperand, setOperandValue, setOperation } from './state'
+import { canOverwrite, operand, operands, operations, setCanOverwrite, setOperand, setOperandValue } from './state'
 import './App.css'
 
 let paperTapeKey = 0
 
 export default function App() {
+	const [operation, setOperation] = useState(0)
 	const [display, setDisplay] = useState(0)
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
@@ -26,10 +27,10 @@ export default function App() {
 		})
 	}
 
-	function createBasicRow(numbers, operation, operationSymbol) {
+	function createBasicRow(numbers, newOperation, operationSymbol) {
 		return <>
 			{createNumberRow(numbers)}
-			<OperationButton operation={operation} symbol={operationSymbol} setDisplay={setDisplay} />
+			<OperationButton currentOperation={operation} operation={newOperation} symbol={operationSymbol} setDisplay={setDisplay} setOperation={setOperation} />
 		</>
 	}
 
@@ -39,30 +40,29 @@ export default function App() {
 
 	const basicRows = [
 		<>
-			<button class='value-button' onClick={() => {
+			<button className='value-button' onClick={() => {
 				if (shouldClearAll) {
-					operands[1].value = 0
-					operands[1].canOverwrite = true
+					operands[1] = 0
+					setCanOverwrite(true)
 					setOperation(0)
 					resetDisplay(0)
 				} else {
-					operands[operand].value = 0
+					operands[operand] = 0
 
-					if (operands[operand].canOverwrite) {
-						operands[0].canOverwrite = true
+					if (canOverwrite) {
 						setOperand(0)
 					}
 					
-					setDisplay(operands[operand].value)
+					setDisplay(operands[operand])
 					setShouldClearAll(true)
 				}
 			}} tooltip={`Clear${shouldClearAll ? ' All' : ''}`}>
 				{`${shouldClearAll ? 'A' : ''}C`}
 			</button>
 
-			<ValueButton value={-operands[operand].value} symbol='±' tooltip='Negate the displayed value' setDisplay={setDisplay} />
-			<ValueButton value={operands[operand].value / 100} symbol='%' setDisplay={setDisplay} />
-			<OperationButton operation={3} symbol='÷' setDisplay={setDisplay} />
+			<ValueButton value={-operands[operand]} symbol='±' tooltip='Negate the displayed value' setDisplay={setDisplay} />
+			<ValueButton value={operands[operand] / 100} symbol='%' setDisplay={setDisplay} />
+			<OperationButton currentOperation={operation} operation={3} symbol='÷' setDisplay={setDisplay} setOperation={setOperation} />
 		</>,
 		createBasicRow([7, 8, 9], 2, '×'),
 		createBasicRow([4, 5, 6], 1, '−'),
@@ -70,15 +70,15 @@ export default function App() {
 		<>
 			<NumberButton id='zero-button' number={0} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
 
-			<button class='number-button'>
+			<button className='number-button'>
 				.
 			</button>
 
-			<button id='equal-button' class='operation-button' onClick={() => {
+			<button id='equal-button' className='operation-button' onClick={() => {
 				const value = operations[operation].function()
 
 				setPaperTapeHistory([...paperTapeHistory, {
-					operands: [...operands.map((operand) => { return { ...operand } })],
+					operands: [...operands],
 					operation,
 					value,
 					key: paperTapeKey
@@ -161,7 +161,7 @@ export default function App() {
 			</div>
 		</div>
 
-		<div class='panel'>
+		<div className='panel'>
 			<h1>
 				Settings
 			</h1>
@@ -199,7 +199,7 @@ export default function App() {
 			})}
 
 			<div>
-				<label for='decimalPlaces'>
+				<label htmlFor='decimalPlaces'>
 					Decimal Places
 				</label>
 
@@ -209,7 +209,7 @@ export default function App() {
 			</div>
 		</div>
 
-		{isShowingPaperTape ? <div class='panel'>
+		{isShowingPaperTape ? <div className='panel'>
 			<h1>
 				Paper Tape
 			</h1>
@@ -217,7 +217,7 @@ export default function App() {
 			<div style={{ overflowY: 'scroll', height: '200px' }}>
 				{paperTapeHistory.map((entry) => {
 					return <Fragment key={entry.key}>
-						{`${entry.operands[0].value}${entry.operands[1].canOverwrite && entry.operands[1].value == 0 ? '' : ` ${operations[entry.operation].symbol} ${entry.operands[1].value}`}`}
+						{`${entry.operands[0]} ${operations[entry.operation].symbol} ${entry.operands[1]}`}
 						<br />
 						{`= ${entry.value}`}
 						<br />
