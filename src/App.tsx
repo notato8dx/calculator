@@ -79,7 +79,7 @@ export default function App() {
 		createBasicRow([4, 5, 6], 1, '−'),
 		createBasicRow([1, 2, 3], 0, '+'),
 		<>
-			<NumberButton id='zero-button' operand={operand} number={0} setOperandValueAndDisplay={setOperandValueAndDisplay} setShouldClearAll={setShouldClearAll} />
+			<NumberButton id='zero-button' className={view == '0' ? 'bottom-left-button' : ''} operand={operand} number={0} setOperandValueAndDisplay={setOperandValueAndDisplay} setShouldClearAll={setShouldClearAll} />
 
 			<button className='number-button'>
 				.
@@ -113,40 +113,40 @@ export default function App() {
 			{basicRows[4]}
 		</>),
 		createView(10, <>
-			<button symbol='(' />
-			<button symbol=')' />
-			<button symbol='mc' />
-			<button symbol='m+' />
-			<button symbol='m−' />
-			<button symbol='mr' />
+			<ValueButton symbol='(' />
+			<ValueButton symbol=')' />
+			<ValueButton symbol='mc' />
+			<ValueButton symbol='m+' />
+			<ValueButton symbol='m−' />
+			<ValueButton symbol='mr' />
 			{basicRows[0]}
-			<button symbol={<>2<sup>nd</sup></>} />
-			<button symbol={<>x<sup>2</sup></>} />
-			<button symbol={<>x<sup>3</sup></>} />
-			<button symbol={<>x<sup>y</sup></>} />
-			<button symbol={<>e<sup>x</sup></>} />
-			<button symbol={<>10<sup>x</sup></>} />
+			<ValueButton symbol={<>2<sup>nd</sup></>} />
+			<ValueButton symbol={<>x<sup>2</sup></>} />
+			<ValueButton symbol={<>x<sup>3</sup></>} />
+			<ValueButton symbol={<>x<sup>y</sup></>} />
+			<ValueButton symbol={<>e<sup>x</sup></>} />
+			<ValueButton symbol={<>10<sup>x</sup></>} />
 			{basicRows[1]}
-			<button symbol={<><sup>1</sup>⁄<sub>x</sub></>} />
-			<button symbol={<><sup>2</sup>√x</>} />
-			<button symbol={<><sup>3</sup>√x</>} />
-			<button symbol={<><sup>y</sup>√x</>} />
-			<button symbol='ln' />
-			<button symbol={<>log<sub>10</sub></>} />
+			<ValueButton symbol={<><sup>1</sup>⁄<sub>x</sub></>} />
+			<ValueButton symbol={<><sup>2</sup>√x</>} />
+			<ValueButton symbol={<><sup>3</sup>√x</>} />
+			<ValueButton symbol={<><sup>y</sup>√x</>} />
+			<ValueButton symbol='ln' />
+			<ValueButton symbol={<>log<sub>10</sub></>} />
 			{basicRows[2]}
-			<button symbol='x!' />
-			<button symbol='sin' />
-			<button symbol='cos' />
-			<button symbol='tan' />
-			<button symbol='e' />
-			<button symbol='EE' />
+			<ValueButton symbol='x!' />
+			<ValueButton symbol='sin' />
+			<ValueButton symbol='cos' />
+			<ValueButton symbol='tan' />
+			<ValueButton symbol='e' />
+			<ValueButton symbol='EE' />
 			{basicRows[3]}
-			<button symbol='Rad' />
-			<button symbol='sinh' />
-			<button symbol='cosh' />
-			<button symbol='tanh' />
-			<button symbol='π' />
-			<button symbol='Rand' />
+			<ValueButton className='bottom-left-button' symbol='Rad' />
+			<ValueButton symbol='sinh' />
+			<ValueButton symbol='cosh' />
+			<ValueButton symbol='tanh' />
+			<ValueButton symbol='π' />
+			<ValueButton symbol='Rand' />
 			{basicRows[4]}
 		</>),
 		createView(7, null)

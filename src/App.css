@@ -27,7 +27,7 @@
 
 #buttons > button {
 	border: none;
-	font-size: 150%;
+	font-size: 125%;
 	color: inherit
 }
 
@@ -61,6 +61,9 @@
 
 #zero-button {
 	grid-column: span 2;
+}
+
+.bottom-left-button {
 	border-bottom-left-radius: 12px
 }
 
