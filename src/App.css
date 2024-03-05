@@ -1,12 +1,13 @@
 #root {
+	--dark-color: #383838;
 	font-family: sans-serif
 }
 
 #calculator {
-	border: 1px solid rgb(56, 56, 56);
+	border: 1px solid var(--dark-color);
 	color: white;
 	border-radius: 12px;
-	background-color: rgb(56, 56, 56);
+	background-color: var(--dark-color);
 	flex-grow: 1
 }
 
@@ -26,33 +27,34 @@
 }
 
 #buttons > button {
+	--gray-color: #696969;
 	border: none;
 	font-size: 125%;
 	color: inherit
 }
 
 .value-button {
-	background-color: rgb(76, 76, 76)
+	background-color: #4c4c4c
 }
 
 .value-button:active {
-	background-color: rgb(105, 105, 105)
+	background-color: var(--gray-color)
 }
 
 .number-button {
-	background-color: rgb(105, 105, 105)
+	background-color: var(--gray-color)
 }
 
 .number-button:active {
-	background-color: rgb(165, 165, 165)
+	background-color: #a5a5a5
 }
 
 .operation-button {
-	background-color: rgb(242, 163, 60)
+	background-color: #f2a33c
 }
 
 .operation-button:active {
-	background-color: rgb(192, 129, 46)
+	background-color: #c0812e
 }
 
 .selected {
@@ -74,7 +76,7 @@
 .panel {
 	padding: 12px;
 	border-radius: 12px;
-	border: 1px solid rgb(56, 56, 56);
+	border: 1px solid var(--dark-color);
 	max-width: max-content
 }
 
