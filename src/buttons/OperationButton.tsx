@@ -1,10 +1,10 @@
-import { operand, operands, setOperand, setOperandValue } from '../state'
+import { operands } from '../state'
 
-export default function OperationButton({ currentOperation, operation: newOperation, symbol, setDisplay, setOperation }) {
-	return <button className={`operation-button${operand == 1 && currentOperation == newOperation ? ' selected' : ''}`} onClick={() => {
+export default function OperationButton({ operand, currentOperation, newOperation, symbol, setOperation, setOperand, setOperandValueAndDisplay }) {
+	return <button className={`operation-button${operand === 1 && currentOperation === newOperation ? ' selected' : ''}`} onClick={() => {
 		setOperation(newOperation)
 		setOperand(1)
-		setOperandValue(operands[0], setDisplay)
+		setOperandValueAndDisplay(operands[0])
 	}}>
 		{symbol}
 	</button>

@@ -1,8 +1,6 @@
-import { setOperandValue } from '../state'
-
-export default function ValueButton({ value, symbol, setDisplay }) {
+export default function ValueButton({ value, symbol, setOperandValueAndDisplay }) {
 	return <button className='value-button' onClick={() => {
-		setOperandValue(value, setDisplay)
+		setOperandValueAndDisplay(value)
 	}}>
 		{symbol}
 	</button>

@@ -1,11 +1,12 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { NumberButton, OperationButton, ValueButton } from './buttons'
-import { canOverwrite, operand, operands, operations, setCanOverwrite, setOperand, setOperandValue } from './state'
+import { canOverwrite, operands, operations, setCanOverwrite } from './state'
 import './App.css'
 
 let paperTapeKey = 0
 
 export default function App() {
+	const [operand, setOperand] = useState(0)
 	const [operation, setOperation] = useState(0)
 	const [display, setDisplay] = useState(0)
 	const [shouldClearAll, setShouldClearAll] = useState(true)
@@ -21,16 +22,26 @@ export default function App() {
 		paperTapeRef.current?.scrollIntoView()
 	}, [paperTapeHistory])
 
+	useEffect(() => {
+		setCanOverwrite(true)
+	}, [operand])
+
+
+	function setOperandValueAndDisplay(value) {
+		operands[operand] = value
+		setDisplay(value)
+	}
+
 	function createNumberRow(numbers) {
 		return numbers.map((number, i) => {
-			return <NumberButton number={number} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} key={i} />
+			return <NumberButton number={number} operand={operand} setOperandValueAndDisplay={setOperandValueAndDisplay} setShouldClearAll={setShouldClearAll} key={i} />
 		})
 	}
 
 	function createBasicRow(numbers, newOperation, operationSymbol) {
 		return <>
 			{createNumberRow(numbers)}
-			<OperationButton currentOperation={operation} operation={newOperation} symbol={operationSymbol} setDisplay={setDisplay} setOperation={setOperation} />
+			<OperationButton currentOperation={operation} operand={operand} newOperation={newOperation} symbol={operationSymbol} setOperandValueAndDisplay={setOperandValueAndDisplay} setOperand={setOperand} setOperation={setOperation} />
 		</>
 	}
 
@@ -53,22 +64,22 @@ export default function App() {
 						setOperand(0)
 					}
 					
-					setDisplay(operands[operand])
+					setOperandValueAndDisplay(operands[operand])
 					setShouldClearAll(true)
 				}
 			}} tooltip={`Clear${shouldClearAll ? ' All' : ''}`}>
 				{`${shouldClearAll ? 'A' : ''}C`}
 			</button>
 
-			<ValueButton value={-operands[operand]} symbol='±' tooltip='Negate the displayed value' setDisplay={setDisplay} />
-			<ValueButton value={operands[operand] / 100} symbol='%' setDisplay={setDisplay} />
-			<OperationButton currentOperation={operation} operation={3} symbol='÷' setDisplay={setDisplay} setOperation={setOperation} />
+			<ValueButton value={-operands[operand]} symbol='±' tooltip='Negate the displayed value' setOperandValueAndDisplay={setOperandValueAndDisplay} />
+			<ValueButton value={operands[operand] / 100} symbol='%' setOperandValueAndDisplay={setOperandValueAndDisplay} />
+			<OperationButton currentOperation={operation} operand={operand} newOperation={3} symbol='÷' setOperandValueAndDisplay={setOperandValueAndDisplay} setOperand={setOperand} setOperation={setOperation} />
 		</>,
 		createBasicRow([7, 8, 9], 2, '×'),
 		createBasicRow([4, 5, 6], 1, '−'),
 		createBasicRow([1, 2, 3], 0, '+'),
 		<>
-			<NumberButton id='zero-button' number={0} setDisplay={setDisplay} setShouldClearAll={setShouldClearAll} />
+			<NumberButton id='zero-button' operand={operand} number={0} setOperandValueAndDisplay={setOperandValueAndDisplay} setShouldClearAll={setShouldClearAll} />
 
 			<button className='number-button'>
 				.
@@ -143,7 +154,7 @@ export default function App() {
 
 	function resetDisplay(value) {
 		setOperand(0)
-		setOperandValue(value, setDisplay)
+		setOperandValueAndDisplay(value)
 	}
 
 	return <>
