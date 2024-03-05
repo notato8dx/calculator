@@ -1,7 +1,7 @@
 import { canOverwrite, setCanOverwrite } from '../state'
 
 export default function NumberButton({ id, className, operand, operands, number, setOperandValue, setShouldClearAll }) {
-	return <button id={id} className={`${className} number-button`} onClick={() => {
+	return <button id={id} className={`number-button${className ? ` ${className}` : ''}`} onClick={() => {
 		if (canOverwrite) {
 			setOperandValue(operand, number)
 			setCanOverwrite(false)

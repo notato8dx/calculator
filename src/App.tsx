@@ -36,21 +36,21 @@ export default function App() {
 	}, [paperTapeHistory])
 
 	function handleSetOperand(operand) {
-		setOperand(() => operand)
+		setOperand(operand)
 		setCanOverwrite(true)
 	}
 
 	function setOperandValue(operand, value) {
-		setOperands(operands => [
+		setOperands([
 			...operands.slice(0, operand),
 			value,
 			...operands.slice(operand + 1)
 		])
 	}
 
-	function resetDisplay(value) {
-		handleSetOperand(0)
-		setOperandValue(0, value)
+	function setOperandWithValue(operand, value) {
+		handleSetOperand(operand)
+		setOperandValue(operand, value)
 	}
 
 	function createNumberRow(numbers) {
@@ -62,7 +62,7 @@ export default function App() {
 	function createBasicRow(numbers, newOperation, operationSymbol) {
 		return <>
 			{createNumberRow(numbers)}
-			<OperationButton currentOperation={operation} operand={operand} operands={operands} newOperation={newOperation} symbol={operationSymbol} setOperandValue={setOperandValue} handleSetOperand={handleSetOperand} setOperation={setOperation} />
+			<OperationButton currentOperation={operation} operand={operand} operands={operands} newOperation={newOperation} symbol={operationSymbol} setOperandWithValue={setOperandWithValue} setOperation={setOperation} />
 		</>
 	}
 
@@ -75,9 +75,8 @@ export default function App() {
 			<button className='value-button' onClick={() => {
 				if (shouldClearAll) {
 					setOperandValue(1, 0)
-					setCanOverwrite(true)
+					setOperandWithValue(0, 0)
 					setOperation(0)
-					resetDisplay(0)
 				} else {
 					setOperandValue(operand, 0)
 
@@ -87,13 +86,13 @@ export default function App() {
 					
 					setShouldClearAll(true)
 				}
-			}} tooltip={`Clear${shouldClearAll ? ' All' : ''}`}>
+			}}>
 				{`${shouldClearAll ? 'A' : ''}C`}
 			</button>
 
-			<ValueButton operand={operand} value={-operands[operand]} symbol='±' tooltip='Negate the displayed value' setOperandValue={setOperandValue} />
+			<ValueButton operand={operand} value={-operands[operand]} symbol='±' setOperandValue={setOperandValue} />
 			<ValueButton operand={operand} value={operands[operand] / 100} symbol='%' setOperandValue={setOperandValue} />
-			<OperationButton currentOperation={operation} operand={operand} operands={operands} newOperation={3} symbol='÷' setOperandValue={setOperandValue} handleSetOperand={handleSetOperand} setOperation={setOperation} />
+			<OperationButton currentOperation={operation} operand={operand} operands={operands} newOperation={3} symbol='÷' setOperandWithValue={setOperandWithValue} setOperation={setOperation} />
 		</>,
 		createBasicRow([7, 8, 9], 2, '×'),
 		createBasicRow([4, 5, 6], 1, '−'),
@@ -117,7 +116,7 @@ export default function App() {
 
 				paperTapeKey += 1
 
-				resetDisplay(value)
+				setOperandWithValue(0, value)
 			}}>
 				=
 			</button>
@@ -125,13 +124,7 @@ export default function App() {
 	]
 
 	const views = [
-		createView(4, <>
-			{basicRows[0]}
-			{basicRows[1]}
-			{basicRows[2]}
-			{basicRows[3]}
-			{basicRows[4]}
-		</>),
+		createView(4, basicRows),
 		createView(10, <>
 			<ValueButton symbol='(' />
 			<ValueButton symbol=')' />

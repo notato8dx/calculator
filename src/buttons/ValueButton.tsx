@@ -1,5 +1,5 @@
-export default function ValueButton({ className, value, symbol, setOperandValue }) {
-	return <button className={`${className} value-button`} onClick={() => {
+export default function ValueButton({ className, operand, value, symbol, setOperandValue }) {
+	return <button className={`value-button${className ? ` ${className}` : ''}`} onClick={() => {
 		setOperandValue(operand, value)
 	}}>
 		{symbol}
