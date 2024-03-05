@@ -1,8 +1,22 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { NumberButton, OperationButton, ValueButton } from './buttons'
 import Panel from './Panel'
-import { canOverwrite, operations, setCanOverwrite } from './state'
+import Label from './Label'
+import { canOverwrite, setCanOverwrite } from './state'
 import './App.css'
+
+const operations = (() => {
+	function createOperation(symbol, func) {
+		return { function: func, symbol }
+	}
+
+	return [
+		createOperation('+', operands => operands[0] + operands[1]),
+		createOperation('-', operands => operands[0] - operands[1]),
+		createOperation('*', operands => operands[0] * operands[1]),
+		createOperation('/', operands => operands[0] / operands[1])
+	]
+})()
 
 let paperTapeKey = 0
 
@@ -12,8 +26,8 @@ export default function App() {
 	const [operation, setOperation] = useState(0)
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
-	const [decimalPlaces, setDecimalPlaces] = useState('15')
-	const [view, setView] = useState('0')
+	const [decimalPlaces, setDecimalPlaces] = useState(15)
+	const [view, setView] = useState(0)
 	const [paperTapeHistory, setPaperTapeHistory] = useState([])
 	const paperTapeRef = useRef(null)
 
@@ -32,6 +46,11 @@ export default function App() {
 			value,
 			...operands.slice(operand + 1)
 		])
+	}
+
+	function resetDisplay(value) {
+		handleSetOperand(0)
+		setOperandValue(0, value)
 	}
 
 	function createNumberRow(numbers) {
@@ -153,11 +172,6 @@ export default function App() {
 		createView(7, null)
 	]
 
-	function resetDisplay(value) {
-		handleSetOperand(0)
-		setOperandValue(0, value)
-	}
-
 	return <>
 		<div id='calculator'>
 			<div id='display'>
@@ -176,36 +190,30 @@ export default function App() {
 		<Panel name='Settings'>
 			{['Basic', 'Scientific', 'Programmer'].map((view, i) => {
 				return <div key={i}>
-					<input type='radio' id={view} value={i.toString()} name='view' defaultChecked={i == 0} onChange={({ target: { value } }) => {
+					<input type='radio' id={view} value={i} name='view' defaultChecked={i == 0} onChange={({ target: { value } }) => {
 						setView(value)
 					}}/>
 
-					<label htmlFor={view}>
-						{view}
-					</label>
+					<Label htmlFor={view} text={view} />
 				</div>
 			})}
 
 			<hr />
 
 			<div>
-				<input type='checkbox' value='Show Thousands Separators' id='separators' onChange={({ target: { checked } }) => {
+				<input type='checkbox' id='separators' onChange={({ target: { checked } }) => {
 					setIsShowingSeparators(checked)
 				}} />
 
-				<label htmlFor='separators'>
-					Show Thousands Separators
-				</label>
+				<Label htmlFor='separators' text='Show Thousands Separators' />
 			</div>
 
 			<hr />
 
 			<div>
-				<label htmlFor='decimalPlaces'>
-					Decimal Places
-				</label>
+				<Label htmlFor='decimalPlaces' text='Decimal Places' />
 
-				<input type='number' min='0' max='15' defaultValue='15' id='decimalPlaces' onChange={({ target: { value } }) => {
+				<input type='number' min={0} max={15} defaultValue={15} id='decimalPlaces' onChange={({ target: { value } }) => {
 					setDecimalPlaces(value)
 				}} />
 			</div>
