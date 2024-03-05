@@ -1,10 +1,8 @@
-import { operands } from '../state'
-
-export default function OperationButton({ operand, currentOperation, newOperation, symbol, setOperation, setOperand, setOperandValueAndDisplay }) {
+export default function OperationButton({ operand, operands, currentOperation, newOperation, symbol, setOperation, handleSetOperand, setOperandValue }) {
 	return <button className={`operation-button${operand === 1 && currentOperation === newOperation ? ' selected' : ''}`} onClick={() => {
 		setOperation(newOperation)
-		setOperand(1)
-		setOperandValueAndDisplay(operands[0])
+		handleSetOperand(1)
+		setOperandValue(1, operands[0])
 	}}>
 		{symbol}
 	</button>

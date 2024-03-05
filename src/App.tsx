@@ -1,18 +1,17 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { NumberButton, OperationButton, ValueButton } from './buttons'
-import { canOverwrite, operands, operations, setCanOverwrite } from './state'
+import Panel from './Panel'
+import { canOverwrite, operations, setCanOverwrite } from './state'
 import './App.css'
 
 let paperTapeKey = 0
 
 export default function App() {
 	const [operand, setOperand] = useState(0)
+	const [operands, setOperands] = useState([0, 0])
 	const [operation, setOperation] = useState(0)
-	const [display, setDisplay] = useState(0)
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
-	const [isRPNMode, setIsRPNMode] = useState(false)
-	const [isShowingPaperTape, setIsShowingPaperTape] = useState(false)
 	const [decimalPlaces, setDecimalPlaces] = useState('15')
 	const [view, setView] = useState('0')
 	const [paperTapeHistory, setPaperTapeHistory] = useState([])
@@ -22,26 +21,29 @@ export default function App() {
 		paperTapeRef.current?.scrollIntoView()
 	}, [paperTapeHistory])
 
-	useEffect(() => {
+	function handleSetOperand(operand) {
+		setOperand(() => operand)
 		setCanOverwrite(true)
-	}, [operand])
+	}
 
-
-	function setOperandValueAndDisplay(value) {
-		operands[operand] = value
-		setDisplay(value)
+	function setOperandValue(operand, value) {
+		setOperands(operands => [
+			...operands.slice(0, operand),
+			value,
+			...operands.slice(operand + 1)
+		])
 	}
 
 	function createNumberRow(numbers) {
 		return numbers.map((number, i) => {
-			return <NumberButton number={number} operand={operand} setOperandValueAndDisplay={setOperandValueAndDisplay} setShouldClearAll={setShouldClearAll} key={i} />
+			return <NumberButton number={number} operand={operand} operands={operands} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} key={i} />
 		})
 	}
 
 	function createBasicRow(numbers, newOperation, operationSymbol) {
 		return <>
 			{createNumberRow(numbers)}
-			<OperationButton currentOperation={operation} operand={operand} newOperation={newOperation} symbol={operationSymbol} setOperandValueAndDisplay={setOperandValueAndDisplay} setOperand={setOperand} setOperation={setOperation} />
+			<OperationButton currentOperation={operation} operand={operand} operands={operands} newOperation={newOperation} symbol={operationSymbol} setOperandValue={setOperandValue} handleSetOperand={handleSetOperand} setOperation={setOperation} />
 		</>
 	}
 
@@ -53,40 +55,39 @@ export default function App() {
 		<>
 			<button className='value-button' onClick={() => {
 				if (shouldClearAll) {
-					operands[1] = 0
+					setOperandValue(1, 0)
 					setCanOverwrite(true)
 					setOperation(0)
 					resetDisplay(0)
 				} else {
-					operands[operand] = 0
+					setOperandValue(operand, 0)
 
 					if (canOverwrite) {
-						setOperand(0)
+						handleSetOperand(0)
 					}
 					
-					setOperandValueAndDisplay(operands[operand])
 					setShouldClearAll(true)
 				}
 			}} tooltip={`Clear${shouldClearAll ? ' All' : ''}`}>
 				{`${shouldClearAll ? 'A' : ''}C`}
 			</button>
 
-			<ValueButton value={-operands[operand]} symbol='±' tooltip='Negate the displayed value' setOperandValueAndDisplay={setOperandValueAndDisplay} />
-			<ValueButton value={operands[operand] / 100} symbol='%' setOperandValueAndDisplay={setOperandValueAndDisplay} />
-			<OperationButton currentOperation={operation} operand={operand} newOperation={3} symbol='÷' setOperandValueAndDisplay={setOperandValueAndDisplay} setOperand={setOperand} setOperation={setOperation} />
+			<ValueButton operand={operand} value={-operands[operand]} symbol='±' tooltip='Negate the displayed value' setOperandValue={setOperandValue} />
+			<ValueButton operand={operand} value={operands[operand] / 100} symbol='%' setOperandValue={setOperandValue} />
+			<OperationButton currentOperation={operation} operand={operand} operands={operands} newOperation={3} symbol='÷' setOperandValue={setOperandValue} handleSetOperand={handleSetOperand} setOperation={setOperation} />
 		</>,
 		createBasicRow([7, 8, 9], 2, '×'),
 		createBasicRow([4, 5, 6], 1, '−'),
 		createBasicRow([1, 2, 3], 0, '+'),
 		<>
-			<NumberButton id='zero-button' className={view == '0' ? 'bottom-left-button' : ''} operand={operand} number={0} setOperandValueAndDisplay={setOperandValueAndDisplay} setShouldClearAll={setShouldClearAll} />
+			<NumberButton id='zero-button' className={view == '0' ? 'bottom-left-button' : ''} operand={operand} operands={operands} number={0} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} />
 
 			<button className='number-button'>
 				.
 			</button>
 
 			<button id='equal-button' className='operation-button' onClick={() => {
-				const value = operations[operation].function()
+				const value = operations[operation].function(operands)
 
 				setPaperTapeHistory([...paperTapeHistory, {
 					operands: [...operands],
@@ -153,14 +154,14 @@ export default function App() {
 	]
 
 	function resetDisplay(value) {
-		setOperand(0)
-		setOperandValueAndDisplay(value)
+		handleSetOperand(0)
+		setOperandValue(0, value)
 	}
 
 	return <>
 		<div id='calculator'>
 			<div id='display'>
-				{display.toLocaleString(undefined, {
+				{operands[operand].toLocaleString(undefined, {
 					maximumFractionDigits: decimalPlaces,
 					useGrouping: isShowingSeparators,
 					signDisplay: 'negative'
@@ -172,11 +173,7 @@ export default function App() {
 			</div>
 		</div>
 
-		<div className='panel'>
-			<h1>
-				Settings
-			</h1>
-
+		<Panel name='Settings'>
 			{['Basic', 'Scientific', 'Programmer'].map((view, i) => {
 				return <div key={i}>
 					<input type='radio' id={view} value={i.toString()} name='view' defaultChecked={i == 0} onChange={({ target: { value } }) => {
@@ -191,23 +188,17 @@ export default function App() {
 
 			<hr />
 
-			{[
-				{ label: 'Show Thousands Separators', setValue: setIsShowingSeparators },
-				{ label: 'RPN Mode', setValue: setIsRPNMode },
-				{ label: 'Paper Tape', setValue: setIsShowingPaperTape }
-			].map(({ label, setValue }, i) => {
-				return <Fragment key={i}>
-					<input type='checkbox' value={label} id={label} name={label} onChange={({ target: { checked } }) => {
-						setValue(checked)
-					}} />
+			<div>
+				<input type='checkbox' value='Show Thousands Separators' id='separators' onChange={({ target: { checked } }) => {
+					setIsShowingSeparators(checked)
+				}} />
 
-					<label htmlFor={label}>
-						{label}
-					</label>
+				<label htmlFor='separators'>
+					Show Thousands Separators
+				</label>
+			</div>
 
-					<hr />
-				</Fragment>
-			})}
+			<hr />
 
 			<div>
 				<label htmlFor='decimalPlaces'>
@@ -218,13 +209,9 @@ export default function App() {
 					setDecimalPlaces(value)
 				}} />
 			</div>
-		</div>
+		</Panel>
 
-		{isShowingPaperTape ? <div className='panel'>
-			<h1>
-				Paper Tape
-			</h1>
-
+		<Panel name='Paper Tape'>
 			<div style={{ overflowY: 'scroll', height: '200px' }}>
 				{paperTapeHistory.map((entry) => {
 					return <Fragment key={entry.key}>
@@ -244,6 +231,6 @@ export default function App() {
 			}}>
 				Clear
 			</button>
-		</div> : null}
+		</Panel>
 	</>
 }

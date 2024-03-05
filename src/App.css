@@ -50,11 +50,11 @@
 }
 
 .operation-button {
-	background-color: #f2a33c
+	background-color: #ff9d0b
 }
 
 .operation-button:active {
-	background-color: #c0812e
+	background-color: #cb7d08
 }
 
 .selected {
@@ -77,7 +77,7 @@
 	padding: 12px;
 	border-radius: 12px;
 	border: 1px solid var(--dark-color);
-	max-width: max-content
+	width: max-content;
 }
 
 h1 {
@@ -85,4 +85,12 @@ h1 {
 	width: max-content;
 	font-weight: bold;
 	font-size: 100%
+}
+
+label {
+	margin-left: 6px
+}
+
+input {
+	vertical-align: top
 }

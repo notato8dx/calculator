@@ -1,13 +1,14 @@
-import { canOverwrite, operands, setCanOverwrite } from '../state'
+import { canOverwrite, setCanOverwrite } from '../state'
 
-export default function NumberButton({ id, className, operand, number, setOperandValueAndDisplay, setShouldClearAll }) {
+export default function NumberButton({ id, className, operand, operands, number, setOperandValue, setShouldClearAll }) {
 	return <button id={id} className={`${className} number-button`} onClick={() => {
 		if (canOverwrite) {
-			operands[operand] = 0
+			setOperandValue(operand, number)
 			setCanOverwrite(false)
+		} else {
+			setOperandValue(operand, operands[operand] * 10 + number)
 		}
 
-		setOperandValueAndDisplay(operands[operand] * 10 + number)
 		setShouldClearAll(false)
 	}}>
 		{number}
