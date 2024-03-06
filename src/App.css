@@ -61,15 +61,15 @@
 	margin: 1px
 }
 
-#zero-button {
+.large-button {
 	grid-column: span 2;
 }
 
-.bottom-left-button {
+#bottom-left-button {
 	border-bottom-left-radius: 12px
 }
 
-#equal-button {
+#buttons > button:last-child {
 	border-bottom-right-radius: 12px
 }
 
@@ -81,7 +81,7 @@
 }
 
 h1 {
-	margin: auto;
+	margin: auto auto 12px auto;
 	width: max-content;
 	font-weight: bold;
 	font-size: 100%

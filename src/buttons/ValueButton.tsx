@@ -1,7 +1,8 @@
 import SymbolButton from './SymbolButton'
+import { Style } from '../types'
 
-export default function ValueButton({ getNewValue, setCurrentValue, currentValue, ...props }: { getNewValue: (value: number) => number, setCurrentValue: (value: number) => void, currentValue: number, symbol: string }) {
-	return <SymbolButton {...props} className='value-button' onClick={() => {
+export default function ValueButton({ getNewValue, setCurrentValue, currentValue, ...props }: { getNewValue: (value: number) => number, setCurrentValue: (value: number) => void, isBottomLeft: boolean, isLarge: boolean, currentValue: number, symbol: string }) {
+	return <SymbolButton {...props} style={Style.Value} isSelected={false} onClick={() => {
 		setCurrentValue(getNewValue(currentValue))
 	}}></SymbolButton>
 }

@@ -1,9 +1,9 @@
-import { Fragment, ReactNode, useEffect, useRef, useState } from 'react'
-import { NumberButton, OperationButton, ValueButton } from './buttons'
+import { Fragment, ReactElement, ReactNode, RefObject, useEffect, useRef, useState } from 'react'
+import { SymbolButton, NumberButton, OperationButton, ValueButton } from './buttons'
 import Panel from './Panel'
 import Label from './Label'
 import { canOverwrite, setCanOverwrite } from './state'
-import { Operation } from './types'
+import { Operation, Style } from './types'
 import './App.css'
 
 enum View {
@@ -35,7 +35,7 @@ export default function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaces, setDecimalPlaces] = useState(15)
 	const [view, setView] = useState(View.Basic)
-	const [paperTapeHistory, setPaperTapeHistory] = useState([] as { operands: number[]; operation: number; value: number; key: number; }[])
+	const [paperTapeHistory, setPaperTapeHistory] = useState(Array<{ operands: number[]; operation: number; value: number; key: number; }>())
 	const paperTapeRef = useRef<Element>(null)
 
 	useEffect(() => {
@@ -60,19 +60,42 @@ export default function App() {
 		setOperandValue(operand, value)
 	}
 
-	function createBasicRow(numbers: number[], newOperation: number, operationSymbol: string) {
-		return <>
-			{numbers.map((number, i) => {
-				return <NumberButton number={number} operand={operand} operands={operands} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} key={i} />
-			})}
+	const [[doubleFButton, zeroButton, doubleZeroButton], numberRow1, numberRow2, numberRow3, numberRow4, numberRow5] = [
+		[ { isDouble: true, number: 0xf }, { isDouble: false, number: 0x0 }, { isDouble: true, number: 0x0 } ],
+		[ { isDouble: false, number: 0x1 }, { isDouble: false, number: 0x2 }, { isDouble: false, number: 0x3 } ],
+		[ { isDouble: false, number: 0x4 }, { isDouble: false, number: 0x5 }, { isDouble: false, number: 0x6 } ],
+		[ { isDouble: false, number: 0x7 }, { isDouble: false, number: 0x8 }, { isDouble: false, number: 0x9 } ],
+		[ { isDouble: false, number: 0xa }, { isDouble: false, number: 0xb }, { isDouble: false, number: 0xc } ],
+		[ { isDouble: false, number: 0xd }, { isDouble: false, number: 0xe }, { isDouble: false, number: 0xf } ],
+	].map(numbers => {
+		return numbers.map(data => {
+			return <NumberButton {...data} isLarge={!data.isDouble && data.number === 0 && (view === View.Basic || view === View.Scientific)} isBottomLeft={!data.isDouble && data.number === 0 && view === View.Basic} operand={operand} operands={operands} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} />
+		})
+	})
 
-			<OperationButton currentOperation={operation} operand={operand} operands={operands} newOperation={newOperation} symbol={operationSymbol} setOperandWithValue={setOperandWithValue} setOperation={setOperation} />
-		</>
-	}
+	const [addButton, subtractButton, multiplyButton, divideButton] = [
+		{ id: 0, symbol: '+' },
+		{ id: 1, symbol: '−' },
+		{ id: 2, symbol: '×' },
+		{ id: 3, symbol: '÷' },
+	].map(({ id, symbol }) => {
+			return <OperationButton currentOperation={operation} operand={operand} operands={operands} newOperation={id} symbol={symbol} setOperandWithValue={setOperandWithValue} setOperation={setOperation} />
+	})
 
-	function createView(columnCount: number, component: ReactNode) {
-		return { columnCount, component }
-	}
+	const equalButton = <SymbolButton style={Style.Operation} isBottomLeft={false} isLarge={view === View.Programmer} isSelected={false} symbol='=' onClick={() => {
+		const value = operations[operation].function(operands)
+
+		setPaperTapeHistory([...paperTapeHistory, {
+			operands: [...operands],
+			operation,
+			value,
+			key: paperTapeKey
+		}])
+
+		paperTapeKey += 1
+
+		setOperandWithValue(0, value)
+	}} />;
 
 	const basicRows = [
 		<>
@@ -94,62 +117,61 @@ export default function App() {
 				{shouldClearAll ? 'AC' : 'C'}
 			</button>
 
-			<ValueButton getNewValue={(value) => -value} symbol='±' setCurrentValue={(value) => setOperandValue(operand, value)} currentValue={operands[operand]} />
-			<ValueButton getNewValue={(value) => value / 100} symbol='%' setCurrentValue={(value) => setOperandValue(operand, value)} currentValue={operands[operand]} />
-			<OperationButton currentOperation={operation} operand={operand} operands={operands} newOperation={3} symbol='÷' setOperandWithValue={setOperandWithValue} setOperation={setOperation} />
-		</>,
-		createBasicRow([7, 8, 9], 2, '×'),
-		createBasicRow([4, 5, 6], 1, '−'),
-		createBasicRow([1, 2, 3], 0, '+'),
-		<>
-			<NumberButton id='zero-button' className={view === View.Basic ? 'bottom-left-button' : ''} operand={operand} operands={operands} number={0} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} />
+			{Array<{ symbol: string, getNewValue: (value: number) => number }>(
+				{ symbol: '⁺⁄₋', getNewValue: value => -value },
+				{ symbol: '%', getNewValue: value => value / 100 }
+			).map(data => {
+				return <ValueButton {...data} isLarge={false} isBottomLeft={false} setCurrentValue={(value) => setOperandValue(operand, value)} currentValue={operands[operand]} />
+			})}
 
+			{divideButton}
+		</>,
+		<>
+			{numberRow3}
+			{multiplyButton}
+		</>,
+		<>
+			{numberRow2}
+			{subtractButton}
+		</>,
+		<>
+			{numberRow1}
+			{addButton}
+		</>,
+		<>
+			{zeroButton}
+			
 			<button className='number-button'>
 				.
 			</button>
 
-			<button id='equal-button' className='operation-button' onClick={() => {
-				const value = operations[operation].function(operands)
-
-				setPaperTapeHistory([...paperTapeHistory, {
-					operands: [...operands],
-					operation,
-					value,
-					key: paperTapeKey
-				}])
-
-				paperTapeKey += 1
-
-				setOperandWithValue(0, value)
-			}}>
-				=
-			</button>
+			{equalButton}
 		</>
 	]
 
 	const views = [
-		createView(4, basicRows)/*,
-		createView(10, <>
-			{<ValueButton symbol='(' />
+		{ columnCount: 4, component: basicRows },
+		{ columnCount: 10, component: <>
+			<ValueButton symbol='(' />
 			<ValueButton symbol=')' />
 			<ValueButton symbol='mc' />
 			<ValueButton symbol='m+' />
 			<ValueButton symbol='m−' />
 			<ValueButton symbol='mr' />
 			{basicRows[0]}
-			<ValueButton symbol={<>2<sup>nd</sup></>} />
-			<ValueButton symbol={<>x<sup>2</sup></>} />
-			<ValueButton symbol={<>x<sup>3</sup></>} />
-			<ValueButton symbol={<>x<sup>y</sup></>} />
-			<ValueButton symbol={<>e<sup>x</sup></>} />
-			<ValueButton symbol={<>10<sup>x</sup></>} />
+			<ValueButton symbol='2nd' />
+			<ValueButton symbol='x²' />
+			<ValueButton symbol='x³' />
+			<ValueButton symbol='xⁿ' />
+			<ValueButton symbol='eⁿ' />
+			<ValueButton symbol='10ⁿ' />
 			{basicRows[1]}
-			<ValueButton symbol={<><sup>1</sup>⁄<sub>x</sub></>} />
-			<ValueButton symbol={<><sup>2</sup>√x</>} />
-			<ValueButton symbol={<><sup>3</sup>√x</>} />
-			<ValueButton symbol={<><sup>y</sup>√x</>} />
+			<ValueButton symbol='¹⁄ₓ' />
+			<ValueButton symbol='²√x' />
+			<ValueButton symbol='³√x' />
+			<ValueButton symbol='ⁿ√x' />
 			<ValueButton symbol='ln' />
-			<ValueButton symbol={<>log<sub>10</sub></>} />
+			<ValueButton symbol='log₁₀' />
 			{basicRows[2]}
 			<ValueButton symbol='x!' />
 			<ValueButton symbol='sin' />
@@ -158,15 +180,45 @@ export default function App() {
 			<ValueButton symbol='e' />
 			<ValueButton symbol='EE' />
 			{basicRows[3]}
-			<ValueButton className='bottom-left-button' symbol='Rad' />
+			<ValueButton isBottomLeft={true} symbol='Rad' />
 			<ValueButton symbol='sinh' />
 			<ValueButton symbol='cosh' />
 			<ValueButton symbol='tanh' />
 			<ValueButton symbol='π' />
 			<ValueButton symbol='Rand' />
-			{basicRows[4]}}
-		</>),
-		createView(7, null)*/
+			{basicRows[4]}
+		</> },
+		{ columnCount: 7, component: <>
+			<ValueButton symbol='AND' />
+			<ValueButton symbol='OR' />
+			{numberRow5}
+			<ValueButton symbol='AC' />
+			<ValueButton symbol='C' />
+			<ValueButton symbol='NOR' />
+			<ValueButton symbol='XOR' />
+			{numberRow4}
+			<ValueButton symbol='RoL' />
+			<ValueButton symbol='RoR' />
+			<ValueButton symbol='<<' />
+			<ValueButton symbol='>>' />
+			{numberRow3}
+			<ValueButton symbol="2's" />
+			<ValueButton symbol="1's" />
+			<ValueButton symbol='X<<Y' />
+			<ValueButton symbol='X>>Y' />
+			{numberRow2}
+			{divideButton}
+			{subtractButton}
+			<ValueButton isLarge={true} symbol='byte flip' />
+			{numberRow1}
+			{multiplyButton}
+			{addButton}
+			<ValueButton isBottomLeft={true} isLarge={true} symbol='word flip' />
+			{doubleFButton}
+			{zeroButton}
+			{doubleZeroButton}
+			{equalButton}
+		</> }
 	]
 
 	return <>
@@ -233,7 +285,7 @@ export default function App() {
 					</Fragment>
 				})}
 
-				<div ref={paperTapeRef as React.RefObject<HTMLDivElement>} />
+				<div ref={paperTapeRef as RefObject<HTMLDivElement>} />
 			</div>
 
 			<button style={{ display: 'block', marginLeft: 'auto' }} onClick={() => {

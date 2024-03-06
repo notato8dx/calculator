@@ -4,3 +4,9 @@ export enum Operation {
 	Multiply,
 	Divide
 }
+
+export enum Style {
+	Operation,
+	Value,
+	Number
+}
