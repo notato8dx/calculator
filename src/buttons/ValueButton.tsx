@@ -1,9 +1,8 @@
 import React from 'react'
+import SymbolButton from './SymbolButton'
 
-export default function ValueButton({ className, operand, value, symbol, setOperandValue }: { className: string, operand: number, value: number, symbol: string, setOperandValue: (operand: number, value: number) => void }) {
-	return <button className={`value-button${className ? ` ${className}` : ''}`} onClick={() => {
+export default function ValueButton({ operand, value, setOperandValue, ...props }: { operand: number, value: number, setOperandValue: (operand: number, value: number) => void, symbol: string }) {
+	return <SymbolButton {...props} className='value-button' onClick={() => {
 		setOperandValue(operand, value)
-	}}>
-		{symbol}
-	</button>
+	}}></SymbolButton>
 }
