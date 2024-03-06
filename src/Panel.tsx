@@ -1,6 +1,6 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
-export default function Panel({ name, children }) {
+export default function Panel({ name, children }: { name: string, children: ReactNode } ) {
 	return <div className='panel'>
 		<h1>
 			{name}

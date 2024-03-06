@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, ReactNode, useEffect, useRef, useState } from 'react'
 import { NumberButton, OperationButton, ValueButton } from './buttons'
 import Panel from './Panel'
 import Label from './Label'
@@ -70,7 +70,7 @@ export default function App() {
 		</>
 	}
 
-	function createView(columnCount: number, component: JSX.Element | JSX.Element[]) {
+	function createView(columnCount: number, component: ReactNode) {
 		return { columnCount, component }
 	}
 
@@ -102,7 +102,7 @@ export default function App() {
 		createBasicRow([4, 5, 6], 1, '−'),
 		createBasicRow([1, 2, 3], 0, '+'),
 		<>
-			<NumberButton id='zero-button' className={view === 0 ? 'bottom-left-button' : ''} operand={operand} operands={operands} number={0} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} />
+			<NumberButton id='zero-button' className={view === View.Basic ? 'bottom-left-button' : ''} operand={operand} operands={operands} number={0} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} />
 
 			<button className='number-button'>
 				.
@@ -175,6 +175,7 @@ export default function App() {
 				{operands[operand].toLocaleString(undefined, {
 					maximumFractionDigits: decimalPlaces,
 					useGrouping: isShowingSeparators,
+					// @ts-expect-error "negative" is falsely reported as an invalid option. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#signdisplay
 					signDisplay: 'negative'
 				})}
 			</div>

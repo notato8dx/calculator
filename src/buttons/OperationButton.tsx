@@ -1,4 +1,3 @@
-import React from 'react'
 import SymbolButton from './SymbolButton'
 import { Operation } from '../types'
 
