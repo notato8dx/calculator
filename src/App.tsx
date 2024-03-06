@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { NumberButton, OperationButton, ValueButton } from './buttons'
 import Panel from './Panel'
 import Label from './Label'
@@ -6,7 +6,7 @@ import { canOverwrite, setCanOverwrite } from './state'
 import './App.css'
 
 const operations = (() => {
-	function createOperation(symbol, func) {
+	function createOperation(symbol: string, func: (operands: number[]) => number) {
 		return { function: func, symbol }
 	}
 
@@ -28,19 +28,19 @@ export default function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaces, setDecimalPlaces] = useState(15)
 	const [view, setView] = useState(0)
-	const [paperTapeHistory, setPaperTapeHistory] = useState([])
-	const paperTapeRef = useRef(null)
+	const [paperTapeHistory, setPaperTapeHistory] = useState([] as { operands: number[]; operation: number; value: number; key: number; }[])
+	const paperTapeRef = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {
 		paperTapeRef.current?.scrollIntoView()
 	}, [paperTapeHistory])
 
-	function handleSetOperand(operand) {
+	function handleSetOperand(operand: number) {
 		setOperand(operand)
 		setCanOverwrite(true)
 	}
 
-	function setOperandValue(operand, value) {
+	function setOperandValue(operand: number, value: number) {
 		setOperands([
 			...operands.slice(0, operand),
 			value,
@@ -48,25 +48,22 @@ export default function App() {
 		])
 	}
 
-	function setOperandWithValue(operand, value) {
+	function setOperandWithValue(operand: number, value: number) {
 		handleSetOperand(operand)
 		setOperandValue(operand, value)
 	}
 
-	function createNumberRow(numbers) {
-		return numbers.map((number, i) => {
-			return <NumberButton number={number} operand={operand} operands={operands} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} key={i} />
-		})
-	}
-
-	function createBasicRow(numbers, newOperation, operationSymbol) {
+	function createBasicRow(numbers: number[], newOperation: number, operationSymbol: string) {
 		return <>
-			{createNumberRow(numbers)}
+			{numbers.map((number, i) => {
+				return <NumberButton number={number} operand={operand} operands={operands} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} key={i} />
+			})}
+
 			<OperationButton currentOperation={operation} operand={operand} operands={operands} newOperation={newOperation} symbol={operationSymbol} setOperandWithValue={setOperandWithValue} setOperation={setOperation} />
 		</>
 	}
 
-	function createView(columnCount, component) {
+	function createView(columnCount: number, component: JSX.Element | JSX.Element[]) {
 		return { columnCount, component }
 	}
 
@@ -98,7 +95,7 @@ export default function App() {
 		createBasicRow([4, 5, 6], 1, '−'),
 		createBasicRow([1, 2, 3], 0, '+'),
 		<>
-			<NumberButton id='zero-button' className={view == '0' ? 'bottom-left-button' : ''} operand={operand} operands={operands} number={0} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} />
+			<NumberButton id='zero-button' className={view === 0 ? 'bottom-left-button' : ''} operand={operand} operands={operands} number={0} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} />
 
 			<button className='number-button'>
 				.
@@ -124,9 +121,9 @@ export default function App() {
 	]
 
 	const views = [
-		createView(4, basicRows),
+		createView(4, basicRows)/*,
 		createView(10, <>
-			<ValueButton symbol='(' />
+			{<ValueButton symbol='(' />
 			<ValueButton symbol=')' />
 			<ValueButton symbol='mc' />
 			<ValueButton symbol='m+' />
@@ -160,9 +157,9 @@ export default function App() {
 			<ValueButton symbol='tanh' />
 			<ValueButton symbol='π' />
 			<ValueButton symbol='Rand' />
-			{basicRows[4]}
+			{basicRows[4]}}
 		</>),
-		createView(7, null)
+		createView(7, null)*/
 	]
 
 	return <>
@@ -184,7 +181,9 @@ export default function App() {
 			{['Basic', 'Scientific', 'Programmer'].map((view, i) => {
 				return <div key={i}>
 					<input type='radio' id={view} value={i} name='view' defaultChecked={i == 0} onChange={({ target: { value } }) => {
-						setView(value)
+						setView(
+							parseInt(value)
+						)
 					}}/>
 
 					<Label htmlFor={view} text={view} />
@@ -207,7 +206,9 @@ export default function App() {
 				<Label htmlFor='decimalPlaces' text='Decimal Places' />
 
 				<input type='number' min={0} max={15} defaultValue={15} id='decimalPlaces' onChange={({ target: { value } }) => {
-					setDecimalPlaces(value)
+					setDecimalPlaces(
+						parseInt(value)
+					)
 				}} />
 			</div>
 		</Panel>
