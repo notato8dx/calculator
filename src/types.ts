@@ -1,6 +1,6 @@
 export enum Operation {
 	Add,
 	Subtract,
-	Multipl,
+	Multiply,
 	Divide
 }

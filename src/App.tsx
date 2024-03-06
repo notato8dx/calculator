@@ -36,7 +36,7 @@ export default function App() {
 	const [decimalPlaces, setDecimalPlaces] = useState(15)
 	const [view, setView] = useState(View.Basic)
 	const [paperTapeHistory, setPaperTapeHistory] = useState([] as { operands: number[]; operation: number; value: number; key: number; }[])
-	const paperTapeRef = useRef<HTMLDivElement>(null)
+	const paperTapeRef = useRef<Element>(null)
 
 	useEffect(() => {
 		paperTapeRef.current?.scrollIntoView()
@@ -91,11 +91,11 @@ export default function App() {
 					setShouldClearAll(true)
 				}
 			}}>
-				{`${shouldClearAll ? 'A' : ''}C`}
+				{shouldClearAll ? 'AC' : 'C'}
 			</button>
 
-			<ValueButton operand={operand} value={-operands[operand]} symbol='±' setOperandValue={setOperandValue} />
-			<ValueButton operand={operand} value={operands[operand] / 100} symbol='%' setOperandValue={setOperandValue} />
+			<ValueButton getNewValue={(value) => -value} symbol='±' setCurrentValue={(value) => setOperandValue(operand, value)} currentValue={operands[operand]} />
+			<ValueButton getNewValue={(value) => value / 100} symbol='%' setCurrentValue={(value) => setOperandValue(operand, value)} currentValue={operands[operand]} />
 			<OperationButton currentOperation={operation} operand={operand} operands={operands} newOperation={3} symbol='÷' setOperandWithValue={setOperandWithValue} setOperation={setOperation} />
 		</>,
 		createBasicRow([7, 8, 9], 2, '×'),
@@ -232,7 +232,7 @@ export default function App() {
 					</Fragment>
 				})}
 
-				<div ref={paperTapeRef} />
+				<div ref={paperTapeRef as React.RefObject<HTMLDivElement>} />
 			</div>
 
 			<button style={{ display: 'block', marginLeft: 'auto' }} onClick={() => {
