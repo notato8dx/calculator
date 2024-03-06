@@ -3,7 +3,14 @@ import { NumberButton, OperationButton, ValueButton } from './buttons'
 import Panel from './Panel'
 import Label from './Label'
 import { canOverwrite, setCanOverwrite } from './state'
+import { Operation } from './types'
 import './App.css'
+
+enum View {
+	Basic,
+	Scientific,
+	Programmer
+}
 
 const operations = (() => {
 	function createOperation(symbol: string, func: (operands: number[]) => number) {
@@ -23,11 +30,11 @@ let paperTapeKey = 0
 export default function App() {
 	const [operand, setOperand] = useState(0)
 	const [operands, setOperands] = useState([0, 0])
-	const [operation, setOperation] = useState(0)
+	const [operation, setOperation] = useState(Operation.Add)
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaces, setDecimalPlaces] = useState(15)
-	const [view, setView] = useState(0)
+	const [view, setView] = useState(View.Basic)
 	const [paperTapeHistory, setPaperTapeHistory] = useState([] as { operands: number[]; operation: number; value: number; key: number; }[])
 	const paperTapeRef = useRef<HTMLDivElement>(null)
 
@@ -182,7 +189,7 @@ export default function App() {
 				return <div key={i}>
 					<input type='radio' id={view} value={i} name='view' defaultChecked={i == 0} onChange={({ target: { value } }) => {
 						setView(
-							parseInt(value)
+							parseInt(value) as View
 						)
 					}}/>
 
