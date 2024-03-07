@@ -1,9 +1,9 @@
 import { Fragment, RefObject, useEffect, useRef, useState } from 'react'
-import { SymbolButton, NumberButton, OperationButton, ValueButton } from './buttons'
+import { SymbolButton, ValueButton } from './buttons'
 import Panel from './Panel'
 import Label from './Label'
 import { canOverwrite, setCanOverwrite } from './state'
-import { Operation, Style } from './types'
+import { Style } from './types'
 import './App.css'
 
 enum View {
@@ -12,30 +12,25 @@ enum View {
 	Programmer
 }
 
-const operations = (() => {
-	function createOperation(symbol: string, func: (operands: number[]) => number) {
-		return { function: func, symbol }
-	}
-
-	return [
-		createOperation('+', operands => operands[0] + operands[1]),
-		createOperation('-', operands => operands[0] - operands[1]),
-		createOperation('*', operands => operands[0] * operands[1]),
-		createOperation('/', operands => operands[0] / operands[1])
-	]
-})()
+const operations: readonly { readonly symbol: string, readonly symbolASCII: string, readonly function: (operands: number[]) => number }[] = [
+	{ symbol: '+', symbolASCII: '+', function: operands => operands[0] + operands[1] },
+	{ symbol: '−', symbolASCII: '-', function: operands => operands[0] - operands[1] },
+	{ symbol: '×', symbolASCII: '*', function: operands => operands[0] * operands[1] },
+	{ symbol: '÷', symbolASCII: '/', function: operands => operands[0] / operands[1] }
+]
 
 let paperTapeKey = 0
 
 export default function App() {
 	const [operand, setOperand] = useState(0)
 	const [operands, setOperands] = useState([0, 0])
-	const [operation, setOperation] = useState(Operation.Add)
+	const [operation, setOperation] = useState(0)
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaces, setDecimalPlaces] = useState(15)
 	const [view, setView] = useState(View.Basic)
-	const [paperTapeHistory, setPaperTapeHistory] = useState(Array<{ operands: number[]; operation: number; value: number; key: number; }>())
+	const [paperTapeHistory, setPaperTapeHistory] = useState<{ operands: number[]; operation: number; value: number; key: number; }[]>([])
+
 	const paperTapeRef = useRef<Element>(null)
 
 	useEffect(() => {
@@ -62,27 +57,42 @@ export default function App() {
 
 	const [[doubleFButton, zeroButton, doubleZeroButton], numberRow1, numberRow2, numberRow3, numberRow4, numberRow5] = [
 		[ { isDouble: true, number: 0xf }, { isDouble: false, number: 0x0 }, { isDouble: true, number: 0x0 } ],
-		[ { isDouble: false, number: 0x1 }, { isDouble: false, number: 0x2 }, { isDouble: false, number: 0x3 } ],
-		[ { isDouble: false, number: 0x4 }, { isDouble: false, number: 0x5 }, { isDouble: false, number: 0x6 } ],
-		[ { isDouble: false, number: 0x7 }, { isDouble: false, number: 0x8 }, { isDouble: false, number: 0x9 } ],
-		[ { isDouble: false, number: 0xa }, { isDouble: false, number: 0xb }, { isDouble: false, number: 0xc } ],
-		[ { isDouble: false, number: 0xd }, { isDouble: false, number: 0xe }, { isDouble: false, number: 0xf } ],
+		...[
+			[0x1, 0x2, 0x3],
+			[0x4, 0x5, 0x6],
+			[0x7, 0x8, 0x9],
+			[0xa, 0xb, 0xc],
+			[0xd, 0xe, 0xf]
+		].map(numbers => {
+			return numbers.map(number => {
+				return { isDouble: false, number }
+			})
+		})
 	].map(numbers => {
-		return numbers.map(data => {
-			return <NumberButton {...data} isLarge={!data.isDouble && data.number === 0 && (view === View.Basic || view === View.Scientific)} isBottomLeft={!data.isDouble && data.number === 0 && view === View.Basic} operand={operand} operands={operands} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} />
+		return numbers.map(({ isDouble, number }) => {
+			const symbol = number.toString(16).toUpperCase().repeat(isDouble ? 2 : 1)
+
+			return <SymbolButton isLarge={!isDouble && number === 0 && (view === View.Basic || view === View.Scientific)} isBottomLeft={!isDouble && number === 0 && view === View.Basic} symbol={symbol} style={Style.Number} onClick={() => {
+				if (canOverwrite) {
+					setOperandValue(operand, number)
+					setCanOverwrite(false)
+				} else {
+					setOperandValue(operand, isDouble ? ((operands[operand] * 10 + number) * 10 + number) : (operands[operand] * 10 + number))
+				}
+		
+				setShouldClearAll(false)
+			}} />
 		})
 	})
 
-	const [addButton, subtractButton, multiplyButton, divideButton] = [
-		{ id: 0, symbol: '+' },
-		{ id: 1, symbol: '−' },
-		{ id: 2, symbol: '×' },
-		{ id: 3, symbol: '÷' },
-	].map(({ id, symbol }) => {
-			return <OperationButton currentOperation={operation} operand={operand} operands={operands} newOperation={id} symbol={symbol} setOperandWithValue={setOperandWithValue} setOperation={setOperation} />
+	const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(({ symbol }, id) => {
+			return <SymbolButton symbol={symbol} style={Style.Operation} isSelected={operand === 1 && operation === id} onClick={() => {
+				setOperation(id)
+				setOperandWithValue(1, operands[0])
+			}} />
 	})
 
-	const equalButton = <SymbolButton style={Style.Operation} isBottomLeft={false} isLarge={view === View.Programmer} isSelected={false} symbol='=' onClick={() => {
+	const equalButton = <SymbolButton style={Style.Operation} isLarge={view === View.Programmer} symbol='=' onClick={() => {
 		const value = operations[operation].function(operands)
 
 		setPaperTapeHistory([...paperTapeHistory, {
@@ -92,14 +102,14 @@ export default function App() {
 			key: paperTapeKey
 		}])
 
-		paperTapeKey += 1
+		paperTapeKey++
 
 		setOperandWithValue(0, value)
 	}} />;
 
 	const basicRows = [
 		<>
-			<button className='value-button' onClick={() => {
+			<SymbolButton symbol={shouldClearAll ? 'AC' : 'C'} style={Style.Value} onClick={() => {
 				if (shouldClearAll) {
 					setOperandValue(1, 0)
 					setOperandWithValue(0, 0)
@@ -113,37 +123,33 @@ export default function App() {
 					
 					setShouldClearAll(true)
 				}
-			}}>
-				{shouldClearAll ? 'AC' : 'C'}
-			</button>
+			}} />
 
-			{Array<{ symbol: string, getNewValue: (value: number) => number }>(
+			{...Array<{ symbol: string, getNewValue: (value: number) => number }>(
 				{ symbol: '⁺⁄₋', getNewValue: value => -value },
 				{ symbol: '%', getNewValue: value => value / 100 }
 			).map(data => {
-				return <ValueButton {...data} isLarge={false} isBottomLeft={false} setCurrentValue={(value) => setOperandValue(operand, value)} currentValue={operands[operand]} />
+				return <ValueButton {...data} setCurrentValue={(value) => setOperandValue(operand, value)} currentValue={operands[operand]} />
 			})}
 
 			{divideButton}
 		</>,
 		<>
-			{numberRow3}
+			{...numberRow3}
 			{multiplyButton}
 		</>,
 		<>
-			{numberRow2}
+			{...numberRow2}
 			{subtractButton}
 		</>,
 		<>
-			{numberRow1}
+			{...numberRow1}
 			{addButton}
 		</>,
 		<>
 			{zeroButton}
 			
-			<button className='number-button'>
-				.
-			</button>
+			<SymbolButton symbol='.' style={Style.Number} onClick={() => {}}/>
 
 			{equalButton}
 		</>
@@ -191,26 +197,26 @@ export default function App() {
 		{ columnCount: 7, component: <>
 			<ValueButton symbol='AND' />
 			<ValueButton symbol='OR' />
-			{numberRow5}
+			{...numberRow5}
 			<ValueButton symbol='AC' />
 			<ValueButton symbol='C' />
 			<ValueButton symbol='NOR' />
 			<ValueButton symbol='XOR' />
-			{numberRow4}
+			{...numberRow4}
 			<ValueButton symbol='RoL' />
 			<ValueButton symbol='RoR' />
 			<ValueButton symbol='<<' />
 			<ValueButton symbol='>>' />
-			{numberRow3}
+			{...numberRow3}
 			<ValueButton symbol="2's" />
 			<ValueButton symbol="1's" />
 			<ValueButton symbol='X<<Y' />
 			<ValueButton symbol='X>>Y' />
-			{numberRow2}
+			{...numberRow2}
 			{divideButton}
 			{subtractButton}
 			<ValueButton isLarge={true} symbol='byte flip' />
-			{numberRow1}
+			{...numberRow1}
 			{multiplyButton}
 			{addButton}
 			<ValueButton isBottomLeft={true} isLarge={true} symbol='word flip' />
@@ -277,7 +283,7 @@ export default function App() {
 			<div style={{ overflowY: 'scroll', height: '200px' }}>
 				{paperTapeHistory.map((entry) => {
 					return <Fragment key={entry.key}>
-						{`${entry.operands[0]} ${operations[entry.operation].symbol} ${entry.operands[1]}`}
+						{`${entry.operands[0]} ${operations[entry.operation].symbolASCII} ${entry.operands[1]}`}
 						<br />
 						{`= ${entry.value}`}
 						<br />
