@@ -12,12 +12,10 @@ enum View {
 	Programmer
 }
 
-//con: creates a class that won't be used anywhere else
-//con: have to repeat types 2 times
 class Operation {
-	readonly symbol: string
-	readonly symbolASCII: string
-	readonly function: (operands: number[]) => number
+	readonly symbol
+	readonly symbolASCII
+	readonly function
 
 	constructor(symbol: string, symbolASCII: string, func: (operands: number[]) => number) {
 		this.symbol = symbol
@@ -30,33 +28,20 @@ const operations: readonly Operation[] = [
 	new Operation('+', '+', operands => operands[0] + operands[1]),
 	new Operation('−', '-', operands => operands[0] - operands[1]),
 	new Operation('×', '*', operands => operands[0] * operands[1]),
-	new Operation('÷', '/', operands => operands[0] / operands[1])
+	new Operation('÷', '/', operands => operands[0] / operands[1]),
 ]
-
-// con: creates a function that won't be used anywhere else
-// con: have to repeat types 2 times
-/*function createOperation(symbol: string, symbolASCII: string, func: (operands: number[]) => number) {
-	return { symbol, symbolASCII, function: func }
-}
-
-const operations: readonly { readonly symbol: string, readonly symbolASCII: string, readonly function: (operands: number[]) => number }[] = [
-	createOperation('+', '+', operands => operands[0] + operands[1]),
-	createOperation('−', '-', operands => operands[0] - operands[1]),
-	createOperation('×', '*', operands => operands[0] * operands[1]),
-	createOperation('÷', '/', operands => operands[0] / operands[1])
-]*/
 
 let paperTapeKey = 0
 
 export default function App() {
 	const [operandId, setOperandId] = useState(0)
 	const [operands, setOperands] = useState([0, 0])
-	const [operationId, setOperationId] = useState(0)
+	const [operation, setOperation] = useState(operations[0])
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaces, setDecimalPlaces] = useState(15)
 	const [view, setView] = useState(View.Basic)
-	const [paperTapeHistory, setPaperTapeHistory] = useState<{ operands: number[]; operationId: number; value: number; key: number; }[]>([])
+	const [paperTapeHistory, setPaperTapeHistory] = useState<{ operands: number[]; operation: Operation; value: number; key: number; }[]>([])
 
 	const paperTapeRef = useRef<Element>(null)
 
@@ -113,18 +98,18 @@ export default function App() {
 	})
 
 	const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(({ symbol }, id) => {
-			return <SymbolButton symbol={symbol} style={Style.Operation} isSelected={operandId === 1 && operationId === id} onClick={() => {
-				setOperationId(id)
+			return <SymbolButton symbol={symbol} style={Style.Operation} isSelected={operandId === 1 && operation === operations[id]} onClick={() => {
+				setOperation(operations[id])
 				setOperandWithValue(1, operands[0])
 			}} />
 	})
 
 	const equalButton = <SymbolButton style={Style.Operation} isLarge={view === View.Programmer} symbol='=' onClick={() => {
-		const value = operations[operationId].function(operands)
+		const value = operation.function(operands)
 
 		setPaperTapeHistory([...paperTapeHistory, {
 			operands: [...operands],
-			operationId,
+			operation,
 			value,
 			key: paperTapeKey
 		}])
@@ -140,7 +125,7 @@ export default function App() {
 				if (shouldClearAll) {
 					setOperandValue(1, 0)
 					setOperandWithValue(0, 0)
-					setOperationId(0)
+					setOperation(operations[0])
 				} else {
 					setOperandValue(operandId, 0)
 
@@ -310,7 +295,7 @@ export default function App() {
 			<div style={{ overflowY: 'scroll', height: '200px' }}>
 				{paperTapeHistory.map((entry) => {
 					return <Fragment key={entry.key}>
-						{`${entry.operands[0]} ${operations[entry.operationId].symbolASCII} ${entry.operands[1]}`}
+						{`${entry.operands[0]} ${entry.operation.symbolASCII} ${entry.operands[1]}`}
 						<br />
 						{`= ${entry.value}`}
 						<br />
