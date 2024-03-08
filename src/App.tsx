@@ -24,19 +24,17 @@ class Operation {
 	}
 }
 
-const operations: readonly Operation[] = [
-	new Operation('+', '+', operands => operands[0] + operands[1]),
-	new Operation('−', '-', operands => operands[0] - operands[1]),
-	new Operation('×', '*', operands => operands[0] * operands[1]),
-	new Operation('÷', '/', operands => operands[0] / operands[1]),
-]
+const addition = new Operation('+', '+', operands => operands[0] + operands[1])
+const subtraction = new Operation('−', '-', operands => operands[0] - operands[1])
+const multiplication = new Operation('×', '*', operands => operands[0] * operands[1])
+const division = new Operation('÷', '/', operands => operands[0] / operands[1])
 
 let paperTapeKey = 0
 
 export default function App() {
 	const [operandId, setOperandId] = useState(0)
 	const [operands, setOperands] = useState([0, 0])
-	const [operation, setOperation] = useState(operations[0])
+	const [operation, setOperation] = useState(addition)
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaces, setDecimalPlaces] = useState(15)
@@ -97,9 +95,9 @@ export default function App() {
 		})
 	})
 
-	const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(({ symbol }, id) => {
-			return <SymbolButton symbol={symbol} style={Style.Operation} isSelected={operandId === 1 && operation === operations[id]} onClick={() => {
-				setOperation(operations[id])
+	const [addButton, subtractButton, multiplyButton, divideButton] = [addition, subtraction, multiplication, division].map(thisOperation => {
+			return <SymbolButton symbol={thisOperation.symbol} style={Style.Operation} isSelected={operandId === 1 && operation === thisOperation} onClick={() => {
+				setOperation(thisOperation)
 				setOperandWithValue(1, operands[0])
 			}} />
 	})
@@ -125,7 +123,7 @@ export default function App() {
 				if (shouldClearAll) {
 					setOperandValue(1, 0)
 					setOperandWithValue(0, 0)
-					setOperation(operations[0])
+					setOperation(addition)
 				} else {
 					setOperandValue(operandId, 0)
 
