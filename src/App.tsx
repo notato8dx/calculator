@@ -41,10 +41,10 @@ export default function App() {
 	const [view, setView] = useState(View.Basic)
 	const [paperTapeHistory, setPaperTapeHistory] = useState<{ operands: number[]; operation: Operation; value: number; key: number; }[]>([])
 
-	const paperTapeRef = useRef<Element>(null)
+	const paperTapeRef = useRef<Element>(null!)
 
 	useEffect(() => {
-		paperTapeRef.current?.scrollIntoView()
+		paperTapeRef.current.scrollIntoView()
 	}, [paperTapeHistory])
 
 	function handleSetOperand(operandId: number) {
@@ -135,7 +135,7 @@ export default function App() {
 				}
 			}} />
 
-			{Array<[string, (value: number) => number]>(
+			{...Array<[string, (value: number) => number]>(
 				['⁺⁄₋', value => -value],
 				['%', value => value / 100],
 			).map(([symbol, getNewValue]) => {
