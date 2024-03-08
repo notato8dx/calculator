@@ -12,12 +12,39 @@ enum View {
 	Programmer
 }
 
-const operations: readonly { readonly symbol: string, readonly symbolASCII: string, readonly function: (operands: number[]) => number }[] = [
-	{ symbol: '+', symbolASCII: '+', function: operands => operands[0] + operands[1] },
-	{ symbol: '−', symbolASCII: '-', function: operands => operands[0] - operands[1] },
-	{ symbol: '×', symbolASCII: '*', function: operands => operands[0] * operands[1] },
-	{ symbol: '÷', symbolASCII: '/', function: operands => operands[0] / operands[1] }
+//con: creates a class that won't be used anywhere else
+//con: have to repeat types 2 times
+class Operation {
+	readonly symbol: string
+	readonly symbolASCII: string
+	readonly function: (operands: number[]) => number
+
+	constructor(symbol: string, symbolASCII: string, func: (operands: number[]) => number) {
+		this.symbol = symbol
+		this.symbolASCII = symbolASCII
+		this.function = func
+	}
+}
+
+const operations: readonly Operation[] = [
+	new Operation('+', '+', operands => operands[0] + operands[1]),
+	new Operation('−', '-', operands => operands[0] - operands[1]),
+	new Operation('×', '*', operands => operands[0] * operands[1]),
+	new Operation('÷', '/', operands => operands[0] / operands[1])
 ]
+
+// con: creates a function that won't be used anywhere else
+// con: have to repeat types 2 times
+/*function createOperation(symbol: string, symbolASCII: string, func: (operands: number[]) => number) {
+	return { symbol, symbolASCII, function: func }
+}
+
+const operations: readonly { readonly symbol: string, readonly symbolASCII: string, readonly function: (operands: number[]) => number }[] = [
+	createOperation('+', '+', operands => operands[0] + operands[1]),
+	createOperation('−', '-', operands => operands[0] - operands[1]),
+	createOperation('×', '*', operands => operands[0] * operands[1]),
+	createOperation('÷', '/', operands => operands[0] / operands[1])
+]*/
 
 let paperTapeKey = 0
 
@@ -55,8 +82,8 @@ export default function App() {
 		setOperandValue(operandId, value)
 	}
 
-	const [[doubleFButton, zeroButton, doubleZeroButton], numberRow1, numberRow2, numberRow3, numberRow4, numberRow5] = [
-		[ { isDouble: true, number: 0xf }, { isDouble: false, number: 0x0 }, { isDouble: true, number: 0x0 } ],
+	const [[doubleFButton, zeroButton, doubleZeroButton], numberRow1, numberRow2, numberRow3, numberRow4, numberRow5] = Array<[number, boolean][]>(
+		[[0xf, true], [0x0, false], [0x0, true]],
 		...[
 			[0x1, 0x2, 0x3],
 			[0x4, 0x5, 0x6],
@@ -64,12 +91,12 @@ export default function App() {
 			[0xa, 0xb, 0xc],
 			[0xd, 0xe, 0xf]
 		].map(numbers => {
-			return numbers.map(number => {
-				return { isDouble: false, number }
+			return numbers.map<[number, boolean]>((number) => {
+				return [number, false]
 			})
 		})
-	].map(numbers => {
-		return numbers.map(({ isDouble, number }) => {
+	).map(numbers => {
+		return numbers.map(([number, isDouble]) => {
 			const symbol = number.toString(16).toUpperCase().repeat(isDouble ? 2 : 1)
 
 			return <SymbolButton isLarge={!isDouble && number === 0 && (view === View.Basic || view === View.Scientific)} isBottomLeft={!isDouble && number === 0 && view === View.Basic} symbol={symbol} style={Style.Number} onClick={() => {
@@ -125,11 +152,11 @@ export default function App() {
 				}
 			}} />
 
-			{...Array<{ symbol: string, getNewValue: (value: number) => number }>(
-				{ symbol: '⁺⁄₋', getNewValue: value => -value },
-				{ symbol: '%', getNewValue: value => value / 100 }
-			).map(data => {
-				return <ValueButton {...data} setCurrentValue={(value) => setOperandValue(operandId, value)} currentValue={operands[operandId]} />
+			{Array<[string, (value: number) => number]>(
+				['⁺⁄₋', value => -value],
+				['%', value => value / 100],
+			).map(([symbol, getNewValue]) => {
+				return <ValueButton symbol={symbol} getNewValue={getNewValue} setCurrentValue={(value) => setOperandValue(operandId, value)} currentValue={operands[operandId]} />
 			})}
 
 			{divideButton}
