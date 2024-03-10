@@ -14,7 +14,7 @@ export default function BasicButtonGrid({ setOperandValue, operandId, operationI
 
 	const operand = operands[operandId]
 	
-	return <>
+	return <>	
 		{shouldClearAll ? <ClearAllButton setOperandValue={setOperandValue} setOperandWithValue={setOperandWithValue} /> : <ClearButton operandId={operandId} handleSetOperand={handleSetOperand} setOperandValue={setOperandValue} setShouldClearAll={setShouldClearAll} />}
 		<NegateButton setCurrentValue={setCurrentValue} currentValue={operand} />
 		<PercentButton setCurrentValue={setCurrentValue} currentValue={operand} />

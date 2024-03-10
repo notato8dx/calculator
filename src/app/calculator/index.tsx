@@ -8,12 +8,12 @@ export default function Calculator({ decimalPlaces, isShowingSeparators, view, p
 	const [operationId, setOperationId] = useState(0)
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 
-	function handleSetOperand(operandId: number) {
+	function handleSetOperandId(operandId: number) {
 		setOperandId(operandId)
 		setCanOverwrite(true)
 	}
 
-	function setOperandValue(operandId: number, value: number) {
+	function setOperand(operandId: number, value: number) {
 		setOperands([
 			...operands.slice(0, operandId),
 			value,
@@ -21,9 +21,9 @@ export default function Calculator({ decimalPlaces, isShowingSeparators, view, p
 		])
 	}
 
-	function setOperandWithValue(operandId: number, value: number) {
-		handleSetOperand(operandId)
-		setOperandValue(operandId, value)
+	function setOperandAndOperandId(operandId: number, value: number) {
+		setOperand(operandId, value)
+		handleSetOperandId(operandId)
 	}
 	
 	const ButtonGrid = views[view].component
@@ -39,7 +39,7 @@ export default function Calculator({ decimalPlaces, isShowingSeparators, view, p
 		</div>
 
 		<div id='buttons' style={{ gridTemplateColumns: `repeat(${views[view].columnCount}, 58px)` }}>
-			<ButtonGrid setOperandValue={setOperandValue} operandId={operandId} operationId={operationId} setOperandWithValue={setOperandWithValue} setOperationId={setOperationId} shouldClearAll={shouldClearAll} setShouldClearAll={setShouldClearAll} handleSetOperand={handleSetOperand} operands={operands} paperTapeHistory={paperTapeHistory} setPaperTapeHistory={setPaperTapeHistory} view={view} />
+			<ButtonGrid setOperandValue={setOperand} operandId={operandId} operationId={operationId} setOperandWithValue={setOperandAndOperandId} setOperationId={setOperationId} shouldClearAll={shouldClearAll} setShouldClearAll={setShouldClearAll} handleSetOperand={handleSetOperandId} operands={operands} paperTapeHistory={paperTapeHistory} setPaperTapeHistory={setPaperTapeHistory} view={view} />
 		</div>
 	</div>
 }
