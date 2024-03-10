@@ -1,4 +1,4 @@
-import { Style } from '../types'
+import { Style } from '../utils'
 
 const styles = ['operation-button', 'value-button', 'number-button']
 

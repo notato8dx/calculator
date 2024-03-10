@@ -1,28 +1,9 @@
-import { Fragment, RefObject, useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { SymbolButton, ValueButton } from './buttons'
-import Panel from './Panel'
-import Label from './Label'
-import { canOverwrite, setCanOverwrite } from './state'
-import { Style } from './types'
-import './App.css'
-
-enum View {
-	Basic,
-	Scientific,
-	Programmer
-}
-
-class Operation {
-	readonly symbol
-	readonly symbolASCII
-	readonly function
-
-	constructor(symbol: string, symbolASCII: string, func: (operands: number[]) => number) {
-		this.symbol = symbol
-		this.symbolASCII = symbolASCII
-		this.function = func
-	}
-}
+import PaperTapePanel from './paper-tape-panel'
+import SettingsPanel from './settings-panel'
+import { Operation, PaperTapeEntry, Style, View, canOverwrite, setCanOverwrite } from './utils'
+import './styles.css'
 
 const addition = new Operation('+', '+', operands => operands[0] + operands[1])
 const subtraction = new Operation('−', '-', operands => operands[0] - operands[1])
@@ -39,13 +20,7 @@ export default function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaces, setDecimalPlaces] = useState(15)
 	const [view, setView] = useState(View.Basic)
-	const [paperTapeHistory, setPaperTapeHistory] = useState<{ operands: number[]; operation: Operation; value: number; key: number; }[]>([])
-
-	const paperTapeRef = useRef<Element>(null!)
-
-	useEffect(() => {
-		paperTapeRef.current.scrollIntoView()
-	}, [paperTapeHistory])
+	const [paperTapeHistory, setPaperTapeHistory] = useState<PaperTapeEntry[]>([])
 
 	function handleSetOperand(operandId: number) {
 		setOperandId(operandId)
@@ -253,62 +228,7 @@ export default function App() {
 			</div>
 		</div>
 
-		<Panel name='Settings'>
-			{views.map(({ name }, id) => {
-				return <div key={id}>
-					<input type='radio' id={name} value={id} name='view' defaultChecked={id == 0} onChange={({ target: { value } }) => {
-						setView(
-							parseInt(value)
-						)
-					}}/>
-
-					<Label htmlFor={name} text={name} />
-				</div>
-			})}
-
-			<hr />
-
-			<div>
-				<input type='checkbox' id='separators' onChange={({ target: { checked } }) => {
-					setIsShowingSeparators(checked)
-				}} />
-
-				<Label htmlFor='separators' text='Show Thousands Separators' />
-			</div>
-
-			<hr />
-
-			<div>
-				<Label htmlFor='decimalPlaces' text='Decimal Places' />
-
-				<input type='number' min={0} max={15} defaultValue={15} id='decimalPlaces' onChange={({ target: { value } }) => {
-					setDecimalPlaces(
-						parseInt(value)
-					)
-				}} />
-			</div>
-		</Panel>
-
-		<Panel name='Paper Tape'>
-			<div style={{ overflowY: 'scroll', height: '200px' }}>
-				{paperTapeHistory.map((entry) => {
-					return <Fragment key={entry.key}>
-						{`${entry.operands[0]} ${entry.operation.symbolASCII} ${entry.operands[1]}`}
-						<br />
-						{`= ${entry.value}`}
-						<br />
-						<br />
-					</Fragment>
-				})}
-
-				<div ref={paperTapeRef as RefObject<HTMLDivElement>} />
-			</div>
-
-			<button style={{ display: 'block', marginLeft: 'auto' }} onClick={() => {
-				setPaperTapeHistory([])
-			}}>
-				Clear
-			</button>
-		</Panel>
+		<SettingsPanel views={views} setView={setView} setIsShowingSeparators={setIsShowingSeparators} setDecimalPlaces={setDecimalPlaces} />
+		<PaperTapePanel history={paperTapeHistory} setHistory={setPaperTapeHistory} />
 	</>
 }
