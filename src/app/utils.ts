@@ -1,3 +1,7 @@
+import BasicButtonGrid from './calculator/basic-button-grid'
+import ProgrammerButtonGrid from './calculator/programmer-button-grid'
+import ScientificButtonGrid from './calculator/scientific-button-grid'
+
 export class Operation {
 	readonly symbol
 	readonly symbolASCII
@@ -12,15 +16,9 @@ export class Operation {
 
 export interface PaperTapeEntry {
 	operands: number[]
-	operation: Operation
+	operationId: number
 	value: number
 	key: number
-}
-
-export enum Style {
-	Operation,
-	Value,
-	Number
 }
 
 export enum View {
@@ -29,8 +27,15 @@ export enum View {
 	Programmer
 }
 
-export let canOverwrite = true
+export const views = [
+	{ name: 'Basic', columnCount: 4, component: BasicButtonGrid },
+	{ name: 'Scientific', columnCount: 10, component: ScientificButtonGrid },
+	{ name: 'Programmer', columnCount: 7, component: ProgrammerButtonGrid }
+]
 
-export function setCanOverwrite(value: boolean) {
-	canOverwrite = value
-}
+export const operations = [
+	new Operation('+', '+', operands => operands[0] + operands[1]),
+	new Operation('−', '-', operands => operands[0] - operands[1]),
+	new Operation('×', '*', operands => operands[0] * operands[1]),
+	new Operation('÷', '/', operands => operands[0] / operands[1])
+]

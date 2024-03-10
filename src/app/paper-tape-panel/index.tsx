@@ -1,6 +1,6 @@
 import { Fragment, RefObject, useEffect, useRef } from 'react'
 import Panel from '../panel'
-import { PaperTapeEntry } from '../utils'
+import { PaperTapeEntry, operations } from '../utils'
 
 export default function PaperTape({ history, setHistory }: { history: PaperTapeEntry[], setHistory: React.Dispatch<React.SetStateAction<PaperTapeEntry[]>> }) {
 	const paperTapeRef = useRef<Element>(null!)
@@ -13,7 +13,7 @@ export default function PaperTape({ history, setHistory }: { history: PaperTapeE
 		<div style={{ overflowY: 'scroll', height: '200px' }}>
 			{history.map((entry) => {
 				return <Fragment key={entry.key}>
-					{`${entry.operands[0]} ${entry.operation.symbolASCII} ${entry.operands[1]}`}
+					{`${entry.operands[0]} ${operations[entry.operationId].symbolASCII} ${entry.operands[1]}`}
 					<br />
 					{`= ${entry.value}`}
 					<br />
