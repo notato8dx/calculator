@@ -1,0 +1,35 @@
+.value-button {
+	background-color: #4c4c4c
+}
+
+.value-button:active {
+	background-color: var(--gray-color)
+}
+
+.number-button {
+	background-color: var(--gray-color)
+}
+
+.number-button:active {
+	background-color: #a5a5a5
+}
+
+.operation-button {
+	background-color: #ff9d0b
+}
+
+.operation-button:active {
+	background-color: #cb7d08
+}
+
+.selected {
+	margin: 1px
+}
+
+.large-button {
+	grid-column: span 2;
+}
+
+#bottom-left-button {
+	border-bottom-left-radius: 12px
+}

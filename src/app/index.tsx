@@ -3,7 +3,6 @@ import Calculator from './calculator'
 import PaperTapePanel from './paper-tape-panel'
 import SettingsPanel from './settings-panel'
 import { PaperTapeEntry } from './utils'
-import './styles.css'
 
 export default function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)

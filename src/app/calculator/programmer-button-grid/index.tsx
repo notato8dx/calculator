@@ -36,13 +36,13 @@ export default function ProgrammerButtonGrid({ setOperand, operandId, operationI
 		<NumberButton number={0x6} operandId={operandId} operands={operands} setShouldClearAll={setShouldClearAll} setOperand={setOperand}/>
 		<OperationButton id={3} operandId={operandId} operands={operands} operationId={operationId} setOperationId={setOperationId} setOperandAndOperandId={setOperandAndOperandId} />
 		<OperationButton id={1} operandId={operandId} operands={operands} operationId={operationId} setOperationId={setOperationId} setOperandAndOperandId={setOperandAndOperandId} />
-		<ValueButton isLarge={true} symbol='byte flip' />
+		<ValueButton isLarge symbol='byte flip' />
 		<NumberButton number={0x1} operandId={operandId} operands={operands} setShouldClearAll={setShouldClearAll} setOperand={setOperand}/>
 		<NumberButton number={0x2} operandId={operandId} operands={operands} setShouldClearAll={setShouldClearAll} setOperand={setOperand}/>
 		<NumberButton number={0x3} operandId={operandId} operands={operands} setShouldClearAll={setShouldClearAll} setOperand={setOperand}/>
 		<OperationButton id={2} operandId={operandId} operands={operands} operationId={operationId} setOperationId={setOperationId} setOperandAndOperandId={setOperandAndOperandId} />
 		<OperationButton id={0} operandId={operandId} operands={operands} operationId={operationId} setOperationId={setOperationId} setOperandAndOperandId={setOperandAndOperandId} />
-		<ValueButton isBottomLeft={true} isLarge={true} symbol='word flip' />
+		<ValueButton isBottomLeft isLarge symbol='word flip' />
 		<NumberButton number={0xf} isDouble operandId={operandId} operands={operands} setShouldClearAll={setShouldClearAll} setOperand={setOperand}/>
 		<NumberButton number={0x0} operandId={operandId} operands={operands} setShouldClearAll={setShouldClearAll} setOperand={setOperand}/>
 		<NumberButton number={0x0} isDouble operandId={operandId} operands={operands} setShouldClearAll={setShouldClearAll} setOperand={setOperand}/>

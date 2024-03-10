@@ -1,4 +1,5 @@
 import { Style } from '../utils'
+import './styles.css'
 
 const styles = ['operation-button', 'value-button', 'number-button']
 

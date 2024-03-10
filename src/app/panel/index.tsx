@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import './styles.css'
 
 export default function Panel({ name, children }: { name: string, children: ReactNode } ) {
 	return <div className='panel'>

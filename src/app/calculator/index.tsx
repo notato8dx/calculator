@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { setCanOverwrite } from './utils.ts'
+import { setCanOverwrite } from './utils'
 import { PaperTapeEntry, views } from '../utils'
+import './styles.css'
 
 export default function Calculator({ decimalPlaces, isShowingSeparators, view, paperTapeHistory, setPaperTapeHistory }: { decimalPlaces: number, isShowingSeparators: boolean, view: number, paperTapeHistory: PaperTapeEntry[], setPaperTapeHistory: React.Dispatch<React.SetStateAction<PaperTapeEntry[]>> }) {
 	const [operandId, setOperandId] = useState(0)
