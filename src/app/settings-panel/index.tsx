@@ -1,8 +1,8 @@
 import Label from './label'
 import Panel from '../panel'
-import { View, views } from '../utils'
+import { views } from '../utils'
 
-export default function SettingsPanel({ setView, setIsShowingSeparators, setDecimalPlaces }: { setView: React.Dispatch<React.SetStateAction<View>>, setIsShowingSeparators: React.Dispatch<React.SetStateAction<boolean>>, setDecimalPlaces: React.Dispatch<React.SetStateAction<number>> }) {
+export default function SettingsPanel({ setView, setIsShowingSeparators, setDecimalPlaces }: { setView: React.Dispatch<React.SetStateAction<number>>, setIsShowingSeparators: React.Dispatch<React.SetStateAction<boolean>>, setDecimalPlaces: React.Dispatch<React.SetStateAction<number>> }) {
 	return <Panel name='Settings'>
 		{views.map(({ name }, id) => {
 			return <div key={id}>

@@ -2,13 +2,13 @@ import { useState } from 'react'
 import Calculator from './calculator'
 import PaperTapePanel from './paper-tape-panel'
 import SettingsPanel from './settings-panel'
-import { PaperTapeEntry, View } from './utils'
+import { PaperTapeEntry } from './utils'
 import './styles.css'
 
 export default function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaces, setDecimalPlaces] = useState(15)
-	const [viewId, setViewId] = useState(View.Basic)
+	const [viewId, setViewId] = useState(0)
 	const [paperTapeHistory, setPaperTapeHistory] = useState<PaperTapeEntry[]>([])
 
 	return <>

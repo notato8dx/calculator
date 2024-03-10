@@ -21,12 +21,6 @@ export interface PaperTapeEntry {
 	key: number
 }
 
-export enum View {
-	Basic,
-	Scientific,
-	Programmer
-}
-
 export const views = [
 	{ name: 'Basic', columnCount: 4, component: BasicButtonGrid },
 	{ name: 'Scientific', columnCount: 10, component: ScientificButtonGrid },

@@ -1,3 +1,5 @@
+import ClearButton from '../clear-button'
+import ClearAllButton from '../clear-all-button'
 import EqualButton from '../equal-button'
 import NumberButton from '../number-button'
 import OperationButton from '../operation-button'
@@ -11,8 +13,8 @@ export default function ProgrammerButtonGrid({ setOperand, operandId, operationI
 		<NumberButton number={0xd} operandId={operandId} operands={operands} setShouldClearAll={setShouldClearAll} setOperand={setOperand}/>
 		<NumberButton number={0xe} operandId={operandId} operands={operands} setShouldClearAll={setShouldClearAll} setOperand={setOperand}/>
 		<NumberButton number={0xf} operandId={operandId} operands={operands} setShouldClearAll={setShouldClearAll} setOperand={setOperand}/>
-		<ValueButton symbol='AC' />
-		<ValueButton symbol='C' />
+		<ClearAllButton setOperand={setOperand} setOperandAndOperandId={setOperandAndOperandId} />
+		<ClearButton handleSetOperand={handleSetOperand} setOperand={setOperand} setShouldClearAll={setShouldClearAll} />
 		<ValueButton symbol='NOR' />
 		<ValueButton symbol='XOR' />
 		<NumberButton number={0xa} operandId={operandId} operands={operands} setShouldClearAll={setShouldClearAll} setOperand={setOperand}/>

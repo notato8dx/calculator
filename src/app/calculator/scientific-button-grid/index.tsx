@@ -17,9 +17,9 @@ export default function ScientificButtonGrid({ setOperand, operandId, operationI
 		<ValueButton symbol='m+' />
 		<ValueButton symbol='m−' />
 		<ValueButton symbol='mr' />
-		{shouldClearAll ? <ClearAllButton setOperand={setOperand} setOperandAndOperandId={setOperandAndOperandId} /> : <ClearButton operandId={operandId} handleSetOperand={handleSetOperand} setOperand={setOperand} setShouldClearAll={setShouldClearAll} />}
-		<NegateButton setOperand={setOperand} operand={operand} />
-		<PercentButton setOperand={setOperand} operand={operand} />
+		{shouldClearAll ? <ClearAllButton setOperand={setOperand} setOperandAndOperandId={setOperandAndOperandId} /> : <ClearButton handleSetOperand={handleSetOperand} setOperand={setOperand} setShouldClearAll={setShouldClearAll} />}
+		<NegateButton setOperand={setOperand} operandId={operandId} operands={operands} />
+		<PercentButton setOperand={setOperand} operandId={operandId} operands={operands} />
 		<OperationButton id={3} operandId={operandId} operands={operands} operationId={operationId} setOperationId={setOperationId} setOperandAndOperandId={setOperandAndOperandId} />
 		<ValueButton symbol='2nd' />
 		<ValueButton symbol='x²' />
