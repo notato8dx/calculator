@@ -1,5 +1,5 @@
 import ValueButton from '../value-button'
 
-export default function NegateButton({ currentValue, setCurrentValue }) {
-	return <ValueButton symbol={'⁺⁄₋'} getNewValue={value => -value} setCurrentValue={setCurrentValue} currentValue={currentValue} />
+export default function NegateButton(props: { setOperand: (value: number, id?: number) => void, operandId: number, operands: number[] }) {
+	return <ValueButton {...props} symbol={'⁺⁄₋'} getNewValue={value => -value}  />
 }

@@ -1,29 +1,29 @@
 import { useState } from 'react'
 import { setCanOverwrite } from './utils.ts'
-import { views } from '../utils'
+import { PaperTapeEntry, views } from '../utils'
 
-export default function Calculator({ decimalPlaces, isShowingSeparators, view, paperTapeHistory, setPaperTapeHistory }: { decimalPlaces: number, isShowingSeparators: boolean, view: number }) {
+export default function Calculator({ decimalPlaces, isShowingSeparators, view, paperTapeHistory, setPaperTapeHistory }: { decimalPlaces: number, isShowingSeparators: boolean, view: number, paperTapeHistory: PaperTapeEntry[], setPaperTapeHistory: React.Dispatch<React.SetStateAction<PaperTapeEntry[]>> }) {
 	const [operandId, setOperandId] = useState(0)
 	const [operands, setOperands] = useState([0, 0])
 	const [operationId, setOperationId] = useState(0)
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 
-	function handleSetOperandId(operandId: number) {
-		setOperandId(operandId)
+	function handleSetOperandId(id: number) {
+		setOperandId(id)
 		setCanOverwrite(true)
 	}
 
-	function setOperand(operandId: number, value: number) {
+	function setOperand(value: number, id: number = operandId) {
 		setOperands([
-			...operands.slice(0, operandId),
+			...operands.slice(0, id),
 			value,
-			...operands.slice(operandId + 1)
+			...operands.slice(id + 1)
 		])
 	}
 
-	function setOperandAndOperandId(operandId: number, value: number) {
-		setOperand(operandId, value)
-		handleSetOperandId(operandId)
+	function setOperandAndOperandId(value: number, id: number) {
+		setOperand(value, id)
+		handleSetOperandId(id)
 	}
 	
 	const ButtonGrid = views[view].component
@@ -39,7 +39,7 @@ export default function Calculator({ decimalPlaces, isShowingSeparators, view, p
 		</div>
 
 		<div id='buttons' style={{ gridTemplateColumns: `repeat(${views[view].columnCount}, 58px)` }}>
-			<ButtonGrid setOperandValue={setOperand} operandId={operandId} operationId={operationId} setOperandWithValue={setOperandAndOperandId} setOperationId={setOperationId} shouldClearAll={shouldClearAll} setShouldClearAll={setShouldClearAll} handleSetOperand={handleSetOperandId} operands={operands} paperTapeHistory={paperTapeHistory} setPaperTapeHistory={setPaperTapeHistory} view={view} />
+			<ButtonGrid setOperand={setOperand} operandId={operandId} operationId={operationId} setOperandAndOperandId={setOperandAndOperandId} setOperationId={setOperationId} shouldClearAll={shouldClearAll} setShouldClearAll={setShouldClearAll} handleSetOperand={handleSetOperandId} operands={operands} paperTapeHistory={paperTapeHistory} setPaperTapeHistory={setPaperTapeHistory} />
 		</div>
 	</div>
 }

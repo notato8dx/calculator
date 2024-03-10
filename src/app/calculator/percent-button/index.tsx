@@ -1,5 +1,5 @@
 import ValueButton from '../value-button'
 
-export default function PercentButton({ currentValue, setCurrentValue }) {
-	return <ValueButton symbol={'%'} getNewValue={value => value / 100} setCurrentValue={setCurrentValue} currentValue={currentValue} />
+export default function PercentButton(props: { setOperand: (value: number, id?: number) => void, operandId: number, operands: number[] }) {
+	return <ValueButton {...props} symbol={'%'} getNewValue={value => value / 100} />
 }

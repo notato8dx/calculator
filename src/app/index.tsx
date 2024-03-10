@@ -8,12 +8,12 @@ import './styles.css'
 export default function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaces, setDecimalPlaces] = useState(15)
-	const [view, setView] = useState(View.Basic)
+	const [viewId, setViewId] = useState(View.Basic)
 	const [paperTapeHistory, setPaperTapeHistory] = useState<PaperTapeEntry[]>([])
 
 	return <>
-		<Calculator decimalPlaces={decimalPlaces} isShowingSeparators={isShowingSeparators} view={view} paperTapeHistory={paperTapeHistory} setPaperTapeHistory={setPaperTapeHistory} />
-		<SettingsPanel setView={setView} setIsShowingSeparators={setIsShowingSeparators} setDecimalPlaces={setDecimalPlaces} />
+		<Calculator decimalPlaces={decimalPlaces} isShowingSeparators={isShowingSeparators} view={viewId} paperTapeHistory={paperTapeHistory} setPaperTapeHistory={setPaperTapeHistory} />
+		<SettingsPanel setView={setViewId} setIsShowingSeparators={setIsShowingSeparators} setDecimalPlaces={setDecimalPlaces} />
 		<PaperTapePanel history={paperTapeHistory} setHistory={setPaperTapeHistory} />
 	</>
 }
