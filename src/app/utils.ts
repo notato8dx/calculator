@@ -14,10 +14,13 @@ export class Operation {
 	}
 }
 
-export interface PaperTapeEntry {
+export interface PaperTapeData {
 	operands: number[]
 	operationId: number
 	value: number
+}
+
+export interface PaperTapeEntry extends PaperTapeData {
 	key: number
 }
 

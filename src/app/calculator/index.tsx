@@ -64,7 +64,7 @@ export default function Calculator({ localeStringOptions, view: { component: But
 
 	function handleEqualClick() {
 		const value = operations[operationId].function(operands)
-		addPaperTapeEntry(operands, operationId, value)
+		addPaperTapeEntry({ operands, operationId, value })
 		setOperandAndOperandId(value, 0)
 	}
 
