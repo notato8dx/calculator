@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { setCanOverwrite } from './utils'
-import { PaperTapeEntry, views } from '../utils'
+import { canOverwrite, setCanOverwrite } from './utils'
+import { operations } from '../utils'
 import './styles.css'
 
-export default function Calculator({ decimalPlaces, isShowingSeparators, view, paperTapeHistory, setPaperTapeHistory }: { decimalPlaces: number, isShowingSeparators: boolean, view: number, paperTapeHistory: PaperTapeEntry[], setPaperTapeHistory: React.Dispatch<React.SetStateAction<PaperTapeEntry[]>> }) {
+export default function Calculator({ localeStringOptions, view: { component: ButtonGrid, columnCount }, addPaperTapeEntry }) {
 	const [operandId, setOperandId] = useState(0)
 	const [operands, setOperands] = useState([0, 0])
 	const [operationId, setOperationId] = useState(0)
@@ -26,21 +26,60 @@ export default function Calculator({ decimalPlaces, isShowingSeparators, view, p
 		setOperand(value, id)
 		handleSetOperandId(id)
 	}
-	
-	const ButtonGrid = views[view].component
+
+	function handleOperationClick(id: number) {
+		setOperationId(id)
+		setOperandAndOperandId(operands[0], 1)
+	}
+
+	function handleNumberClick(number: number) {
+		if (canOverwrite) {
+			setOperand(number)
+			setCanOverwrite(false)
+		} else {
+			setOperand(operands[operandId] * 10 + number)
+		}
+
+		setShouldClearAll(false)
+	}
+
+	function handleClearAllClick() {
+		setOperand(0, 1)
+		setOperandAndOperandId(0, 0)
+	}
+
+	function handleClearClick() {
+		setOperand(0)
+
+		if (canOverwrite) {
+			handleSetOperandId(0)	
+		}
+		
+		setShouldClearAll(true)
+	}
+
+	function handleValueClick(getNewValue: (value: number) => number) {
+		setOperand(getNewValue(operands[operandId]))
+	}
+
+	function handleEqualClick() {
+		const value = operations[operationId].function(operands)
+		addPaperTapeEntry(operands, operationId, value)
+		setOperandAndOperandId(value, 0)
+	}
+
+	const areOperationsSelected = operations.map((_, id) => operandId === 1 && operationId === id)
 
 	return <div id='calculator'>
 		<div id='display'>
 			{operands[operandId].toLocaleString(undefined, {
-				maximumFractionDigits: decimalPlaces,
-				useGrouping: isShowingSeparators,
-				// @ts-expect-error "negative" is falsely reported as an invalid option. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#signdisplay
+				...localeStringOptions,
 				signDisplay: 'negative'
 			})}
 		</div>
 
-		<div id='buttons' style={{ gridTemplateColumns: `repeat(${views[view].columnCount}, 58px)` }}>
-			<ButtonGrid setOperand={setOperand} operandId={operandId} operationId={operationId} setOperandAndOperandId={setOperandAndOperandId} setOperationId={setOperationId} shouldClearAll={shouldClearAll} setShouldClearAll={setShouldClearAll} handleSetOperand={handleSetOperandId} operands={operands} paperTapeHistory={paperTapeHistory} setPaperTapeHistory={setPaperTapeHistory} />
+		<div id='buttons' style={{ gridTemplateColumns: `repeat(${columnCount}, 58px)` }}>
+			<ButtonGrid areOperationsSelected={areOperationsSelected} handleOperationClick={handleOperationClick} handleNumberClick={handleNumberClick} handleClearAllClick={handleClearAllClick} handleClearClick={handleClearClick} handleValueClick={handleValueClick} handleEqualClick={handleEqualClick} shouldClearAll={shouldClearAll} />
 		</div>
 	</div>
 }
