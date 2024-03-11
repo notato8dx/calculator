@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import SymbolButton from '../symbol-button'
 import { Style } from '../utils'
-import { operations } from '../../utils'
+import { ButtonGridProperties, operations } from '../../utils'
 
-export default function BasicButtonGrid({ areOperationsSelected, handleOperationClick, handleNumberClick, handleClearAllClick, handleClearClick, handleValueClick, handleEqualClick, shouldClearAll }) {	
+export default function BasicButtonGrid({ areOperationsSelected, handleOperationClick, handleNumberClick, handleClearAllClick, handleClearClick, handleValueClick, handleEqualClick }: ButtonGridProperties) {	
+	const [shouldClearAll, setShouldClearAll] = useState(true)
+
 	const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(({ symbol }, id) => {
 		return <SymbolButton style={Style.Operation} isSelected={areOperationsSelected[id]} onClick={() => handleOperationClick(id)}>
 			{symbol}
@@ -10,7 +13,10 @@ export default function BasicButtonGrid({ areOperationsSelected, handleOperation
 	})
 
 	const numberButtons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((number, id) => {
-		return <SymbolButton isLarge={id === 0} isBottomLeft={id === 0} style={Style.Number} onClick={() => handleNumberClick(number)}>
+		return <SymbolButton isLarge={id === 0} isBottomLeft={id === 0} style={Style.Number} onClick={() => {
+			handleNumberClick(number)
+			setShouldClearAll(false)
+		}}>
 			{number.toString(16).toUpperCase()}
 		</SymbolButton>
 	})
@@ -18,7 +24,10 @@ export default function BasicButtonGrid({ areOperationsSelected, handleOperation
 	return <>
 		{shouldClearAll ? <SymbolButton style={Style.Value} onClick={handleClearAllClick}>
 			AC
-		</SymbolButton> : <SymbolButton style={Style.Value} onClick={handleClearClick}>
+		</SymbolButton> : <SymbolButton style={Style.Value} onClick={() => {
+			handleClearClick()
+			setShouldClearAll(true)
+		}}>
 			C
 		</SymbolButton>}
 

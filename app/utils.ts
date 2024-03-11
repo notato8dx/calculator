@@ -2,7 +2,7 @@ import BasicButtonGrid from './calculator/basic-button-grid'
 import ProgrammerButtonGrid from './calculator/programmer-button-grid'
 import ScientificButtonGrid from './calculator/scientific-button-grid'
 
-export class Operation {
+class Operation {
 	readonly symbol
 	readonly symbolASCII
 	readonly function
@@ -12,6 +12,28 @@ export class Operation {
 		this.symbolASCII = symbolASCII
 		this.function = func
 	}
+}
+
+class View {
+	readonly name
+	readonly columnCount
+	readonly component
+
+	constructor(name: string, columnCount: number, component: (properties: ButtonGridProperties) => JSX.Element) {
+		this.name = name
+		this.columnCount = columnCount
+		this.component = component
+	}
+}
+
+export interface ButtonGridProperties {
+	areOperationsSelected: boolean[]
+	handleOperationClick: (id: number) => void
+	handleNumberClick: (number: number) => void
+	handleClearAllClick: () => void
+	handleClearClick: () => void
+	handleValueClick: (getNewValue: (value: number) => number) => void
+	handleEqualClick: () => void
 }
 
 export interface PaperTapeData {
@@ -25,9 +47,9 @@ export interface PaperTapeEntry extends PaperTapeData {
 }
 
 export const views = [
-	{ name: 'Basic', columnCount: 4, component: BasicButtonGrid },
-	{ name: 'Scientific', columnCount: 10, component: ScientificButtonGrid },
-	{ name: 'Programmer', columnCount: 7, component: ProgrammerButtonGrid }
+	new View('Basic', 4, BasicButtonGrid),
+	new View('Scientific', 10, ScientificButtonGrid),
+	new View('Programmer', 7, ProgrammerButtonGrid)
 ]
 
 export const operations = [

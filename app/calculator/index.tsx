@@ -1,13 +1,17 @@
 import { useState } from 'react'
-import { canOverwrite, setCanOverwrite } from './utils'
 import { operations } from '../utils'
 import './styles.css'
+
+let canOverwrite = true
+
+function setCanOverwrite(value: boolean) {
+	canOverwrite = value
+}
 
 export default function Calculator({ localeStringOptions, view: { component: ButtonGrid, columnCount }, addPaperTapeEntry }) {
 	const [operandId, setOperandId] = useState(0)
 	const [operands, setOperands] = useState([0, 0])
 	const [operationId, setOperationId] = useState(0)
-	const [shouldClearAll, setShouldClearAll] = useState(true)
 
 	function handleSetOperandId(id: number) {
 		setOperandId(id)
@@ -39,8 +43,6 @@ export default function Calculator({ localeStringOptions, view: { component: But
 		} else {
 			setOperand(operands[operandId] * 10 + number)
 		}
-
-		setShouldClearAll(false)
 	}
 
 	function handleClearAllClick() {
@@ -54,8 +56,6 @@ export default function Calculator({ localeStringOptions, view: { component: But
 		if (canOverwrite) {
 			handleSetOperandId(0)	
 		}
-		
-		setShouldClearAll(true)
 	}
 
 	function handleValueClick(getNewValue: (value: number) => number) {
@@ -79,7 +79,7 @@ export default function Calculator({ localeStringOptions, view: { component: But
 		</div>
 
 		<div id='buttons' style={{ gridTemplateColumns: `repeat(${columnCount}, 58px)` }}>
-			<ButtonGrid areOperationsSelected={areOperationsSelected} handleOperationClick={handleOperationClick} handleNumberClick={handleNumberClick} handleClearAllClick={handleClearAllClick} handleClearClick={handleClearClick} handleValueClick={handleValueClick} handleEqualClick={handleEqualClick} shouldClearAll={shouldClearAll} />
+			<ButtonGrid areOperationsSelected={areOperationsSelected} handleOperationClick={handleOperationClick} handleNumberClick={handleNumberClick} handleClearAllClick={handleClearAllClick} handleClearClick={handleClearClick} handleValueClick={handleValueClick} handleEqualClick={handleEqualClick} />
 		</div>
 	</div>
 }

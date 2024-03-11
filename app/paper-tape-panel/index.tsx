@@ -2,7 +2,7 @@ import { Fragment, RefObject, useEffect, useRef } from 'react'
 import Panel from '../panel'
 import { PaperTapeEntry, operations } from '../utils'
 
-export default function PaperTape({ history, setHistory }: { history: PaperTapeEntry[], setHistory: React.Dispatch<React.SetStateAction<PaperTapeEntry[]>> }) {
+export default function PaperTape({ history, clearHistory }: { history: PaperTapeEntry[], clearHistory: () => void }) {
 	const paperTapeRef = useRef<Element>(null!)
 
 	useEffect(() => {
@@ -24,9 +24,7 @@ export default function PaperTape({ history, setHistory }: { history: PaperTapeE
 			<div ref={paperTapeRef as RefObject<HTMLDivElement>} />
 		</div>
 
-		<button style={{ display: 'block', marginLeft: 'auto' }} onClick={() => {
-			setHistory([])
-		}}>
+		<button style={{ display: 'block', marginLeft: 'auto' }} onClick={clearHistory}>
 			Clear
 		</button>
 	</Panel>
