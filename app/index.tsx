@@ -1,9 +1,10 @@
 import { StrictMode, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import Calculator from './calculator'
-import PaperTapePanel from './paper-tape-panel'
-import SettingsPanel from './settings-panel'
-import { PaperTapeEntry, PaperTapeData, views } from './utils'
+import PaperTape from './paper-tape'
+import Settings from './settings'
+import { KeyedPaperTapeEntry, PaperTapeEntry } from './utils'
+import views from './views'
 import './styles.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -16,13 +17,13 @@ let paperTapeKey = 0
 
 function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
-	const [decimalPlaces, setDecimalPlaces] = useState(15)
+	const [decimalPlaceCount, setDecimalPlaceCount] = useState(15)
 	const [viewId, setViewId] = useState(0)
-	const [paperTapeHistory, setPaperTapeHistory] = useState<PaperTapeEntry[]>([])
+	const [paperTapeEntries, setPaperTapeEntries] = useState<KeyedPaperTapeEntry[]>([])
 
-	function addPaperTapeEntry(data: PaperTapeData) {
-		setPaperTapeHistory([...paperTapeHistory, {
-			...data,
+	function addPaperTapeEntry(entry: PaperTapeEntry) {
+		setPaperTapeEntries([...paperTapeEntries, {
+			...entry,
 			key: paperTapeKey
 		}])
 
@@ -30,12 +31,11 @@ function App() {
 	}
 
 	return <>
-		<Calculator localeStringOptions={{ 
-			maximumFractionDigits: decimalPlaces,
+		<Settings setViewId={setViewId} setIsShowingSeparators={setIsShowingSeparators} setDecimalPlaceCount={setDecimalPlaceCount} />
+		<Calculator view={views[viewId]} addPaperTapeEntry={addPaperTapeEntry} displayOptions={{ 
+			maximumFractionDigits: decimalPlaceCount,
 			useGrouping: isShowingSeparators
-		}} view={views[viewId]} addPaperTapeEntry={addPaperTapeEntry} />
-		
-		<SettingsPanel setViewId={setViewId} setIsShowingSeparators={setIsShowingSeparators} setDecimalPlaces={setDecimalPlaces} />
-		<PaperTapePanel history={paperTapeHistory} clearHistory={() => setPaperTapeHistory([])} />
+		}} />
+		<PaperTape entries={paperTapeEntries} clear={() => setPaperTapeEntries([])} />
 	</>
 }

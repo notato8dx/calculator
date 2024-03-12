@@ -11,3 +11,11 @@
 	font-weight: bold;
 	font-size: 100%
 }
+
+#root input {
+	vertical-align: top
+}
+
+#root label {
+	margin-left: 6px
+}

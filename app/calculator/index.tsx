@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { operations } from '../utils'
+import operations from '../operations'
 import './styles.css'
 
 let canOverwrite = true
@@ -8,7 +8,7 @@ function setCanOverwrite(value: boolean) {
 	canOverwrite = value
 }
 
-export default function Calculator({ localeStringOptions, view: { component: ButtonGrid, columnCount }, addPaperTapeEntry }) {
+export default function Calculator({ displayOptions, view: { Buttons, columnCount }, addPaperTapeEntry }) {
 	const [operandId, setOperandId] = useState(0)
 	const [operands, setOperands] = useState([0, 0])
 	const [operationId, setOperationId] = useState(0)
@@ -73,13 +73,13 @@ export default function Calculator({ localeStringOptions, view: { component: But
 	return <div id='calculator'>
 		<div id='display'>
 			{operands[operandId].toLocaleString(undefined, {
-				...localeStringOptions,
+				...displayOptions,
 				signDisplay: 'negative'
 			})}
 		</div>
 
 		<div id='buttons' style={{ gridTemplateColumns: `repeat(${columnCount}, 58px)` }}>
-			<ButtonGrid areOperationsSelected={areOperationsSelected} handleOperationClick={handleOperationClick} handleNumberClick={handleNumberClick} handleClearAllClick={handleClearAllClick} handleClearClick={handleClearClick} handleValueClick={handleValueClick} handleEqualClick={handleEqualClick} />
+			<Buttons areOperationsSelected={areOperationsSelected} handleOperationClick={handleOperationClick} handleNumberClick={handleNumberClick} handleClearAllClick={handleClearAllClick} handleClearClick={handleClearClick} handleValueClick={handleValueClick} handleEqualClick={handleEqualClick} />
 		</div>
 	</div>
 }

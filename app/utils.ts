@@ -1,32 +1,4 @@
-import BasicButtonGrid from './calculator/basic-button-grid'
-import ProgrammerButtonGrid from './calculator/programmer-button-grid'
-import ScientificButtonGrid from './calculator/scientific-button-grid'
-
-class Operation {
-	readonly symbol
-	readonly symbolASCII
-	readonly function
-
-	constructor(symbol: string, symbolASCII: string, func: (operands: number[]) => number) {
-		this.symbol = symbol
-		this.symbolASCII = symbolASCII
-		this.function = func
-	}
-}
-
-class View {
-	readonly name
-	readonly columnCount
-	readonly component
-
-	constructor(name: string, columnCount: number, component: (properties: ButtonGridProperties) => JSX.Element) {
-		this.name = name
-		this.columnCount = columnCount
-		this.component = component
-	}
-}
-
-export interface ButtonGridProperties {
+export interface CalculatorButtonListProps {
 	areOperationsSelected: boolean[]
 	handleOperationClick: (id: number) => void
 	handleNumberClick: (number: number) => void
@@ -36,25 +8,12 @@ export interface ButtonGridProperties {
 	handleEqualClick: () => void
 }
 
-export interface PaperTapeData {
+export interface PaperTapeEntry {
 	operands: number[]
 	operationId: number
 	value: number
 }
 
-export interface PaperTapeEntry extends PaperTapeData {
+export interface KeyedPaperTapeEntry extends PaperTapeEntry {
 	key: number
 }
-
-export const views = [
-	new View('Basic', 4, BasicButtonGrid),
-	new View('Scientific', 10, ScientificButtonGrid),
-	new View('Programmer', 7, ProgrammerButtonGrid)
-]
-
-export const operations = [
-	new Operation('+', '+', operands => operands[0] + operands[1]),
-	new Operation('−', '-', operands => operands[0] - operands[1]),
-	new Operation('×', '*', operands => operands[0] * operands[1]),
-	new Operation('÷', '/', operands => operands[0] / operands[1])
-]
