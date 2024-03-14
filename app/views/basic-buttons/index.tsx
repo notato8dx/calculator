@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import Button from '../button'
-import { Style } from '../utils'
+import { Style } from '../../calculator/utils'
 import operations from '../../operations'
-import { CalculatorButtonListProps } from '../../utils'
+import ButtonListProps from '../button-list-props'
 
-export default function BasicButtons({ areOperationsSelected, handleOperationClick, handleNumberClick, handleClearAllClick, handleClearClick, handleValueClick, handleEqualClick }: CalculatorButtonListProps) {	
+export default function BasicButtons({ areOperationsSelected, handleOperationClick, handleNumberClick, handleClearAllClick, handleClearClick, handleValueClick, handleEqualClick }: ButtonListProps) {	
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 
 	const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(({ symbol }, id) => {
@@ -23,14 +23,18 @@ export default function BasicButtons({ areOperationsSelected, handleOperationCli
 	})
 
 	return <>
-		{shouldClearAll ? <Button style={Style.Value} onClick={handleClearAllClick}>
-			AC
-		</Button> : <Button style={Style.Value} onClick={() => {
-			handleClearClick()
-			setShouldClearAll(true)
-		}}>
-			C
-		</Button>}
+		{shouldClearAll ?
+			<Button style={Style.Value} onClick={handleClearAllClick}>
+				AC
+			</Button>
+		:
+			<Button style={Style.Value} onClick={() => {
+				handleClearClick()
+				setShouldClearAll(true)
+			}}>
+				C
+			</Button>
+		}
 
 		<Button style={Style.Value} onClick={() => handleValueClick(value => -value)}>
 			⁺⁄₋

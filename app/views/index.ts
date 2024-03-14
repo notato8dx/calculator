@@ -1,14 +1,14 @@
-import BasicButtons from '../calculator/basic-buttons'
-import ProgrammerButtons from '../calculator/programmer-buttons'
-import ScientificButtons from '../calculator/scientific-buttons'
-import { CalculatorButtonListProps } from '../utils'
+import BasicButtons from './basic-buttons'
+import ProgrammerButtons from './programmer-buttons'
+import ScientificButtons from './scientific-buttons'
+import ButtonListProps from './button-list-props'
 
 class View {
 	readonly name
 	readonly columnCount
 	readonly Buttons
 
-	constructor(name: string, columnCount: number, Buttons: React.FunctionComponent<CalculatorButtonListProps>) {
+	constructor(name: string, columnCount: number, Buttons: React.FunctionComponent<ButtonListProps>) {
 		this.name = name
 		this.columnCount = columnCount
 		this.Buttons = Buttons
