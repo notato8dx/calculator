@@ -10,8 +10,10 @@ class Operation {
 	}
 }
 
+export const initial = new Operation('+', '+', operands => operands[0] + operands[1])
+
 export default [
-	new Operation('+', '+', operands => operands[0] + operands[1]),
+	initial,
 	new Operation('−', '-', operands => operands[0] - operands[1]),
 	new Operation('×', '*', operands => operands[0] * operands[1]),
 	new Operation('÷', '/', operands => operands[0] / operands[1])

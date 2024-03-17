@@ -1,6 +1,9 @@
+import Operation from './operation'
+
 export default interface ButtonListProps {
-	areOperationsSelected: boolean[]
-	handleOperationClick: (id: number) => void
+	operation?: Operation
+	operations: Operation[]
+	handleOperationClick: (operation: Operation) => void
 	handleNumberClick: (number: number) => void
 	handleClearAllClick: () => void
 	handleClearClick: () => void

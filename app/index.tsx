@@ -1,11 +1,11 @@
 import { StrictMode, useState } from 'react'
 import { createRoot}  from 'react-dom/client'
-import Calculator from './calculator'
+import Main from './main'
 import Panel from './panel'
 import PaperTape from './paper-tape'
 import LabeledInput from './labeled-input'
-import views from './views'
-import { PaperTapeEntry } from './utils'
+import views, { initial as initialView } from './views'
+import PaperTapeEntry from './paper-tape-entry'
 import './style.css'
 
 createRoot(document.getElementById('root')!).render(
@@ -19,24 +19,23 @@ let paperTapeKey = 0
 function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaceCount, setDecimalPlaceCount] = useState(15)
-	const [viewId, setViewId] = useState(0)
+	const [view, setView] = useState(initialView)
 	const [paperTapeEntries, setPaperTapeEntries] = useState<PaperTapeEntry[]>([])
 
 	return <>
 		<Panel name='Settings'>
-			{views.map(({ name }, id) => {
+			{views.map((view, id) => {
 				return <LabeledInput
 					key={id}
 					type='radio'
-					id={`settings-view-${id}`}
-					value={id}
+					id={`settings-view-${view.name.toLowerCase()}`}
 					name='view'
 					defaultChecked={id == 0}
-					onChange={({ target: { value } }) => {
-						setViewId(parseInt(value))
+					onChange={() => {
+						setView(view)
 					}}
 				>
-					{name}
+					{view.name}
 				</LabeledInput>
 			})}
 
@@ -58,8 +57,8 @@ function App() {
 		</Panel>
 
 		<div id='calculator'>
-			<Calculator
-				viewId={viewId}
+			<Main
+				view={view}
 				addPaperTapeEntry={(entry) => {
 					setPaperTapeEntries([...paperTapeEntries, {
 						...entry,

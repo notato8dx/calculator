@@ -1,15 +1,14 @@
 import Bottom from './bottom'
 import { Fragment } from 'react'
-import { PaperTapeEntry } from '../utils'
-import operations from '../operations'
+import PaperTapeEntry from '../paper-tape-entry'
 
 export default function PaperTape({ entries }: { entries: PaperTapeEntry[] }) {
 	return <>
-		{entries.map((entry) => {
-			return <Fragment key={entry.key}>
-				{`${entry.operands[0]} ${operations[entry.operationId].symbolASCII} ${entry.operands[1]}`}
+		{entries.map(({ operands, operationSymbol, value, key }) => {
+			return <Fragment key={key}>
+				{`${operands[0]} ${operationSymbol} ${operands[1]}`}
 				<br />
-				{`= ${entry.value}`}
+				{`= ${value}`}
 				<br />
 				<br />
 			</Fragment>

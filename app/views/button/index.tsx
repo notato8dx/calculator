@@ -1,5 +1,5 @@
 import { JSX } from 'react'
-import { Style } from '../../calculator/utils'
+import { Style } from '../../main/utils'
 import './styles.css'
 
 const styles = ['operation-button', 'value-button', 'number-button']

@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import Button from '../button'
-import { Style } from '../../calculator/utils'
-import operations from '../../operations'
-import ButtonListProps from '../button-list-props'
+import { Style } from '../../main/utils'
+import ButtonListProps from '../../button-list-props'
 
-export default function BasicButtons({ areOperationsSelected, handleOperationClick, handleNumberClick, handleClearAllClick, handleClearClick, handleValueClick, handleEqualClick }: ButtonListProps) {	
+export default function BasicButtons({ operation, operations, handleOperationClick, handleNumberClick, handleClearAllClick, handleClearClick, handleValueClick, handleEqualClick }: ButtonListProps) {	
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 
-	const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(({ symbol }, id) => {
-		return <Button style={Style.Operation} isSelected={areOperationsSelected[id]} onClick={() => handleOperationClick(id)}>
-			{symbol}
+	const [addButton, subtractButton, multiplyButton, divideButton] = Object.values(operations).map(o => {
+		return <Button style={Style.Operation} isSelected={o === operation} onClick={() => handleOperationClick(o)}>
+			{o.symbol}
 		</Button>
 	})
 
@@ -48,6 +47,7 @@ export default function BasicButtons({ areOperationsSelected, handleOperationCli
 		{numberButtons[7]}
 		{numberButtons[8]}
 		{numberButtons[9]}
+		{numberButtons[29]}
 		{multiplyButton}
 		{numberButtons[4]}
 		{numberButtons[5]}
