@@ -1,29 +1,61 @@
 import { useState } from 'react'
 import Button from '../button'
-import ButtonListProps from '../../button-list-props'
+import Operation from '../../operation'
+
+const operations: [Operation, Operation, Operation, Operation] = [
+	{
+		symbol: '+',
+		symbolASCII: '+',
+		operate: operands => operands[0] + operands[1]
+	},
+	{
+		symbol: '−',
+		symbolASCII: '-',
+		operate: operands => operands[0] - operands[1]
+	},
+	{
+		symbol: '×',
+		symbolASCII: '*', 
+		operate: operands => operands[0] * operands[1]
+	},
+	{
+		symbol: '÷',
+		symbolASCII: '/',
+		operate: operands => operands[0] / operands[1]
+	}
+]
 
 export default function BasicButtons({
-	operation,
-	operations,
-	handleOperationClick,
-	handleNumberClick,
-	handleClearAllClick,
-	handleClearClick,
-	handleValueClick,
-	handleEqualClick,
-	handleDecimalClick
-}: ButtonListProps) {
+	isOperationSelected,
+	handleOperation,
+	handleNumber,
+	handleClear,
+	handleClearAll,
+	handleValue,
+	handleEqual,
+	handleDecimal
+}: {
+	isOperationSelected: boolean,
+	handleOperation: (setOperation: (operation: Operation) => void) => (operation: Operation) => void,
+	handleNumber: (number: number) => void,
+	handleClear: () => void,
+	handleClearAll: () => void,
+	handleValue: (getNewValue: (value: number) => number) => void
+	handleEqual: (operation: Operation) => () => void
+	handleDecimal: () => void
+}) {
+	const [operation, setOperation] = useState(operations[0])
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 
 	const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(o => {
-		return <Button variant='operation' isSelected={o == operation} onClick={() => handleOperationClick(o)}>
+		return <Button variant='operation' isSelected={isOperationSelected && o == operation} onClick={() => handleOperation(setOperation)(o)}>
 			{o.symbol}
 		</Button>
 	})
 
 	const numberButtons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((number, id) => {
 		return <Button isLarge={id == 0} isBottomLeft={id == 0} variant='number' onClick={() => {
-			handleNumberClick(number)
+			handleNumber(number)
 			setShouldClearAll(false)
 		}}>
 			{number.toString(16).toUpperCase()}
@@ -32,23 +64,23 @@ export default function BasicButtons({
 
 	return <>
 		{shouldClearAll ?
-			<Button variant='value' onClick={handleClearAllClick}>
+			<Button variant='value' onClick={handleClearAll}>
 				AC
 			</Button>
 		:
 			<Button variant='value' onClick={() => {
-				handleClearClick()
+				handleClear()
 				setShouldClearAll(true)
 			}}>
 				C
 			</Button>
 		}
 
-		<Button variant='value' onClick={() => handleValueClick(value => -value)}>
+		<Button variant='value' onClick={() => handleValue(value => -value)}>
 			⁺⁄₋
 		</Button>
 
-		<Button variant='value' onClick={() => handleValueClick(value => value / 100)}>
+		<Button variant='value' onClick={() => handleValue(value => value / 100)}>
 			%
 		</Button>
 
@@ -68,11 +100,11 @@ export default function BasicButtons({
 		{addButton}
 		{numberButtons[0]}
 
-		<Button variant='number' onClick={handleDecimalClick}>
+		<Button variant='number' onClick={handleDecimal}>
 			.
 		</Button>
 
-		<Button variant='operation' onClick={handleEqualClick}>
+		<Button variant='operation' onClick={handleEqual(operation)}>
 			=
 		</Button>
 	</>

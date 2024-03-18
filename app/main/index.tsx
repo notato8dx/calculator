@@ -1,4 +1,3 @@
-import Buttons from './buttons'
 import PaperTapeEntry from '../paper-tape-entry'
 import View from '../view'
 import Operation from '../operation'
@@ -20,7 +19,7 @@ export default ({
 	displayOptions,
 	view: {
 		columnCount,
-		Buttons: List
+		Buttons
 	},
 	addPaperTapeEntry
 }: {
@@ -54,7 +53,6 @@ export default ({
 
 		<div id={style.buttons} style={{ gridTemplateColumns: `repeat(${columnCount}, 58px)` }}>
 			<Buttons
-				List={List}
 				isOperationSelected={operand == operands[1]}
 				handleOperation={(setOperation: (operation: Operation) => void) => {
 					return (operation: Operation) => {

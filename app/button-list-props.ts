@@ -1,13 +1,12 @@
 import Operation from './operation'
 
 export default interface ButtonListProps {
-	operation?: Operation
-	operations: Operation[]
-	handleOperationClick: (operation: Operation) => void
-	handleNumberClick: (number: number) => void
-	handleClearAllClick: () => void
-	handleClearClick: () => void
-	handleValueClick: (getNewValue: (value: number) => number) => void
-	handleEqualClick: () => void,
-	handleDecimalClick: () => void
+	isOperationSelected: boolean,
+	handleOperation: (setOperation: (operation: Operation) => void) => (operation: Operation) => void,
+	handleNumber: (number: number) => void,
+	handleClear: () => void,
+	handleClearAll: () => void,
+	handleValue: (getNewValue: (value: number) => number) => void
+	handleEqual: (operation: Operation) => () => void
+	handleDecimal: () => void
 }
