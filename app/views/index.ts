@@ -9,17 +9,17 @@ class View implements IView {
 	readonly columnCount
 	readonly Buttons
 
-	constructor(name: string, columnCount: number, Buttons: React.FunctionComponent<ButtonListProps>) {
+	constructor(
+		name: string,
+		columnCount: number,
+		Buttons: React.FunctionComponent<ButtonListProps>
+	) {
 		this.name = name
 		this.columnCount = columnCount
 		this.Buttons = Buttons
 	}
 }
 
-export const initial = new View('Basic', 4, BasicButtons)
-
-export default [
-	initial,
-	new View('Scientific', 10, ScientificButtons),
-	new View('Programmer', 7, ProgrammerButtons)
-]
+export const basic = new View('Basic', 4, BasicButtons)
+export const scientific = new View('Scientific', 10, ScientificButtons)
+export const programmer = new View('Programmer', 7, ProgrammerButtons)

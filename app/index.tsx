@@ -4,7 +4,7 @@ import Main from './main'
 import Panel from './panel'
 import PaperTape from './paper-tape'
 import LabeledInput from './labeled-input'
-import views, { initial as initialView } from './views'
+import * as views from './views'
 import PaperTapeEntry from './paper-tape-entry'
 import './style.css'
 
@@ -19,12 +19,12 @@ let paperTapeKey = 0
 function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaceCount, setDecimalPlaceCount] = useState(15)
-	const [view, setView] = useState(initialView)
+	const [view, setView] = useState(views.basic)
 	const [paperTapeEntries, setPaperTapeEntries] = useState<PaperTapeEntry[]>([])
 
 	return <>
 		<Panel name='Settings'>
-			{views.map((view, id) => {
+			{Object.values(views).map((view, id) => {
 				return <LabeledInput
 					key={id}
 					type='radio'
