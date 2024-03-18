@@ -8,7 +8,7 @@ export default ({
 }: JSX.IntrinsicElements['div'] & {
 	name: string
 }) => {
-	return <div {...props} id={style.root}>
+	return <div {...props} className={style.root}>
 		<h1>
 			{name}
 		</h1>

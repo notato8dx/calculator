@@ -1,4 +1,5 @@
 import { JSX, useId } from 'react'
+import style from './style.module.css'
 
 export default ({
 	children,
@@ -6,7 +7,7 @@ export default ({
 }: JSX.IntrinsicElements['input']) => {
 	const id = useId()
 
-	return <div>
+	return <div className={style.root}>
 		<input {...props} id={id} />
 
 		<label htmlFor={id}>
