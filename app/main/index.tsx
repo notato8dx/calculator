@@ -49,13 +49,13 @@ export default ({
 					// @ts-expect-error
 					signDisplay: 'negative'
 				}
-			)}${nextDecimal === 1 ? '.' : ''}`}
+			)}${nextDecimal == 1 ? '.' : ''}`}
 		</div>
 
 		<div id='buttons' style={{ gridTemplateColumns: `repeat(${columnCount}, 58px)` }}>
 			<Buttons
 				List={List}
-				isOperationSelected={operand === operands[1]}
+				isOperationSelected={operand == operands[1]}
 				handleOperation={(setOperation: (operation: Operation) => void) => {
 					return (operation: Operation) => {
 						setOperation(operation)
@@ -109,7 +109,7 @@ export default ({
 					}
 				}}
 				handleDecimal={() => {
-					if (nextDecimal === 0) {
+					if (nextDecimal == 0) {
 						setNextDecimal(1)
 					}
 				}}

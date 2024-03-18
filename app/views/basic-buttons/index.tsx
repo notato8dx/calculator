@@ -16,13 +16,13 @@ export default function BasicButtons({
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 
 	const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(o => {
-		return <Button variant='operation' isSelected={o === operation} onClick={() => handleOperationClick(o)}>
+		return <Button variant='operation' isSelected={o == operation} onClick={() => handleOperationClick(o)}>
 			{o.symbol}
 		</Button>
 	})
 
 	const numberButtons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((number, id) => {
-		return <Button isLarge={id === 0} isBottomLeft={id === 0} variant='number' onClick={() => {
+		return <Button isLarge={id == 0} isBottomLeft={id == 0} variant='number' onClick={() => {
 			handleNumberClick(number)
 			setShouldClearAll(false)
 		}}>
