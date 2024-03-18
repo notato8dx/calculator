@@ -24,34 +24,42 @@ function App() {
 
 	return <>
 		<Panel name='Settings'>
-			{Object.values(views).map((view, id) => {
-				return <LabeledInput
-					key={id}
-					type='radio'
-					id={`settings-view-${view.name.toLowerCase()}`}
-					name='view'
-					defaultChecked={id == 0}
-					onChange={() => {
-						setView(view)
-					}}
-				>
-					{view.name}
-				</LabeledInput>
-			})}
+			{Object.entries(views).map(([key, view]) => <LabeledInput
+				key={key}
+				type='radio'
+				name='view'
+				defaultChecked={key == 'basic'}
+				onChange={() => {
+					setView(view)
+				}}
+			>
+				{view.name}
+			</LabeledInput>)}
 
 			<hr />
 
-			<LabeledInput type='checkbox' id='settings-separators' onChange={({ target: { checked } }) => {
-				setIsShowingSeparators(checked)
-			}}>
+			<LabeledInput
+				type='checkbox'
+				onChange={({ target: { checked } }) => {
+					setIsShowingSeparators(checked)
+				}}
+			>
 				Show Thousands Separators
 			</LabeledInput>
 
 			<hr />
 
-			<LabeledInput type='number' min={0} max={15} defaultValue={15} id='settings-decimal' onChange={({ target: { value } }) => {
-				setDecimalPlaceCount(parseInt(value))
-			}}>
+			<LabeledInput
+				type='number'
+				min={0}
+				max={15}
+				defaultValue={15}
+				onChange={({ target: { value } }) => {
+					setDecimalPlaceCount(
+						parseInt(value)
+					)
+				}}
+			>
 				Decimal Places
 			</LabeledInput>
 		</Panel>
