@@ -1,6 +1,6 @@
 import { JSX } from 'react'
 
-export default function LabeledInput({ children, id, ...props }: JSX.IntrinsicElements['input']) {
+export default ({ children, id, ...props }: JSX.IntrinsicElements['input']) => {
 	return <div>
 		<input {...props} id={id} />
 
