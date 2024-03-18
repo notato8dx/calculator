@@ -1,22 +1,14 @@
-import IOperation from '../operation'
+import Operation from '../operation'
 
-class Operation implements IOperation {
-	readonly symbol
-	readonly symbolASCII
-	readonly function
-
-	constructor(
-		symbol: string,
-		symbolASCII: string,
-		func: (operands: [number, number]) => number
-	) {
-		this.symbol = symbol
-		this.symbolASCII = symbolASCII
-		this.function = func
-	}
+function createOperation(
+	symbol: string,
+	symbolASCII: string,
+	operate: (operands: [number, number]) => number
+): Operation {
+	return { symbol, symbolASCII, operate }
 }
 
-export const addition = new Operation('+', '+', operands => operands[0] + operands[1])
-export const subtraction = new Operation('−', '-', operands => operands[0] - operands[1])
-export const multiplication = new Operation('×', '*', operands => operands[0] * operands[1])
-export const division = new Operation('÷', '/', operands => operands[0] / operands[1])
+export const addition = createOperation('+', '+', operands => operands[0] + operands[1])
+export const subtraction = createOperation('−', '-', operands => operands[0] - operands[1])
+export const multiplication = createOperation('×', '*', operands => operands[0] * operands[1])
+export const division = createOperation('÷', '/', operands => operands[0] / operands[1])
