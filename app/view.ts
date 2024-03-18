@@ -1,11 +1,7 @@
-import ButtonListProps from './button-list-props'
+import ButtonList from './button-list'
 
 export default interface View {
 	readonly name: string
 	readonly columnCount: number
-	readonly Buttons: React.FunctionComponent<ButtonListProps>
-}
-
-export const test = {
-	hello: 4
+	readonly Buttons: ButtonList
 }
