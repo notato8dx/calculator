@@ -19,21 +19,26 @@ const operands: [Operand, Operand] = [
 export default function Main({ displayOptions, view: { columnCount, Buttons: List }, addPaperTapeEntry }: { displayOptions: Intl.NumberFormatOptions, view: View, addPaperTapeEntry: (entry: Omit<PaperTapeEntry, 'key'>) => void }) {
 	const [operand, setOperand] = useState(operands[0])
 	const [display, setDisplay] = useState(operand.value)
+	const [nextDecimal, setNextDecimal] = useState(0)
 
 	function setOperandAndOperandId(value: number, operand: Operand) {
 		operand.value = value
 		setDisplay(value)
 		setOperand(operand)
 		canOverwrite = true
+		setNextDecimal(0)
 	}
 
 	return <>
 		<div id='display'>
-			{display.toLocaleString(undefined, {
-				...displayOptions,
-				// @ts-expect-error
-				signDisplay: 'negative'
-			})}
+			{`${display.toLocaleString(
+				undefined,
+				{
+					...displayOptions,
+					// @ts-expect-error
+					signDisplay: 'negative'
+				}
+			)}${nextDecimal === 1 ? '.' : ''}`}
 		</div>
 
 		<div id='buttons' style={{ gridTemplateColumns: `repeat(${columnCount}, 58px)` }}>
@@ -47,7 +52,11 @@ export default function Main({ displayOptions, view: { columnCount, Buttons: Lis
 					}
 				}}
 				handleNumber={(number: number) => {
-					if (canOverwrite) {
+					if (nextDecimal > 0) {
+						setDisplay(operand.value + number * 10 ** -nextDecimal)
+						operand.value = operand.value + number * 10 ** -nextDecimal
+						setNextDecimal(nextDecimal + 1)
+					} else if (canOverwrite) {
 						operand.value = number
 						setDisplay(number)
 						canOverwrite = false
@@ -59,6 +68,7 @@ export default function Main({ displayOptions, view: { columnCount, Buttons: Lis
 				handleClear={() => {
 					operand.value = 0
 					setDisplay(0)
+					setNextDecimal(0)
 			
 					if (canOverwrite) {
 						setOperand(operands[0])
@@ -77,6 +87,11 @@ export default function Main({ displayOptions, view: { columnCount, Buttons: Lis
 						const value = operation.function([operands[0].value, operands[1].value])
 						addPaperTapeEntry({ operands: [operands[0].value, operands[1].value], operationSymbol: operation.symbolASCII, value })
 						setOperandAndOperandId(value, operands[0])
+					}
+				}}
+				handleDecimal={() => {
+					if (nextDecimal === 0) {
+						setNextDecimal(1)
 					}
 				}}
 			/>

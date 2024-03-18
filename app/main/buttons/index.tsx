@@ -11,7 +11,8 @@ export default function Buttons({
 	handleClear,
 	handleClearAll,
 	handleValue,
-	handleEqual
+	handleEqual,
+	handleDecimal
 }: {
 	List: React.FunctionComponent<ButtonListProps>,
 	isOperationSelected: boolean,
@@ -21,6 +22,7 @@ export default function Buttons({
 	handleClearAll: () => void,
 	handleValue: (getNewValue: (value: number) => number) => void
 	handleEqual: (operation: Operation) => () => void
+	handleDecimal: () => void
 }) {
 	const [operation, setOperation] = useState(initialOperation)
 
@@ -33,5 +35,6 @@ export default function Buttons({
 		handleClearAllClick={handleClearAll}
 		handleValueClick={handleValue}
 		handleEqualClick={handleEqual(operation)}
+		handleDecimalClick={handleDecimal}
 	/>
 }

@@ -8,5 +8,6 @@ export default interface ButtonListProps {
 	handleClearAllClick: () => void
 	handleClearClick: () => void
 	handleValueClick: (getNewValue: (value: number) => number) => void
-	handleEqualClick: () => void
+	handleEqualClick: () => void,
+	handleDecimalClick: () => void
 }

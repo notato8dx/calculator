@@ -3,7 +3,7 @@ import Button from '../button'
 import { Style } from '../../main/utils'
 import ButtonListProps from '../../button-list-props'
 
-export default function BasicButtons({ operation, operations, handleOperationClick, handleNumberClick, handleClearAllClick, handleClearClick, handleValueClick, handleEqualClick }: ButtonListProps) {	
+export default function BasicButtons({ operation, operations, handleOperationClick, handleNumberClick, handleClearAllClick, handleClearClick, handleValueClick, handleEqualClick, handleDecimalClick }: ButtonListProps) {	
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 
 	const [addButton, subtractButton, multiplyButton, divideButton] = Object.values(operations).map(o => {
@@ -59,7 +59,7 @@ export default function BasicButtons({ operation, operations, handleOperationCli
 		{addButton}
 		{numberButtons[0]}
 
-		<Button style={Style.Number}>
+		<Button style={Style.Number} onClick={handleDecimalClick}>
 			.
 		</Button>
 
