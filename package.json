@@ -18,7 +18,14 @@
     "eslint": "^8.56",
     "eslint-plugin-react-hooks": "^4.6",
     "eslint-plugin-react-refresh": "^0.4",
+    "prettier": "^3.2.5",
     "typescript": "^5.4",
     "vite": "^5.1"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "useTabs": true
   }
 }
