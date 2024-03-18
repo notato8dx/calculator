@@ -7,43 +7,29 @@ import { useState } from 'react'
 
 let canOverwrite = true
 
-function useOperands(operandId: number): [number[], (value: number, id?: number) => void] {
-	const [state, setState] = useState([0, 0])
-
-	return [state, (value: number, id: number = operandId) => {
-		setState([
-			...state.slice(0, id),
-			value,
-			...state.slice(id + 1)
-		])
-	}]
+interface Operand {
+	value: number
 }
 
-function useOperandId(enableCanOverwrite: () => void): [number, (id: number) => void] {
-	const [state, setState] = useState(0)
-
-	return [state, (id: number) => {
-		setState(id)
-		enableCanOverwrite()
-	}]
-}
+const operands: [Operand, Operand] = [
+	{ value: 0 },
+	{ value: 0 }
+]
 
 export default function Main({ displayOptions, view: { columnCount, Buttons: List }, addPaperTapeEntry }: { displayOptions: Intl.NumberFormatOptions, view: View, addPaperTapeEntry: (entry: Omit<PaperTapeEntry, 'key'>) => void }) {
-	const [operandId, setOperandId] = useOperandId(() => {
+	const [operand, setOperand] = useState(operands[0])
+	const [display, setDisplay] = useState(operand.value)
+
+	function setOperandAndOperandId(value: number, operand: Operand) {
+		operand.value = value
+		setDisplay(value)
+		setOperand(operand)
 		canOverwrite = true
-	})
-	const [operands, setOperand] = useOperands(operandId)
-
-	const operand = operands[operandId]
-
-	function setOperandAndOperandId(value: number, id: number) {
-		setOperand(value, id)
-		setOperandId(id)
 	}
 
 	return <>
 		<div id='display'>
-			{operand.toLocaleString(undefined, {
+			{display.toLocaleString(undefined, {
 				...displayOptions,
 				// @ts-expect-error
 				signDisplay: 'negative'
@@ -53,40 +39,44 @@ export default function Main({ displayOptions, view: { columnCount, Buttons: Lis
 		<div id='buttons' style={{ gridTemplateColumns: `repeat(${columnCount}, 58px)` }}>
 			<Buttons
 				List={List}
-				isOperationSelected={operandId === 1}
+				isOperationSelected={operand === operands[1]}
 				handleOperation={(setOperation: (operation: Operation) => void) => {
 					return (operation: Operation) => {
 						setOperation(operation)
-						setOperandAndOperandId(operands[0], 1)
+						setOperandAndOperandId(operands[0].value, operands[1])
 					}
 				}}
 				handleNumber={(number: number) => {
 					if (canOverwrite) {
-						setOperand(number)
+						operand.value = number
+						setDisplay(number)
 						canOverwrite = false
 					} else {
-						setOperand(operand * 10 + number)
+						setDisplay(operand.value * 10 + number)
+						operand.value = operand.value * 10 + number
 					}
 				}}
 				handleClear={() => {
-					setOperand(0)
+					operand.value = 0
+					setDisplay(0)
 			
 					if (canOverwrite) {
-						setOperandId(0)	
+						setOperand(operands[0])
 					}
 				}}
 				handleClearAll={() => {
-					setOperand(0, 1)
-					setOperandAndOperandId(0, 0)
+					operands[1].value = 0
+					setOperandAndOperandId(0, operands[0])
 				}}
 				handleValue={(getNewValue: (value: number) => number) => {
-					setOperand(getNewValue(operand))
+					operand.value = getNewValue(operand.value)
+					setDisplay(getNewValue(operand.value))
 				}}
 				handleEqual={(operation: Operation) => {
 					return () => {
-						const value = operation.function([operands[0], operands[1]])
-						addPaperTapeEntry({ operands: [operands[0], operands[1]], operationSymbol: operation.symbolASCII, value })
-						setOperandAndOperandId(value, 0)
+						const value = operation.function([operands[0].value, operands[1].value])
+						addPaperTapeEntry({ operands: [operands[0].value, operands[1].value], operationSymbol: operation.symbolASCII, value })
+						setOperandAndOperandId(value, operands[0])
 					}
 				}}
 			/>
