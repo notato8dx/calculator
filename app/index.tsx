@@ -1,15 +1,18 @@
 import { StrictMode, useState } from 'react'
-import { createRoot} from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
+import LabeledInput from './labeled-input'
 import Main from './main'
 import Panel from './panel'
 import PaperTape from './paper-tape'
-import LabeledInput from './labeled-input'
-import * as views from './views'
 import PaperTapeEntry from './paper-tape-entry'
 import style from './style.module.css'
+import * as views from './views'
 import './style.css'
 
-createRoot(document.getElementById('root')!).render(
+createRoot(
+	document.getElementById('root')!
+)
+.render(
 	<StrictMode>
 		<App />
 	</StrictMode>
@@ -65,7 +68,7 @@ function App() {
 			</LabeledInput>
 		</Panel>
 
-		<div id='calculator'>
+		<div id={style.calculator}>
 			<Main
 				view={view}
 				addPaperTapeEntry={(entry) => {

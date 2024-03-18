@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import * as operations from '../../operations'
-import ButtonListProps from '../../button-list-props'
+import ButtonList from '../../button-list'
 import Operation from '../../operation'
 
 export default function Buttons({
@@ -14,7 +14,7 @@ export default function Buttons({
 	handleEqual,
 	handleDecimal
 }: {
-	List: React.FunctionComponent<ButtonListProps>,
+	List: ButtonList,
 	isOperationSelected: boolean,
 	handleOperation: (setOperation: (operation: Operation) => void) => (operation: Operation) => void,
 	handleNumber: (number: number) => void,

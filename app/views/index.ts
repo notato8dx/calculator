@@ -1,7 +1,7 @@
 import BasicButtons from './basic-buttons'
 import ProgrammerButtons from './programmer-buttons'
 import ScientificButtons from './scientific-buttons'
-import ButtonListProps from '../button-list-props'
+import ButtonList from '../button-list'
 import IView from '../view'
 
 class View implements IView {
@@ -12,7 +12,7 @@ class View implements IView {
 	constructor(
 		name: string,
 		columnCount: number,
-		Buttons: React.FunctionComponent<ButtonListProps>
+		Buttons: ButtonList
 	) {
 		this.name = name
 		this.columnCount = columnCount
