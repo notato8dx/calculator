@@ -1,24 +1,24 @@
-.value-button {
+.value {
 	background-color: #4c4c4c
 }
 
-.value-button:active {
+.value:active {
 	background-color: var(--gray-color)
 }
 
-.number-button {
+.number {
 	background-color: var(--gray-color)
 }
 
-.number-button:active {
+.number:active {
 	background-color: #a5a5a5
 }
 
-.operation-button {
+.operation {
 	background-color: #ff9d0b
 }
 
-.operation-button:active {
+.operation:active {
 	background-color: #cb7d08
 }
 
@@ -26,10 +26,10 @@
 	margin: 1px
 }
 
-.large-button {
+.large {
 	grid-column: span 2;
 }
 
-#bottom-left-button {
+#bottomLeft {
 	border-bottom-left-radius: 12px
 }

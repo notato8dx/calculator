@@ -1,19 +1,28 @@
 import { useState } from 'react'
 import Button from '../button'
-import { Style } from '../../main/utils'
 import ButtonListProps from '../../button-list-props'
 
-export default function BasicButtons({ operation, operations, handleOperationClick, handleNumberClick, handleClearAllClick, handleClearClick, handleValueClick, handleEqualClick, handleDecimalClick }: ButtonListProps) {	
+export default function BasicButtons({
+	operation,
+	operations,
+	handleOperationClick,
+	handleNumberClick,
+	handleClearAllClick,
+	handleClearClick,
+	handleValueClick,
+	handleEqualClick,
+	handleDecimalClick
+}: ButtonListProps) {
 	const [shouldClearAll, setShouldClearAll] = useState(true)
 
-	const [addButton, subtractButton, multiplyButton, divideButton] = Object.values(operations).map(o => {
-		return <Button style={Style.Operation} isSelected={o === operation} onClick={() => handleOperationClick(o)}>
+	const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(o => {
+		return <Button variant='operation' isSelected={o === operation} onClick={() => handleOperationClick(o)}>
 			{o.symbol}
 		</Button>
 	})
 
 	const numberButtons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((number, id) => {
-		return <Button isLarge={id === 0} isBottomLeft={id === 0} style={Style.Number} onClick={() => {
+		return <Button isLarge={id === 0} isBottomLeft={id === 0} variant='number' onClick={() => {
 			handleNumberClick(number)
 			setShouldClearAll(false)
 		}}>
@@ -23,11 +32,11 @@ export default function BasicButtons({ operation, operations, handleOperationCli
 
 	return <>
 		{shouldClearAll ?
-			<Button style={Style.Value} onClick={handleClearAllClick}>
+			<Button variant='value' onClick={handleClearAllClick}>
 				AC
 			</Button>
 		:
-			<Button style={Style.Value} onClick={() => {
+			<Button variant='value' onClick={() => {
 				handleClearClick()
 				setShouldClearAll(true)
 			}}>
@@ -35,11 +44,11 @@ export default function BasicButtons({ operation, operations, handleOperationCli
 			</Button>
 		}
 
-		<Button style={Style.Value} onClick={() => handleValueClick(value => -value)}>
+		<Button variant='value' onClick={() => handleValueClick(value => -value)}>
 			⁺⁄₋
 		</Button>
 
-		<Button style={Style.Value} onClick={() => handleValueClick(value => value / 100)}>
+		<Button variant='value' onClick={() => handleValueClick(value => value / 100)}>
 			%
 		</Button>
 
@@ -59,11 +68,11 @@ export default function BasicButtons({ operation, operations, handleOperationCli
 		{addButton}
 		{numberButtons[0]}
 
-		<Button style={Style.Number} onClick={handleDecimalClick}>
+		<Button variant='number' onClick={handleDecimalClick}>
 			.
 		</Button>
 
-		<Button style={Style.Operation} onClick={handleEqualClick}>
+		<Button variant='operation' onClick={handleEqualClick}>
 			=
 		</Button>
 	</>
