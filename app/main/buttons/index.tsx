@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import operations, { initial as initialOperation } from '../../operations'
+import * as operations from '../../operations'
 import ButtonListProps from '../../button-list-props'
 import Operation from '../../operation'
 
@@ -24,11 +24,11 @@ export default function Buttons({
 	handleEqual: (operation: Operation) => () => void
 	handleDecimal: () => void
 }) {
-	const [operation, setOperation] = useState(initialOperation)
+	const [operation, setOperation] = useState(operations.addition)
 
 	return <List
 		operation={isOperationSelected ? operation : undefined}
-		operations={operations}
+		operations={[operations.addition, operations.subtraction, operations.multiplication, operations.division]}
 		handleOperationClick={handleOperation(setOperation)}
 		handleNumberClick={handleNumber}
 		handleClearClick={handleClear}

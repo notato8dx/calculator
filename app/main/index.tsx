@@ -5,8 +5,6 @@ import View from '../view'
 import Operation from '../operation'
 import { useState } from 'react'
 
-let canOverwrite = true
-
 interface Operand {
 	value: number
 }
@@ -16,7 +14,20 @@ const operands: [Operand, Operand] = [
 	{ value: 0 }
 ]
 
-export default function Main({ displayOptions, view: { columnCount, Buttons: List }, addPaperTapeEntry }: { displayOptions: Intl.NumberFormatOptions, view: View, addPaperTapeEntry: (entry: Omit<PaperTapeEntry, 'key'>) => void }) {
+let canOverwrite = true
+
+export default ({
+	displayOptions,
+	view: {
+		columnCount,
+		Buttons: List
+	},
+	addPaperTapeEntry
+}: {
+	displayOptions: Intl.NumberFormatOptions,
+	view: View,
+	addPaperTapeEntry: (entry: Omit<PaperTapeEntry, 'key'>) => void
+}) => {
 	const [operand, setOperand] = useState(operands[0])
 	const [display, setDisplay] = useState(operand.value)
 	const [nextDecimal, setNextDecimal] = useState(0)
@@ -80,12 +91,20 @@ export default function Main({ displayOptions, view: { columnCount, Buttons: Lis
 				}}
 				handleValue={(getNewValue: (value: number) => number) => {
 					operand.value = getNewValue(operand.value)
-					setDisplay(getNewValue(operand.value))
+					setDisplay(
+						getNewValue(operand.value)
+					)
 				}}
 				handleEqual={(operation: Operation) => {
 					return () => {
 						const value = operation.function([operands[0].value, operands[1].value])
-						addPaperTapeEntry({ operands: [operands[0].value, operands[1].value], operationSymbol: operation.symbolASCII, value })
+
+						addPaperTapeEntry({
+							operands: [operands[0].value, operands[1].value],
+							operationSymbol: operation.symbolASCII,
+							value
+						})
+
 						setOperandAndOperandId(value, operands[0])
 					}
 				}}

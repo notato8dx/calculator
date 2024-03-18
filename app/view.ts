@@ -5,3 +5,7 @@ export default interface View {
 	readonly columnCount: number
 	readonly Buttons: React.FunctionComponent<ButtonListProps>
 }
+
+export const test = {
+	hello: 4
+}
