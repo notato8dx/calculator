@@ -101,7 +101,7 @@ export default ({
 
 						addPaperTapeEntry({
 							operands: [operands[0].value, operands[1].value],
-							operationSymbol: operation.symbolASCII,
+							operator: operation.symbolASCII,
 							value
 						})
 

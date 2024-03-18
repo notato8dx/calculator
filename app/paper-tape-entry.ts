@@ -1,6 +1,6 @@
 export default interface PaperTapeEntry {
 	operands: [number, number]
-	operationSymbol: string
+	operator: string
 	value: number
 	key: number
 }
