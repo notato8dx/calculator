@@ -4,9 +4,9 @@ import LabeledInput from './labeled-input'
 import Main from './main'
 import Panel from './panel'
 import PaperTape from './paper-tape'
-import PaperTapeEntry from './paper-tape-entry'
 import style from './style.module.css'
-import * as views from './views'
+import { PaperTapeEntry } from './types'
+import views from './views'
 import './style.css'
 
 createRoot(
@@ -23,7 +23,7 @@ let paperTapeKey = 0
 function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaceCount, setDecimalPlaceCount] = useState(15)
-	const [view, setView] = useState(views.basic)
+	const [view, setView] = useState(views[0]!)
 	const [paperTapeEntries, setPaperTapeEntries] = useState<PaperTapeEntry[]>([])
 
 	return <>

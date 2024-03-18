@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Button from '../button'
-import Operation from '../../operation'
+import { Operation } from '../../types'
 
 const operations: [Operation, Operation, Operation, Operation] = [
 	{

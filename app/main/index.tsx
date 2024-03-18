@@ -1,7 +1,6 @@
-import PaperTapeEntry from '../paper-tape-entry'
-import View from '../view'
-import Operation from '../operation'
 import { useState } from 'react'
+import views from '../views'
+import { Operation, PaperTapeEntry } from '../types'
 import style from './style.module.css'
 
 interface Operand {
@@ -24,7 +23,7 @@ export default ({
 	addPaperTapeEntry
 }: {
 	displayOptions: Intl.NumberFormatOptions,
-	view: View,
+	view: typeof views[number],
 	addPaperTapeEntry: (entry: Omit<PaperTapeEntry, 'key'>) => void
 }) => {
 	const [operand, setOperand] = useState(operands[0])

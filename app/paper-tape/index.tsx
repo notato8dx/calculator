@@ -1,6 +1,6 @@
 import Bottom from './bottom'
 import { Fragment } from 'react'
-import PaperTapeEntry from '../paper-tape-entry'
+import { PaperTapeEntry } from '../types'
 
 export default ({
 	entries
