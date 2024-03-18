@@ -84,8 +84,8 @@ export default function Main({ displayOptions, view: { columnCount, Buttons: Lis
 				}}
 				handleEqual={(operation: Operation) => {
 					return () => {
-						const value = operation.function(operands)
-						addPaperTapeEntry({ operands, operationSymbol: operation.symbolASCII, value })
+						const value = operation.function([operands[0], operands[1]])
+						addPaperTapeEntry({ operands: [operands[0], operands[1]], operationSymbol: operation.symbolASCII, value })
 						setOperandAndOperandId(value, 0)
 					}
 				}}
