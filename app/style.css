@@ -1,4 +1,9 @@
 #root {
 	--dark-color: #383838;
-	font-family: sans-serif
+	font-family: sans-serif;
+	margin-top: inherit
+}
+
+#root > * {
+	margin-top: inherit
 }
