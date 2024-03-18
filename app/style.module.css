@@ -1,0 +1,9 @@
+#paperTape {
+	overflow-y: scroll;
+	height: 200px;
+}
+
+#paperTapeButton {
+	display: block;
+	margin-left: auto
+}

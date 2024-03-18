@@ -1,11 +1,12 @@
 import { StrictMode, useState } from 'react'
-import { createRoot}  from 'react-dom/client'
+import { createRoot} from 'react-dom/client'
 import Main from './main'
 import Panel from './panel'
 import PaperTape from './paper-tape'
 import LabeledInput from './labeled-input'
 import * as views from './views'
 import PaperTapeEntry from './paper-tape-entry'
+import style from './style.module.css'
 import './style.css'
 
 createRoot(document.getElementById('root')!).render(
@@ -68,10 +69,13 @@ function App() {
 			<Main
 				view={view}
 				addPaperTapeEntry={(entry) => {
-					setPaperTapeEntries([...paperTapeEntries, {
-						...entry,
-						key: paperTapeKey
-					}])
+					setPaperTapeEntries([
+						...paperTapeEntries,
+						{
+							...entry,
+							key: paperTapeKey
+						}
+					])
 			
 					paperTapeKey++
 				}}
@@ -83,11 +87,11 @@ function App() {
 		</div>
 
 		<Panel name='Paper Tape'>
-			<div style={{ overflowY: 'scroll', height: '200px' }}>
+			<div id={style.paperTape}>
 				<PaperTape entries={paperTapeEntries} />
 			</div>
 
-			<button style={{ display: 'block', marginLeft: 'auto' }} onClick={() => {
+			<button id={style.paperTapeButton} onClick={() => {
 				setPaperTapeEntries([])
 			}}>
 				Clear
