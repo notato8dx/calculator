@@ -97,7 +97,7 @@ export default ({
 				}}
 				handleEqual={(operation: Operation) => {
 					return () => {
-						const value = operation.function([operands[0].value, operands[1].value])
+						const value = operation.operate([operands[0].value, operands[1].value])
 
 						addPaperTapeEntry({
 							operands: [operands[0].value, operands[1].value],
