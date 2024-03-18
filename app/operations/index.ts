@@ -1,9 +1,11 @@
-class Operation {
+import IOperation from '../operation'
+
+class Operation implements IOperation {
 	readonly symbol
 	readonly symbolASCII
 	readonly function
 
-	constructor(symbol: string, symbolASCII: string, func: (operands: number[]) => number) {
+	constructor(symbol: string, symbolASCII: string, func: (operands: [number, number]) => number) {
 		this.symbol = symbol
 		this.symbolASCII = symbolASCII
 		this.function = func
