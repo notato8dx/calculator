@@ -1,7 +1,13 @@
 import { JSX } from 'react'
 import style from './style.module.css'
 
-export default ({ variant, isBottomLeft, isLarge, isSelected, ...props }: JSX.IntrinsicElements['button'] & {
+export default ({
+	variant,
+	isBottomLeft,
+	isLarge,
+	isSelected,
+	...props
+ }: JSX.IntrinsicElements['button'] & {
 	variant: 'operation' | 'value' | 'number'
 	isSelected?: boolean
 	isBottomLeft?: boolean

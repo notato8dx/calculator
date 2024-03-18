@@ -1,3 +1,3 @@
-export default function ScientificButtons() {
+export default () => {
 	return <></>
 }

@@ -1,7 +1,11 @@
 import { RefObject, useEffect, useRef } from 'react'
 import PaperTapeEntry from '../../paper-tape-entry'
 
-export default function Bottom({ entries }: { entries: PaperTapeEntry[] }) {
+export default ({
+	entries
+}: {
+	entries: PaperTapeEntry[]
+}) => {
 	const paperTapeRef = useRef<Element>(null!)
 
 	useEffect(() => {

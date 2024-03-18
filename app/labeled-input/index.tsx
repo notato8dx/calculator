@@ -1,6 +1,9 @@
 import { JSX, useId } from 'react'
 
-export default ({ children, ...props }: JSX.IntrinsicElements['input']) => {
+export default ({
+	children,
+	...props
+}: JSX.IntrinsicElements['input']) => {
 	const id = useId()
 
 	return <div>
