@@ -154,8 +154,8 @@ function App() {
 
 	return <>
 		<Panel name='Settings'>
-			{Object.entries(views).map(([key, view], id) => <LabeledInput
-				key={key}
+			{views.map((view, id) => <LabeledInput
+				key={id}
 				type='radio'
 				name='view'
 				defaultChecked={id == 0}
