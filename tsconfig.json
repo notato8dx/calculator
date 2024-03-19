@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "noEmit": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
 	  "types": ["vite/client"],
     "jsx": "react-jsx",
@@ -10,6 +9,5 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
   },
-  "include": ["app"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
