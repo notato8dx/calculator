@@ -8,6 +8,5 @@
   	"noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-  },
-  "references": [{ "path": "./tsconfig.node.json" }]
+  }
 }
