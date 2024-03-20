@@ -1,5 +1,5 @@
-import Bottom from './bottom'
 import { Fragment } from 'react'
+import { Bottom } from './components'
 import { PaperTapeEntry } from '../../types'
 
 export default ({

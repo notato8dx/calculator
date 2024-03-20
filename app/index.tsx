@@ -1,10 +1,9 @@
 import { StrictMode, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { LabeledInput, Main, Panel, PaperTape } from './components'
+import { DecimalPlacesSelect, LabeledInput, Main, Panel, PaperTape } from './components'
 import { views } from './data'
-import styles from './styles.module.css'
 import { PaperTapeEntry } from './types'
-import './styles.css'
+import styles from './styles.module.css'
 
 createRoot(
 	document.getElementById('root')!
@@ -50,29 +49,11 @@ function App() {
 
 			<hr />
 
-			<label htmlFor='decimal-place-count'>
-				Decimal Places
-			</label>
-
-			<select id='decimal-place-count'>
-				{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(number => {
-					return <option value={number}>{number}</option>
-				})}
-			</select>
-
-			<LabeledInput
-				type='number'
-				min={0}
-				max={15}
-				defaultValue={15}
-				onChange={({ target: { value } }) => {
-					setDecimalPlaceCount(
-						parseInt(value)
-					)
-				}}
-			>
-				Decimal Places
-			</LabeledInput>
+			<DecimalPlacesSelect onChange={({ target: { value } }: { target: { value: string } }) => {
+				setDecimalPlaceCount(
+					parseInt(value)
+				)
+			}} />
 		</Panel>
 
 		<div className={styles.calculator}>
