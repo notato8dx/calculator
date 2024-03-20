@@ -1,12 +1,12 @@
 {
-  "compilerOptions": {
-    "noEmit": true,
-    "skipLibCheck": true,
-	  "types": ["vite/client"],
-    "jsx": "react-jsx",
-    "strict": true,
-  	"noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-  }
+	"compilerOptions": {
+		"noEmit": true,
+		"skipLibCheck": true,
+		"types": ["vite/client"],
+		"jsx": "react-jsx",
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+	}
 }
