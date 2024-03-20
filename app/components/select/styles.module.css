@@ -1,3 +1,7 @@
 .root > label {
 	margin-right: 6px
 }
+
+.root > select {
+	vertical-align: top
+}

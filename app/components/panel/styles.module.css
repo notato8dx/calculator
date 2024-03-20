@@ -1,11 +1,15 @@
 .root {
-	border-radius: 12px;
+	border-radius: 8px;
 	border: 1px solid var(--dark-color);
 }
 
 .root h1 {
-	margin: auto auto 12px auto;
+	margin: 0;
 	width: max-content;
 	font-weight: bold;
-	font-size: 100%
+	font-size: 100%;
+	width: auto;
+	padding: 4px;
+	text-align: center;
+	border-bottom: 1px solid black
 }

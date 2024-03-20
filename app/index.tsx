@@ -22,7 +22,7 @@ function App() {
 	const paperTapeKey = useRef(0)
 
 	return <>
-		<Panel name='Settings'>
+		<Panel style={{ padding: '8px' }} name='Settings'>
 			{views.map((view, id) => <Input
 				key={id}
 				label={view.name}
@@ -87,8 +87,8 @@ function App() {
 			/>
 		</div>
 
-		<Panel name='Paper Tape'>
-			<List className={styles.paperTapeEntryList}>
+		<Panel name='Paper Tape' className={styles.paperTape}>
+			<List className={styles.list}>
 				{paperTapeEntries.map(({ operands, operator, value, key }) => {
 					return <Fragment key={key}>
 						{`${operands[0]} ${operator} ${operands[1]}`}
@@ -99,12 +99,14 @@ function App() {
 					</Fragment>
 				})}
 			</List>
-
-			<button className={styles.paperTapeClearButton} onClick={() => {
-				setPaperTapeEntries([])
-			}}>
-				Clear
-			</button>
+			
+			<div className={styles.footer}>
+				<button onClick={() => {
+					setPaperTapeEntries([])
+				}}>
+					Clear
+				</button>
+			</div>
 		</Panel>
 	</>
 }
