@@ -1,5 +1,5 @@
 import { RefObject, useEffect, useRef } from 'react'
-import { PaperTapeEntry } from '../../types'
+import { PaperTapeEntry } from '../../../types'
 
 export default ({
 	entries

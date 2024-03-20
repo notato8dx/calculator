@@ -1,5 +1,5 @@
 import { JSX } from 'react'
-import style from './style.module.css'
+import styles from './styles.module.css'
 
 export default ({
 	children,
@@ -8,7 +8,7 @@ export default ({
 }: JSX.IntrinsicElements['div'] & {
 	name: string
 }) => {
-	return <div {...props} className={style.root}>
+	return <div {...props} className={styles.root}>
 		<h1>
 			{name}
 		</h1>

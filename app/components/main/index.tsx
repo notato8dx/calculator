@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Operation, PaperTapeEntry } from '../types'
-import style from './style.module.css'
+import { Operation, PaperTapeEntry } from '../../types'
+import styles from './styles.module.css'
 
 interface Operand {
 	value: number
@@ -38,7 +38,7 @@ export default ({
 	}
 
 	return <>
-		<div id={style.display}>
+		<div className={styles.display}>
 			{`${display.toLocaleString(
 				undefined,
 				{
@@ -49,7 +49,7 @@ export default ({
 			)}${nextDecimal == 1 ? '.' : ''}`}
 		</div>
 
-		<div id={style.buttons} style={{ gridTemplateColumns: `repeat(${columnCount}, 58px)` }}>
+		<div className={styles.buttons} style={{ gridTemplateColumns: `repeat(${columnCount}, 58px)` }}>
 			<Buttons
 				isOperationSelected={operand == operands[1]}
 				handleOperation={(setOperation: (operation: Operation) => void) => {

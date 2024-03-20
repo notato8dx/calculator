@@ -1,11 +1,11 @@
-#display {
+.display {
 	padding: 0 12px;
 	overflow-x: scroll;
 	text-align: right;
 	font-size: 300%
 }
 
-#buttons {
+.buttons {
 	gap: 1px;
 	margin-left: auto;
 	max-width: min-content;
@@ -13,13 +13,13 @@
 	grid-auto-rows: 48px
 }
 
-#buttons > button {
+.buttons > button {
 	--gray-color: #696969;
 	border: none;
 	font-size: 125%;
 	color: inherit
 }
 
-#buttons > button:last-child {
+.buttons > button:last-child {
 	border-bottom-right-radius: 12px
 }

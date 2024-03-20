@@ -1,11 +1,10 @@
 import { StrictMode, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import Main from './main'
-import PaperTape from './paper-tape'
-import { Button, LabeledInput, Panel } from './components'
-import style from './style.module.css'
-import { Operation, PaperTapeEntry } from './types'
-import './style.css'
+import { LabeledInput, Main, Panel, PaperTape } from './components'
+import { views } from './data'
+import styles from './styles.module.css'
+import { PaperTapeEntry } from './types'
+import './styles.css'
 
 createRoot(
 	document.getElementById('root')!
@@ -15,134 +14,6 @@ createRoot(
 		<App />
 	</StrictMode>
 )
-
-const operations: [Operation, Operation, Operation, Operation] = [
-	{
-		symbol: '+',
-		symbolASCII: '+',
-		operate: operands => operands[0] + operands[1]
-	},
-	{
-		symbol: '−',
-		symbolASCII: '-',
-		operate: operands => operands[0] - operands[1]
-	},
-	{
-		symbol: '×',
-		symbolASCII: '*', 
-		operate: operands => operands[0] * operands[1]
-	},
-	{
-		symbol: '÷',
-		symbolASCII: '/',
-		operate: operands => operands[0] / operands[1]
-	}
-]
-
-const views = [
-	{
-		name: 'Basic',
-		columnCount: 4,
-		Buttons: ({
-			isOperationSelected,
-			handleOperation,
-			handleNumber,
-			handleClear,
-			handleClearAll,
-			handleValue,
-			handleEqual,
-			handleDecimal
-		}: {
-			isOperationSelected: boolean,
-			handleOperation: (setOperation: (operation: Operation) => void) => (operation: Operation) => void,
-			handleNumber: (number: number) => void,
-			handleClear: () => void,
-			handleClearAll: () => void,
-			handleValue: (getNewValue: (value: number) => number) => void
-			handleEqual: (operation: Operation) => () => void
-			handleDecimal: () => void
-		}) => {
-			const [operation, setOperation] = useState(operations[0])
-			const [shouldClearAll, setShouldClearAll] = useState(true)
-		
-			const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(o => {
-				return <Button variant='operation' isSelected={isOperationSelected && o == operation} onClick={() => handleOperation(setOperation)(o)}>
-					{o.symbol}
-				</Button>
-			})
-		
-			const numberButtons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((number, id) => {
-				return <Button isLarge={id == 0} isBottomLeft={id == 0} variant='number' onClick={() => {
-					handleNumber(number)
-					setShouldClearAll(false)
-				}}>
-					{number.toString(16).toUpperCase()}
-				</Button>
-			})
-		
-			return <>
-				{shouldClearAll ?
-					<Button variant='value' onClick={handleClearAll}>
-						AC
-					</Button>
-				:
-					<Button variant='value' onClick={() => {
-						handleClear()
-						setShouldClearAll(true)
-					}}>
-						C
-					</Button>
-				}
-		
-				<Button variant='value' onClick={() => handleValue(value => -value)}>
-					⁺⁄₋
-				</Button>
-		
-				<Button variant='value' onClick={() => handleValue(value => value / 100)}>
-					%
-				</Button>
-		
-				{divideButton}
-				{numberButtons[7]}
-				{numberButtons[8]}
-				{numberButtons[9]}
-				{numberButtons[29]}
-				{multiplyButton}
-				{numberButtons[4]}
-				{numberButtons[5]}
-				{numberButtons[6]}
-				{subtractButton}
-				{numberButtons[1]}
-				{numberButtons[2]}
-				{numberButtons[3]}
-				{addButton}
-				{numberButtons[0]}
-		
-				<Button variant='number' onClick={handleDecimal}>
-					.
-				</Button>
-		
-				<Button variant='operation' onClick={handleEqual(operation)}>
-					=
-				</Button>
-			</>
-		}
-	},
-	{
-		name: 'Scientific',
-		columnCount: 10,
-		Buttons: () => {
-			return <></>
-		}
-	},
-	{
-		name: 'Programmer',
-		columnCount: 7,
-		Buttons: () => {
-			return <></>
-		}
-	}
-]
 
 let paperTapeKey = 0
 
@@ -179,6 +50,16 @@ function App() {
 
 			<hr />
 
+			<label htmlFor='decimal-place-count'>
+				Decimal Places
+			</label>
+
+			<select id='decimal-place-count'>
+				{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(number => {
+					return <option value={number}>{number}</option>
+				})}
+			</select>
+
 			<LabeledInput
 				type='number'
 				min={0}
@@ -194,7 +75,7 @@ function App() {
 			</LabeledInput>
 		</Panel>
 
-		<div id={style.calculator}>
+		<div className={styles.calculator}>
 			<Main
 				view={view}
 				addPaperTapeEntry={(entry) => {
@@ -216,11 +97,11 @@ function App() {
 		</div>
 
 		<Panel name='Paper Tape'>
-			<div id={style.paperTape}>
+			<div className={styles.paperTape}>
 				<PaperTape entries={paperTapeEntries} />
 			</div>
 
-			<button id={style.paperTapeButton} onClick={() => {
+			<button className={styles.paperTapeButton} onClick={() => {
 				setPaperTapeEntries([])
 			}}>
 				Clear

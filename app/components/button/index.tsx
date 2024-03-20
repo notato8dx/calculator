@@ -1,5 +1,5 @@
 import { JSX } from 'react'
-import style from './style.module.css'
+import styles from './styles.module.css'
 
 export default ({
 	variant,
@@ -15,15 +15,11 @@ export default ({
 }) => {
 	return <button
 		{...props}
-		id={isBottomLeft ? style.bottomLeft : undefined}
 		className={[
-			{
-				operation: style.operation,
-				value: style.value,
-				number: style.number
-			}[variant],
-			isLarge ? style.large : null,
-			isSelected ? style.selected : null
+			styles[variant],
+			isBottomLeft ? styles.bottomLeft : null,
+			isLarge ? styles.large : null,
+			isSelected ? styles.selected : null,
 		].join(' ')}
 	/>
 }
