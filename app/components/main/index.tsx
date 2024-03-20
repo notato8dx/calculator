@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Operation, PaperTapeEntry } from '../../types'
 import styles from './styles.module.css'
 
@@ -10,8 +10,6 @@ const operands: [Operand, Operand] = [
 	{ value: 0 },
 	{ value: 0 }
 ]
-
-let canOverwrite = true
 
 export default ({
 	displayOptions,
@@ -28,12 +26,13 @@ export default ({
 	const [operand, setOperand] = useState(operands[0])
 	const [display, setDisplay] = useState(operand.value)
 	const [nextDecimal, setNextDecimal] = useState(0)
+	const canOverwrite = useRef(true)
 
 	function setOperandAndOperandId(value: number, operand: Operand) {
 		operand.value = value
 		setDisplay(value)
 		setOperand(operand)
-		canOverwrite = true
+		canOverwrite.current = true
 		setNextDecimal(0)
 	}
 
@@ -41,11 +40,7 @@ export default ({
 		<div className={styles.display}>
 			{`${display.toLocaleString(
 				undefined,
-				{
-					...displayOptions,
-					// @ts-expect-error
-					signDisplay: 'negative'
-				}
+				displayOptions
 			)}${nextDecimal == 1 ? '.' : ''}`}
 		</div>
 
@@ -63,10 +58,10 @@ export default ({
 						setDisplay(operand.value + number * 10 ** -nextDecimal)
 						operand.value = operand.value + number * 10 ** -nextDecimal
 						setNextDecimal(nextDecimal + 1)
-					} else if (canOverwrite) {
+					} else if (canOverwrite.current) {
 						operand.value = number
 						setDisplay(number)
-						canOverwrite = false
+						canOverwrite.current = false
 					} else {
 						setDisplay(operand.value * 10 + number)
 						operand.value = operand.value * 10 + number
@@ -77,7 +72,7 @@ export default ({
 					setDisplay(0)
 					setNextDecimal(0)
 			
-					if (canOverwrite) {
+					if (canOverwrite.current) {
 						setOperand(operands[0])
 					}
 				}}
@@ -87,9 +82,7 @@ export default ({
 				}}
 				handleValue={(getNewValue: (value: number) => number) => {
 					operand.value = getNewValue(operand.value)
-					setDisplay(
-						getNewValue(operand.value)
-					)
+					setDisplay(operand.value)
 				}}
 				handleEqual={(operation: Operation) => {
 					return () => {

@@ -30,7 +30,13 @@ export default [
 			const [shouldClearAll, setShouldClearAll] = useState(true)
 		
 			const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(o => {
-				return <Button variant='operation' isSelected={isOperationSelected && o == operation} onClick={() => handleOperation(setOperation)(o)}>
+				return <Button
+					variant='operation'
+					isSelected={isOperationSelected && o == operation}
+					onClick={() => {
+						handleOperation(setOperation)(o)
+					}}
+				>
 					{o.symbol}
 				</Button>
 			})

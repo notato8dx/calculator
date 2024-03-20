@@ -1,12 +1,12 @@
-import { StrictMode, useState } from 'react'
+import { Fragment, StrictMode, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { DecimalPlacesSelect, LabeledInput, Main, Panel, PaperTape } from './components'
+import { Select, Input, List, Main, Panel } from './components'
 import { views } from './data'
 import { PaperTapeEntry } from './types'
 import styles from './styles.module.css'
 
 createRoot(
-	document.getElementById('root')!
+	document.getElementById('app-container')!
 )
 .render(
 	<StrictMode>
@@ -14,46 +14,56 @@ createRoot(
 	</StrictMode>
 )
 
-let paperTapeKey = 0
-
 function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaceCount, setDecimalPlaceCount] = useState(15)
 	const [view, setView] = useState(views[0]!)
 	const [paperTapeEntries, setPaperTapeEntries] = useState<PaperTapeEntry[]>([])
+	const paperTapeKey = useRef(0)
 
 	return <>
 		<Panel name='Settings'>
-			{views.map((view, id) => <LabeledInput
+			{views.map((view, id) => <Input
 				key={id}
+				label={view.name}
 				type='radio'
 				name='view'
 				defaultChecked={id == 0}
 				onChange={() => {
 					setView(view)
 				}}
-			>
-				{view.name}
-			</LabeledInput>)}
+			/>)}
 
 			<hr />
 
-			<LabeledInput
+			<Input
+				label='Show Thousands Separators'
 				type='checkbox'
 				onChange={({ target: { checked } }) => {
 					setIsShowingSeparators(checked)
 				}}
-			>
-				Show Thousands Separators
-			</LabeledInput>
+			/>
 
 			<hr />
 
-			<DecimalPlacesSelect onChange={({ target: { value } }: { target: { value: string } }) => {
-				setDecimalPlaceCount(
-					parseInt(value)
-				)
-			}} />
+			<Select
+				label='Decimal Places'
+				defaultValue={15}
+				onChange={({ target: { value } }) => {
+					setDecimalPlaceCount(
+						parseInt(value)
+					)
+				}}
+			>
+				{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(number => {
+					return <option
+						value={number}
+						key={number}
+					>
+						{number}
+					</option>
+				})}
+			</Select>
 		</Panel>
 
 		<div className={styles.calculator}>
@@ -64,11 +74,11 @@ function App() {
 						...paperTapeEntries,
 						{
 							...entry,
-							key: paperTapeKey
+							key: paperTapeKey.current
 						}
 					])
 			
-					paperTapeKey++
+					paperTapeKey.current++
 				}}
 				displayOptions={{ 
 					maximumFractionDigits: decimalPlaceCount,
@@ -78,11 +88,19 @@ function App() {
 		</div>
 
 		<Panel name='Paper Tape'>
-			<div className={styles.paperTape}>
-				<PaperTape entries={paperTapeEntries} />
-			</div>
+			<List className={styles.paperTapeEntryList}>
+				{paperTapeEntries.map(({ operands, operator, value, key }) => {
+					return <Fragment key={key}>
+						{`${operands[0]} ${operator} ${operands[1]}`}
+						<br />
+						{`= ${value}`}
+						<br />
+						<br />
+					</Fragment>
+				})}
+			</List>
 
-			<button className={styles.paperTapeButton} onClick={() => {
+			<button className={styles.paperTapeClearButton} onClick={() => {
 				setPaperTapeEntries([])
 			}}>
 				Clear

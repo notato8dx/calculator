@@ -1,10 +1,9 @@
 .root {
-	padding: 12px;
 	border-radius: 12px;
 	border: 1px solid var(--dark-color);
 }
 
-.root > h1 {
+.root h1 {
 	margin: auto auto 12px auto;
 	width: max-content;
 	font-weight: bold;

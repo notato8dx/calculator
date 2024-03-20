@@ -2,16 +2,18 @@ import { JSX, useId } from 'react'
 import styles from './styles.module.css'
 
 export default ({
-	children,
+	label,
 	...props
-}: JSX.IntrinsicElements['input']) => {
+}: {
+	label: string
+} & JSX.IntrinsicElements['select']) => {
 	const id = useId()
 
 	return <div className={styles.root}>
-		<input {...props} id={id} />
-
 		<label htmlFor={id}>
-			{children}
+			{label}
 		</label>
+
+		<select id={id} {...props} />
 	</div>
 }

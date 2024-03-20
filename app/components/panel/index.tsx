@@ -9,10 +9,18 @@ export default ({
 	name: string
 }) => {
 	return <div {...props} className={styles.root}>
-		<h1>
-			{name}
-		</h1>
+		<div style={{borderBottom: '1px solid black'}}>
+			<h1>
+				{name}
+			</h1>
+		</div>
 
-		{children}
+		<div style={{ margin: '12px 0 ', padding: '0 12px' }}>
+			{children}
+		</div>
+
+		<div style={{ minHeight: '24px', borderTop: '1px solid black' }}>
+		
+		</div>
 	</div>
 }
