@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { views } from '../../data'
 import { Operation, PaperTapeEntry } from '../../types'
 import styles from './styles.module.css'
 
@@ -15,12 +16,12 @@ export default ({
 	displayOptions,
 	view: {
 		columnCount,
-		Buttons
+		ButtonList
 	},
 	addPaperTapeEntry
 }: {
 	displayOptions: Intl.NumberFormatOptions,
-	view: any,
+	view: typeof views[number],
 	addPaperTapeEntry: (entry: Omit<PaperTapeEntry, 'key'>) => void
 }) => {
 	const [operand, setOperand] = useState(operands[0])
@@ -44,8 +45,13 @@ export default ({
 			)}${nextDecimal == 1 ? '.' : ''}`}
 		</div>
 
-		<div className={styles.buttons} style={{ gridTemplateColumns: `repeat(${columnCount}, 58px)` }}>
-			<Buttons
+		<div
+			className={styles.buttons}
+			style={{
+				gridTemplateColumns: `repeat(${columnCount}, 58px)`
+			}}
+		>
+			<ButtonList
 				isOperationSelected={operand == operands[1]}
 				handleOperation={(setOperation: (operation: Operation) => void) => {
 					return (operation: Operation) => {
@@ -85,17 +91,15 @@ export default ({
 					setDisplay(operand.value)
 				}}
 				handleEqual={(operation: Operation) => {
-					return () => {
-						const value = operation.operate([operands[0].value, operands[1].value])
+					const value = operation.operate([operands[0].value, operands[1].value])
 
-						addPaperTapeEntry({
-							operands: [operands[0].value, operands[1].value],
-							operator: operation.symbolASCII,
-							value
-						})
+					addPaperTapeEntry({
+						operands: [operands[0].value, operands[1].value],
+						operator: operation.symbolASCII,
+						value
+					})
 
-						setOperandAndOperandId(value, operands[0])
-					}
+					setOperandAndOperandId(value, operands[0])
 				}}
 				handleDecimal={() => {
 					if (nextDecimal == 0) {
