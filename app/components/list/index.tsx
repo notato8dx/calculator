@@ -2,17 +2,18 @@ import { JSX, useEffect, useRef } from 'react'
 import styles from './styles.module.css'
 
 export default ({
-	children,
 	className,
 	...props
 }: JSX.IntrinsicElements['div']) => {
-	const root = useRef<Element>(null!)
+	const root = useRef<HTMLDivElement>(null!)
 
 	useEffect(() => {
 		root.current.scrollTop = root.current.scrollHeight
-	}, [children])
+	}, [props.children])
 
-	return <div ref={root as React.RefObject<HTMLDivElement>} className={`${styles.root} ${className}`} {...props}>
-		{children}
-	</div>
+	return <div
+		ref={root}
+		className={`${styles.root} ${className}`}
+		{...props}
+	/>
 }
