@@ -21,4 +21,4 @@ export default [
 		symbolASCII: '/',
 		operate: operands => operands[0] / operands[1]
 	}
-] as [Operation, Operation, Operation, Operation]
+] as readonly [Operation, Operation, Operation, Operation]
