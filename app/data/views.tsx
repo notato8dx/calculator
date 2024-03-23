@@ -1,13 +1,26 @@
-import { useState } from 'react'
+import { FunctionComponent, useState } from 'react'
 import { Button } from '../components'
 import { operations } from '.'
 import { Operation } from '../types'
 
-export default [
+export default Array<{
+	readonly label: string
+	readonly columnCount: number
+	readonly ButtonList: FunctionComponent<{
+		readonly isOperationSelected: boolean,
+		readonly handleOperation: (setOperation: (operation: Operation) => void) => (operation: Operation) => void,
+		readonly handleNumber: (number: number) => void,
+		readonly handleClear: () => void,
+		readonly handleClearAll: () => void,
+		readonly handleValue: (getNewValue: (value: number) => number) => void
+		readonly handleEqual: (operation: Operation) => void
+		readonly handleDecimal: () => void
+	}>
+}>(
 	{
-		name: 'Basic',
+		label: 'Basic',
 		columnCount: 4,
-		Buttons: ({
+		ButtonList: ({
 			isOperationSelected,
 			handleOperation,
 			handleNumber,
@@ -16,15 +29,6 @@ export default [
 			handleValue,
 			handleEqual,
 			handleDecimal
-		}: {
-			isOperationSelected: boolean,
-			handleOperation: (setOperation: (operation: Operation) => void) => (operation: Operation) => void,
-			handleNumber: (number: number) => void,
-			handleClear: () => void,
-			handleClearAll: () => void,
-			handleValue: (getNewValue: (value: number) => number) => void
-			handleEqual: (operation: Operation) => () => void
-			handleDecimal: () => void
 		}) => {
 			const [operation, setOperation] = useState(operations[0])
 			const [shouldClearAll, setShouldClearAll] = useState(true)
@@ -76,7 +80,6 @@ export default [
 				{numberButtons[7]}
 				{numberButtons[8]}
 				{numberButtons[9]}
-				{numberButtons[29]}
 				{multiplyButton}
 				{numberButtons[4]}
 				{numberButtons[5]}
@@ -92,24 +95,24 @@ export default [
 					.
 				</Button>
 		
-				<Button variant='operation' onClick={handleEqual(operation)}>
+				<Button variant='operation' onClick={() => handleEqual(operation)}>
 					=
 				</Button>
 			</>
 		}
 	},
 	{
-		name: 'Scientific',
+		label: 'Scientific',
 		columnCount: 10,
-		Buttons: () => {
+		ButtonList: () => {
 			return <></>
 		}
 	},
 	{
-		name: 'Programmer',
+		label: 'Programmer',
 		columnCount: 7,
-		Buttons: () => {
+		ButtonList: () => {
 			return <></>
 		}
 	}
-]
+)
