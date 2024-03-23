@@ -3,9 +3,11 @@ import styles from './styles.module.css'
 
 export default ({
 	label,
+	handleChange,
 	...props
 }: {
 	label: string
+	handleChange: (value: string) => void
 } & JSX.IntrinsicElements['select']) => {
 	const id = useId()
 
@@ -14,6 +16,8 @@ export default ({
 			{label}
 		</label>
 
-		<select id={id} {...props} />
+		<select {...props} id={id} onChange={({ target: { value } }) => {
+			handleChange(value)
+		}} />
 	</div>
 }
