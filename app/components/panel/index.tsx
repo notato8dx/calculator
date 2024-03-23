@@ -2,16 +2,18 @@ import { JSX } from 'react'
 import styles from './styles.module.css'
 
 export default ({
+	children,
+	className,
 	name,
 	...props
 }: JSX.IntrinsicElements['div'] & {
-	name: string
+	name?: string
 }) => {
-	return <div className={styles.root}>
-			<h1 style={{ }}>
-				{name}
-			</h1>
+	return <div className={`${styles.root} ${className}`} {...props}>
+		{name ? <h1>
+			{name}
+		</h1> : null}
 
-		<div {...props} />
+		{children}
 	</div>
 }
