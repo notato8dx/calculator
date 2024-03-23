@@ -1,10 +1,16 @@
+.calculator {
+	background-color: var(--dark-color);
+	color: white
+}
+
 .paperTape > .list {
-	height: 100%;
+	width: 256px;
+	height: 256px
 }
 
 .paperTape > .footer {
 	width: auto;
-	padding: 6px;
+	padding: 4px;
 	border-top: 1px solid black
 }
 
@@ -13,9 +19,7 @@
 	margin-left: auto
 }
 
-.calculator {
-	background-color: var(--dark-color);
-	border: 1px solid var(--dark-color);
-	border-radius: 8px;
-	color: white
+.settings > .body {
+	padding: 8px;
+	max-width: max-content
 }
