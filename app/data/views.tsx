@@ -32,7 +32,7 @@ export default Array<{
 		}) => {
 			const [operation, setOperation] = useState(operations[0])
 			const [shouldClearAll, setShouldClearAll] = useState(true)
-		
+
 			const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(o => {
 				return <Button
 					variant='operation'
@@ -92,7 +92,10 @@ export default Array<{
 				{addButton}
 				{numberButtons[0]}
 		
-				<Button variant='number' onClick={handleDecimal}>
+				<Button variant='number' onClick={() => {
+					handleDecimal()
+					setShouldClearAll(false)
+				}}>
 					.
 				</Button>
 		

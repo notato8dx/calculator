@@ -11,7 +11,6 @@ createRoot(
 .render(
 	<StrictMode>
 		<App />
-		<App />
 	</StrictMode>
 )
 

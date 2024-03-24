@@ -3,7 +3,6 @@ import { views } from '../../data'
 import { Operation, PaperTapeEntry } from '../../types'
 import styles from './styles.module.css'
 
-
 export default ({
 	displayOptions,
 	view: {
@@ -23,10 +22,7 @@ export default ({
 
 	return <>
 		<div className={styles.display}>
-			{`${display.toLocaleString(
-				undefined,
-				displayOptions
-			)}${nextDigitPosition == 1 ? '.' : ''}`}
+			{`${display.toLocaleString(undefined, displayOptions)}${nextDigitPosition == 1 ? '.' : ''}`}
 		</div>
 
 		<div
@@ -93,6 +89,10 @@ export default ({
 				handleDecimal={() => {
 					if (typeof nextDigitPosition != 'number') {
 						setNextDigitPosition(1)
+
+						if (nextDigitPosition == 'start') {
+							setDisplay(0)
+						}
 					}
 				}}
 			/>
