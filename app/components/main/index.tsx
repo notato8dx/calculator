@@ -3,14 +3,6 @@ import { views } from '../../data'
 import { Operation, PaperTapeEntry } from '../../types'
 import styles from './styles.module.css'
 
-interface Operand {
-	value: number
-}
-
-const operands: [Operand, Operand] = [
-	{ value: 0 },
-	{ value: 0 }
-]
 
 export default ({
 	displayOptions,
@@ -24,25 +16,19 @@ export default ({
 	view: typeof views[number],
 	addPaperTapeEntry: (entry: Omit<PaperTapeEntry, 'key'>) => void
 }) => {
-	const [operand, setOperand] = useState(operands[0])
-	const [display, setDisplay] = useState(operand.value)
-	const [nextDecimal, setNextDecimal] = useState(0)
-	const canOverwrite = useRef(true)
-
-	function setOperandAndOperandId(value: number, operand: Operand) {
-		operand.value = value
-		setDisplay(value)
-		setOperand(operand)
-		canOverwrite.current = true
-		setNextDecimal(0)
-	}
+	const [display, setDisplay] = useState(0)
+	const [separatorVisible, setSeparatorVisible] = useState(false)
+	const [operationComplete, setOperationComplete] = useState(true)
+	const displayAvailable = useRef(true)
+	const fractionDigitCount = useRef(0)
+	const operand = useRef(0)
 
 	return <>
 		<div className={styles.display}>
 			{`${display.toLocaleString(
 				undefined,
 				displayOptions
-			)}${nextDecimal == 1 ? '.' : ''}`}
+			)}${separatorVisible ? '.' : ''}`}
 		</div>
 
 		<div
@@ -52,58 +38,60 @@ export default ({
 			}}
 		>
 			<ButtonList
-				isOperationSelected={operand == operands[1]}
-				handleOperation={(setOperation: (operation: Operation) => void) => {
-					return (operation: Operation) => {
-						setOperation(operation)
-						setOperandAndOperandId(operands[0].value, operands[1])
-					}
+				operationComplete={operationComplete}
+				handleOperation={() => {
+					setOperationComplete(false)
+					displayAvailable.current = true
+					operand.current = display
 				}}
 				handleNumber={(number: number) => {
-					if (nextDecimal > 0) {
-						setDisplay(operand.value + number * 10 ** -nextDecimal)
-						operand.value = operand.value + number * 10 ** -nextDecimal
-						setNextDecimal(nextDecimal + 1)
-					} else if (canOverwrite.current) {
-						operand.value = number
+					if (fractionDigitCount.current > 0) {
+						setDisplay(display + number * 10 ** -fractionDigitCount.current)
+						fractionDigitCount.current++
+					} else if (displayAvailable.current) {
 						setDisplay(number)
-						canOverwrite.current = false
+						displayAvailable.current = false
 					} else {
-						setDisplay(operand.value * 10 + number)
-						operand.value = operand.value * 10 + number
+						setDisplay(display * 10 + number)
 					}
 				}}
 				handleClear={() => {
-					operand.value = 0
 					setDisplay(0)
-					setNextDecimal(0)
+					setSeparatorVisible(false)
+					fractionDigitCount.current = 0
 			
-					if (canOverwrite.current) {
-						setOperand(operands[0])
+					if (displayAvailable.current) {
+						setDisplay(operand.current)
 					}
 				}}
 				handleClearAll={() => {
-					operands[1].value = 0
-					setOperandAndOperandId(0, operands[0])
+					setDisplay(0)
+					operand.current = 0
 				}}
 				handleValue={(getNewValue: (value: number) => number) => {
-					operand.value = getNewValue(operand.value)
-					setDisplay(operand.value)
+					setDisplay(getNewValue(display))
 				}}
 				handleEqual={(operation: Operation) => {
-					const value = operation.operate([operands[0].value, operands[1].value])
+					const operands: [number, number] = operationComplete ? [display, operand.current] : [operand.current, display]
+					const value = operation.operate(operands)
 
 					addPaperTapeEntry({
-						operands: [operands[0].value, operands[1].value],
+						operands: operands,
 						operator: operation.symbolASCII,
 						value
 					})
 
-					setOperandAndOperandId(value, operands[0])
+					if (!operationComplete) {
+						operand.current = display
+						setOperationComplete(true)
+						displayAvailable.current = true
+					}
+
+					setDisplay(value)
 				}}
 				handleDecimal={() => {
-					if (nextDecimal == 0) {
-						setNextDecimal(1)
+					if (!separatorVisible) {
+						setSeparatorVisible(true)
 					}
 				}}
 			/>

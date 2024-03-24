@@ -7,8 +7,8 @@ export default Array<{
 	readonly label: string
 	readonly columnCount: number
 	readonly ButtonList: FunctionComponent<{
-		readonly isOperationSelected: boolean,
-		readonly handleOperation: (setOperation: (operation: Operation) => void) => (operation: Operation) => void,
+		readonly operationComplete: boolean,
+		readonly handleOperation: () => void,
 		readonly handleNumber: (number: number) => void,
 		readonly handleClear: () => void,
 		readonly handleClearAll: () => void,
@@ -21,7 +21,7 @@ export default Array<{
 		label: 'Basic',
 		columnCount: 4,
 		ButtonList: ({
-			isOperationSelected,
+			operationComplete,
 			handleOperation,
 			handleNumber,
 			handleClear,
@@ -36,9 +36,10 @@ export default Array<{
 			const [addButton, subtractButton, multiplyButton, divideButton] = operations.map(o => {
 				return <Button
 					variant='operation'
-					isSelected={isOperationSelected && o == operation}
+					isSelected={!operationComplete && o == operation}
 					onClick={() => {
-						handleOperation(setOperation)(o)
+						setOperation(o)
+						handleOperation()
 					}}
 				>
 					{o.symbol}
