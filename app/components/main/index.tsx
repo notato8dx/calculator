@@ -17,10 +17,8 @@ export default ({
 	addPaperTapeEntry: (entry: Omit<PaperTapeEntry, 'key'>) => void
 }) => {
 	const [display, setDisplay] = useState(0)
-	const [separatorVisible, setSeparatorVisible] = useState(false)
 	const [operationComplete, setOperationComplete] = useState(true)
-	const displayAvailable = useRef(true)
-	const fractionDigitCount = useRef(0)
+	const [nextDigitPosition, setNextDigitPosition] = useState<'start' | 'end' | number>('start')
 	const operand = useRef(0)
 
 	return <>
@@ -28,7 +26,7 @@ export default ({
 			{`${display.toLocaleString(
 				undefined,
 				displayOptions
-			)}${separatorVisible ? '.' : ''}`}
+			)}${nextDigitPosition == 1 ? '.' : ''}`}
 		</div>
 
 		<div
@@ -41,31 +39,34 @@ export default ({
 				operationComplete={operationComplete}
 				handleOperation={() => {
 					setOperationComplete(false)
-					displayAvailable.current = true
+					setNextDigitPosition('start')
 					operand.current = display
 				}}
 				handleNumber={(number: number) => {
-					if (fractionDigitCount.current > 0) {
-						setDisplay(display + number * 10 ** -fractionDigitCount.current)
-						fractionDigitCount.current++
-					} else if (displayAvailable.current) {
+					if (typeof nextDigitPosition == 'number') {
+						setDisplay(display + number * 10 ** -nextDigitPosition)
+						setNextDigitPosition(nextDigitPosition + 1)
+					} else if (nextDigitPosition == 'start') {
 						setDisplay(number)
-						displayAvailable.current = false
+						setNextDigitPosition('end')
 					} else {
 						setDisplay(display * 10 + number)
 					}
 				}}
 				handleClear={() => {
 					setDisplay(0)
-					setSeparatorVisible(false)
-					fractionDigitCount.current = 0
-			
-					if (displayAvailable.current) {
+
+					if (!operationComplete && nextDigitPosition == 'start') {
 						setDisplay(operand.current)
+						setOperationComplete(true)
+						operand.current = 0
 					}
+
+					setNextDigitPosition('start')
 				}}
 				handleClearAll={() => {
 					setDisplay(0)
+					setOperationComplete(true)
 					operand.current = 0
 				}}
 				handleValue={(getNewValue: (value: number) => number) => {
@@ -84,14 +85,14 @@ export default ({
 					if (!operationComplete) {
 						operand.current = display
 						setOperationComplete(true)
-						displayAvailable.current = true
+						setNextDigitPosition('start')
 					}
 
 					setDisplay(value)
 				}}
 				handleDecimal={() => {
-					if (!separatorVisible) {
-						setSeparatorVisible(true)
+					if (typeof nextDigitPosition != 'number') {
+						setNextDigitPosition(1)
 					}
 				}}
 			/>
