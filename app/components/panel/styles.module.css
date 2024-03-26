@@ -1,7 +1,8 @@
 .root {
 	border-radius: 8px;
 	border: 1px solid var(--dark-color);
-	max-width: max-content;
+	width: max-content;
+	min-width: min-content;
 	margin: auto
 }
 

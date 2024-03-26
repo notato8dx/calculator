@@ -1,6 +1,7 @@
 .calculator {
 	background-color: var(--dark-color);
-	color: white
+	color: white;
+	width: 100%
 }
 
 .paperTape > .list {
