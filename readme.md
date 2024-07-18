@@ -1,4 +1,4 @@
-Calculator is a scientific calculator application that runs on a web browser.
+Calculator is a calculator application that runs on a web browser.
 
 [Node.js](//nodejs.org) and [npm](//nodejs.org) are required to run Calculator.
 
