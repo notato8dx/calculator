@@ -1,18 +1,13 @@
 import { useRef, useState } from 'react'
-import { views } from '../../data'
+import { ButtonList } from '..'
 import { Operation, PaperTapeEntry } from '../../types'
 import styles from './styles.module.css'
 
 export default ({
 	displayOptions,
-	view: {
-		columnCount,
-		ButtonList
-	},
 	addPaperTapeEntry
 }: {
 	displayOptions: Intl.NumberFormatOptions,
-	view: typeof views[number],
 	addPaperTapeEntry: (entry: Omit<PaperTapeEntry, 'key'>) => void
 }) => {
 	const [display, setDisplay] = useState(0)
@@ -28,7 +23,7 @@ export default ({
 		<div
 			className={styles.buttons}
 			style={{
-				gridTemplateColumns: `repeat(${columnCount}, 58px)`
+				gridTemplateColumns: `repeat(4, 58px)`
 			}}
 		>
 			<ButtonList

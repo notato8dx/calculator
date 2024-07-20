@@ -1,33 +1,27 @@
 import { Fragment, StrictMode, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { Select, Input, List, Main, Panel, RadioGroup } from './components'
-import { views } from './data'
+import { Select, Input, List, Main, Panel } from './components'
 import { PaperTapeEntry } from './types'
 import styles from './styles.module.css'
 
 createRoot(
 	document.getElementById('app-container')!
 )
-.render(
-	<StrictMode>
-		<App />
-	</StrictMode>
-)
+	.render(
+		<StrictMode>
+			<App />
+		</StrictMode>
+	)
 
 function App() {
 	const [isShowingSeparators, setIsShowingSeparators] = useState(false)
 	const [decimalPlaceCount, setDecimalPlaceCount] = useState(15)
-	const [view, setView] = useState(views[0]!)
 	const [paperTapeEntries, setPaperTapeEntries] = useState<PaperTapeEntry[]>([])
 	const paperTapeKey = useRef(0)
 
 	return <>
 		<Panel name='Settings' className={styles.settings}>
 			<div className={styles.body}>
-				<RadioGroup<typeof views[number]> radios={views} handleChange={setView} />
-
-				<hr />
-
 				<Input
 					label='Show Thousands Separators'
 					type='checkbox'
@@ -61,7 +55,6 @@ function App() {
 
 		<Panel className={styles.calculator}>
 			<Main
-				view={view}
 				addPaperTapeEntry={(entry) => {
 					setPaperTapeEntries([
 						...paperTapeEntries,
@@ -70,10 +63,10 @@ function App() {
 							key: paperTapeKey.current
 						}
 					])
-			
+
 					paperTapeKey.current++
 				}}
-				displayOptions={{ 
+				displayOptions={{
 					maximumFractionDigits: decimalPlaceCount,
 					useGrouping: isShowingSeparators
 				}}
