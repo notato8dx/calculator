@@ -1,5 +1,3 @@
-The React implementation of Calculator runs on web browsers.
-
 # Requirements
 
 - [Node.js](//nodejs.org)

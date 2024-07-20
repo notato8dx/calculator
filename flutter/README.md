@@ -1,5 +1,3 @@
-The Flutter implementation of Calculator runs on web browsers.
-
 # Requirements
 
 - [Flutter](//flutter.dev)
