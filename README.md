@@ -1,4 +1,4 @@
-Calculator is a cross-platform calculator application. There are implementations in multiple application frameworks.
+Calculator is a cross-platform calculator application. There are multiple implementations, each using a different application framework.
 
 Implementations:
 - [Flutter](flutter)
