@@ -1,10 +1,22 @@
-Calculator is a calculator application that runs on a web browser.
+The React implementation of Calculator runs on web browsers.
 
-[Node.js](//nodejs.org) and [npm](//nodejs.org) are required to run Calculator.
+# Requirements
+
+- [Node.js](//nodejs.org)
+- [npm](//nodejs.org)
+
+# Instructions
+
+Install dependencies:
+```
+npm install
+```
 
 Start the development server:
 ```
 npm run dev
 ```
 
-Calculator is developed with [Vite](//vitejs.dev), [React](//react.dev), and [TypeScript](//www.typescriptlang.org).
+# About
+
+This implementation is developed with [Vite](//vitejs.dev), [React](//react.dev), and [TypeScript](//www.typescriptlang.org).
