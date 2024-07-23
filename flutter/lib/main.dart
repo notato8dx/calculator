@@ -8,7 +8,9 @@ void main() {
 
 class App extends StatefulWidget {
   @override
-  State<App> createState() => _AppState();
+  State<App> createState() {
+    return _AppState();
+  }
 }
 
 class _AppState extends State<App> {
@@ -16,7 +18,7 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(children: [
+    return Column(children: [
       Calculator((entry) {
         setState(() {
           paperTapeEntries = [...paperTapeEntries, entry];
