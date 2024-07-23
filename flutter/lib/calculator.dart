@@ -22,7 +22,8 @@ class _State extends State<Calculator> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Color(0xFF383838),
+        decoration: BoxDecoration(
+            color: Color(0xFF383838), borderRadius: BorderRadius.circular(8)),
         child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -31,77 +32,87 @@ class _State extends State<Calculator> {
                 Text(display.toString(),
                     style: TextStyle(color: Color(0xffffffff), fontSize: 48))
               ]),
-              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                IntrinsicWidth(
-                    child: Column(children: [
-                  ButtonList(
-                    operationComplete,
-                    () {
-                      setState(() {
-                        operationComplete = false;
-                        overwritable = true;
-                        operand = display;
-                      });
-                    },
-                    (number) {
-                      if (overwritable) {
-                        setState(() {
-                          display = number;
-                          overwritable = false;
-                        });
-                      } else {
-                        setState(() {
-                          display = display * 10 + number;
-                        });
-                      }
-                    },
-                    () {
-                      setState(() {
-                        display = 0;
+              Container(
+                  margin: EdgeInsets.all(1),
+                  child:
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    IntrinsicWidth(
+                        child: Column(children: [
+                      Container(
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(8),
+                                  bottomLeft: Radius.circular(8))),
+                          child: ButtonList(
+                            operationComplete,
+                            () {
+                              setState(() {
+                                operationComplete = false;
+                                overwritable = true;
+                                operand = display;
+                              });
+                            },
+                            (number) {
+                              if (overwritable) {
+                                setState(() {
+                                  display = number;
+                                  overwritable = false;
+                                });
+                              } else {
+                                setState(() {
+                                  display = display * 10 + number;
+                                });
+                              }
+                            },
+                            () {
+                              setState(() {
+                                display = 0;
 
-                        if (!operationComplete && overwritable) {
-                          display = operand;
-                          operationComplete = true;
-                          operand = 0;
-                        }
+                                if (!operationComplete && overwritable) {
+                                  display = operand;
+                                  operationComplete = true;
+                                  operand = 0;
+                                }
 
-                        overwritable = true;
-                      });
-                    },
-                    () {
-                      setState(() {
-                        display = 0;
-                        operationComplete = true;
-                        operand = 0;
-                      });
-                    },
-                    (getNewValue) {
-                      setState(() {
-                        display = getNewValue(display);
-                      });
-                    },
-                    (operation) {
-                      final [operand1, operand2] = operationComplete
-                          ? [display, operand]
-                          : [operand, display];
-                      final value = operation.operate(operand1, operand2);
+                                overwritable = true;
+                              });
+                            },
+                            () {
+                              setState(() {
+                                display = 0;
+                                operationComplete = true;
+                                operand = 0;
+                              });
+                            },
+                            (getNewValue) {
+                              setState(() {
+                                display = getNewValue(display);
+                              });
+                            },
+                            (operation) {
+                              final [operand1, operand2] = operationComplete
+                                  ? [display, operand]
+                                  : [operand, display];
+                              final value =
+                                  operation.operate(operand1, operand2);
 
-                      widget.addPaperTapeEntry(PaperTapeEntry(
-                          operand1, operand2, operation.symbolASCII, value));
+                              widget.addPaperTapeEntry(PaperTapeEntry(operand1,
+                                  operand2, operation.symbolASCII, value));
 
-                      setState(() {
-                        if (!operationComplete) {
-                          operand = display;
-                          operationComplete = true;
-                          overwritable = true;
-                        }
+                              setState(() {
+                                if (!operationComplete) {
+                                  operand = display;
+                                  operationComplete = true;
+                                  overwritable = true;
+                                }
 
-                        display = value;
-                      });
-                    },
-                  ),
-                ]))
-              ])
+                                display = value;
+                              });
+                            },
+                          )),
+                    ]))
+                  ]))
             ]));
   }
 }

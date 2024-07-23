@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'operation.dart';
 
 var operations = [
@@ -111,6 +109,7 @@ class _State extends State<ButtonList> {
                       });
                     },
                     child: Text('C', style: TextStyle(fontSize: 20)))),
+        SizedBox(width: 1),
         Expanded(
             child: OutlinedButton(
                 style: valueButtonStyle,
@@ -120,6 +119,7 @@ class _State extends State<ButtonList> {
                   });
                 },
                 child: Text('⁺⁄₋', style: TextStyle(fontSize: 20)))),
+        SizedBox(width: 1),
         Expanded(
             child: OutlinedButton(
                 style: valueButtonStyle,
@@ -129,28 +129,43 @@ class _State extends State<ButtonList> {
                   });
                 },
                 child: Text('%', style: TextStyle(fontSize: 20)))),
+        SizedBox(width: 1),
         operationButtons[3],
       ]),
+      SizedBox(height: 1),
       Row(children: [
         numberButtons[7],
+        SizedBox(width: 1),
         numberButtons[8],
+        SizedBox(width: 1),
         numberButtons[9],
+        SizedBox(width: 1),
         operationButtons[2],
       ]),
+      SizedBox(height: 1),
       Row(children: [
         numberButtons[4],
+        SizedBox(width: 1),
         numberButtons[5],
+        SizedBox(width: 1),
         numberButtons[6],
+        SizedBox(width: 1),
         operationButtons[1],
       ]),
+      SizedBox(height: 1),
       Row(children: [
         numberButtons[1],
+        SizedBox(width: 1),
         numberButtons[2],
+        SizedBox(width: 1),
         numberButtons[3],
+        SizedBox(width: 1),
         operationButtons[0],
       ]),
+      SizedBox(height: 1),
       Row(children: [
         Expanded(flex: 3, child: numberButtons[0]),
+        SizedBox(width: 1),
         Expanded(
             flex: 1,
             child: OutlinedButton(
