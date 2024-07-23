@@ -38,7 +38,8 @@ class _AppState extends State<App> {
                         BoxDecoration(border: Border(bottom: BorderSide())),
                     child: Center(
                         child: Text('Paper Tape',
-                            style: TextStyle(fontSize: 16)))),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)))),
                 SizedBox(
                     height: 256,
                     width: 256,
