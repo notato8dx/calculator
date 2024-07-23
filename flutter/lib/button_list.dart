@@ -64,35 +64,32 @@ class _State extends State<ButtonList> {
     super.initState();
     operationButtons = [
       for (final operation in operations)
-        Expanded(
-            child: OutlinedButton(
-                style: operationButtonStyle,
-                onPressed: () {
-                  setState(() {
-                    this.operation = operation;
-                  });
-                  widget.handleOperation();
-                },
-                child: Text(operation.symbol, style: TextStyle(fontSize: 20))))
+        OutlinedButton(
+            style: operationButtonStyle,
+            onPressed: () {
+              setState(() {
+                this.operation = operation;
+              });
+              widget.handleOperation();
+            },
+            child: Text(operation.symbol, style: TextStyle(fontSize: 20)))
     ];
     numberButtons = [
       for (final number in <double>[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-        Expanded(
-            child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                    backgroundColor: Color(0xff696969),
-                    foregroundColor: Color(0xffffffff),
-                    shape: LinearBorder(),
-                    fixedSize: Size(58, 48),
-                    padding: EdgeInsets.all(0)),
-                onPressed: () {
-                  widget.handleNumber(number);
-                  setState(() {
-                    shouldClearAll = false;
-                  });
-                },
-                child:
-                    Text(number.toString(), style: TextStyle(fontSize: 20)))),
+        OutlinedButton(
+            style: OutlinedButton.styleFrom(
+                backgroundColor: Color(0xff696969),
+                foregroundColor: Color(0xffffffff),
+                shape: LinearBorder(),
+                fixedSize: Size(58, 48),
+                padding: EdgeInsets.all(0)),
+            onPressed: () {
+              widget.handleNumber(number);
+              setState(() {
+                shouldClearAll = false;
+              });
+            },
+            child: Text(number.toString(), style: TextStyle(fontSize: 20))),
     ];
   }
 
@@ -100,41 +97,38 @@ class _State extends State<ButtonList> {
   Widget build(BuildContext context) {
     return Column(children: [
       Row(children: [
-        Expanded(
-            child: shouldClearAll
-                ? OutlinedButton(
-                    style: valueButtonStyle,
-                    onPressed: widget.handleClearAll,
-                    child: Text('AC', style: TextStyle(fontSize: 20)))
-                : OutlinedButton(
-                    style: valueButtonStyle,
-                    onPressed: () {
-                      widget.handleClear();
-                      setState(() {
-                        shouldClearAll = true;
-                      });
-                    },
-                    child: Text('C', style: TextStyle(fontSize: 20)))),
-        SizedBox(width: 1),
-        Expanded(
-            child: OutlinedButton(
+        shouldClearAll
+            ? OutlinedButton(
+                style: valueButtonStyle,
+                onPressed: widget.handleClearAll,
+                child: Text('AC', style: TextStyle(fontSize: 20)))
+            : OutlinedButton(
                 style: valueButtonStyle,
                 onPressed: () {
-                  widget.handleValue((value) {
-                    return -value;
+                  widget.handleClear();
+                  setState(() {
+                    shouldClearAll = true;
                   });
                 },
-                child: Text('⁺⁄₋', style: TextStyle(fontSize: 20)))),
+                child: Text('C', style: TextStyle(fontSize: 20))),
         SizedBox(width: 1),
-        Expanded(
-            child: OutlinedButton(
-                style: valueButtonStyle,
-                onPressed: () {
-                  widget.handleValue((value) {
-                    return value / 100;
-                  });
-                },
-                child: Text('%', style: TextStyle(fontSize: 20)))),
+        OutlinedButton(
+            style: valueButtonStyle,
+            onPressed: () {
+              widget.handleValue((value) {
+                return -value;
+              });
+            },
+            child: Text('⁺⁄₋', style: TextStyle(fontSize: 20))),
+        SizedBox(width: 1),
+        OutlinedButton(
+            style: valueButtonStyle,
+            onPressed: () {
+              widget.handleValue((value) {
+                return value / 100;
+              });
+            },
+            child: Text('%', style: TextStyle(fontSize: 20))),
         SizedBox(width: 1),
         operationButtons[3],
       ]),
@@ -170,16 +164,14 @@ class _State extends State<ButtonList> {
       ]),
       SizedBox(height: 1),
       Row(children: [
-        Expanded(flex: 3, child: numberButtons[0]),
+        Expanded(child: numberButtons[0]),
         SizedBox(width: 1),
-        Expanded(
-            flex: 1,
-            child: OutlinedButton(
-                style: operationButtonStyle,
-                onPressed: () {
-                  widget.handleEqual(operation);
-                },
-                child: Text('=', style: TextStyle(fontSize: 20))))
+        OutlinedButton(
+            style: operationButtonStyle,
+            onPressed: () {
+              widget.handleEqual(operation);
+            },
+            child: Text('=', style: TextStyle(fontSize: 20)))
       ])
     ]);
   }
