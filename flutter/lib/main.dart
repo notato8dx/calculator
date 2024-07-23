@@ -24,29 +24,43 @@ class _AppState extends State<App> {
           paperTapeEntries = [...paperTapeEntries, entry];
         });
       }),
-      Column(children: [
-        Text('Paper Tape'),
-        SizedBox(
-            height: 256,
-            width: 256,
-            child: ListView(
-                children: paperTapeEntries.map((entry) {
-              return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      Container(
+          decoration: BoxDecoration(
+            border: Border.all(width: 1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: IntrinsicWidth(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                        '${entry.operand1} ${entry.operator} ${entry.operand2}'),
-                    Text('= ${entry.value}\n')
-                  ]);
-            }).toList())),
-        OutlinedButton(
-            child: Text('Clear'),
-            onPressed: () {
-              setState(() {
-                paperTapeEntries = [];
-              });
-            })
-      ])
+                Container(
+                    decoration:
+                        BoxDecoration(border: Border(bottom: BorderSide())),
+                    child: Center(
+                        child: Text('Paper Tape',
+                            style: TextStyle(fontSize: 16)))),
+                SizedBox(
+                    height: 256,
+                    width: 256,
+                    child: ListView(children: [
+                      for (final entry in paperTapeEntries)
+                        Text(
+                            '${entry.operand1} ${entry.operator} ${entry.operand2}\n= ${entry.value}\n',
+                            style: TextStyle(fontSize: 16))
+                    ])),
+                Container(
+                    padding: EdgeInsets.all(4),
+                    decoration:
+                        BoxDecoration(border: Border(top: BorderSide())),
+                    alignment: Alignment.centerRight,
+                    child: OutlinedButton(
+                        child: Text('Clear'),
+                        onPressed: () {
+                          setState(() {
+                            paperTapeEntries = [];
+                          });
+                        }))
+              ])))
     ]);
   }
 }

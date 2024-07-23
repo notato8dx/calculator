@@ -53,6 +53,7 @@ class _State extends State<ButtonList> {
       shape: LinearBorder(),
       fixedSize: Size(58, 48),
       padding: EdgeInsets.all(0));
+
   late final List<Widget> operationButtons;
   late final List<Widget> numberButtons;
 
