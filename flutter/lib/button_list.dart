@@ -44,15 +44,19 @@ class _State extends State<ButtonList> {
   final ButtonStyle operationButtonStyle = OutlinedButton.styleFrom(
       backgroundColor: Color(0xffff9d0b),
       foregroundColor: Color(0xffffffff),
-      shape: LinearBorder());
+      shape: LinearBorder(),
+      fixedSize: Size(58, 48),
+      padding: EdgeInsets.all(0));
   final ButtonStyle valueButtonStyle = OutlinedButton.styleFrom(
       backgroundColor: Color(0xff4c4c4c),
       foregroundColor: Color(0xffffffff),
-      shape: LinearBorder());
+      shape: LinearBorder(),
+      fixedSize: Size(58, 48),
+      padding: EdgeInsets.all(0));
   late final List<Widget> operationButtons;
   late final List<Widget> numberButtons;
 
-  var operation = operations[1];
+  var operation = operations[0];
   var shouldClearAll = true;
 
   @override
@@ -78,7 +82,9 @@ class _State extends State<ButtonList> {
                 style: OutlinedButton.styleFrom(
                     backgroundColor: Color(0xff696969),
                     foregroundColor: Color(0xffffffff),
-                    shape: LinearBorder()),
+                    shape: LinearBorder(),
+                    fixedSize: Size(58, 48),
+                    padding: EdgeInsets.all(0)),
                 onPressed: () {
                   widget.handleNumber(number);
                   setState(() {

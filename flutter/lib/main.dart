@@ -31,10 +31,13 @@ class _AppState extends State<App> {
             width: 256,
             child: ListView(
                 children: paperTapeEntries.map((entry) {
-              return Column(children: [
-                Text('${entry.operand1} ${entry.operator} ${entry.operand2}'),
-                Text('= ${entry.value}\n')
-              ]);
+              return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        '${entry.operand1} ${entry.operator} ${entry.operand2}'),
+                    Text('= ${entry.value}\n')
+                  ]);
             }).toList())),
         OutlinedButton(
             child: Text('Clear'),
